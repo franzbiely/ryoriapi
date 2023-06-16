@@ -6,28 +6,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'users' })
-export class Users {
+@Entity({ name: 'branch' })
+export class Branch {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  role: string;
-
-  @Column()
-  username: string;
-
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  name: string;
 
   @Column()
   email: string;
 
   @Column()
-  password: string;
+  contactNumber: string;
 
   @Column()
   address: string;

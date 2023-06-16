@@ -1,27 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class CreateUsersDto {
+export class CreateBranchDto {
   @IsInt()
   id: number;
 
   @IsString()
-  role: string;
+  name: string;
 
   @IsString()
-  username: string;
-
-  @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsInt()
   email: string;
 
   @IsString()
-  password: string;
+  contactNumber: string;
 
   @IsString()
   address: string;

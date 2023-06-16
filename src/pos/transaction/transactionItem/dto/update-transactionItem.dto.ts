@@ -1,14 +1,15 @@
-/* eslint-disable prettier/prettier */
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateStoreDto } from './create-store.dto';
+import { CreateTransactionItemDto } from './create-transactionItem.dto';
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class UpdateStoreDto extends PartialType(CreateStoreDto) {
+export class UpdateTransactionItemDto extends PartialType(
+  CreateTransactionItemDto,
+) {
   @IsInt()
   id: number;
 
   @IsString()
-  storeName: string;
+  status: string;
 
   @IsDate()
   createdAt: Date;

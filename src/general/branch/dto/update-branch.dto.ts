@@ -1,29 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateUsersDto } from './create-users.dto';
+import { CreateBranchDto } from './create-branch.dto';
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUsersDto) {
+export class UpdateBranchDto extends PartialType(CreateBranchDto) {
   @IsInt()
   id: number;
 
   @IsString()
-  role: string;
+  name: string;
 
   @IsString()
-  username: string;
-
-  @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsInt()
   email: string;
 
   @IsString()
-  password: string;
+  contactNumber: string;
 
   @IsString()
   address: string;

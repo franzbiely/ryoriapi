@@ -1,13 +1,15 @@
-/* eslint-disable prettier/prettier */
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class CreateStoreDto {
+export class CreateMenuCategoryDto {
   @IsInt()
   id: number;
 
   @IsString()
-  storeName: string;
+  title: string;
 
-  @IsDate()
+  @IsString()
+  photo: string;
+
+  @IsString()
   createdAt: Date;
 }

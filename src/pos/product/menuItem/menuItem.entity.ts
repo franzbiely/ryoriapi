@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Column,
   CreateDateColumn,
@@ -6,31 +5,28 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'users' })
-export class Users {
+@Entity({ name: 'menuitem' })
+export class MenuItem {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  role: string;
+  title: string;
 
   @Column()
-  username: string;
+  photo: string;
 
   @Column()
-  firstName: string;
+  price: number;
 
   @Column()
-  lastName: string;
+  quantity: number;
 
   @Column()
-  email: string;
+  description: string;
 
   @Column()
-  password: string;
-
-  @Column()
-  address: string;
+  cookingTime: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -5,13 +5,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'stores' })
-export class Store {
+@Entity({ name: 'rawinventorygrocery' })
+export class RawInvGroc {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  storeName: string;
+  item: string;
+
+  @Column()
+  weight: string;
+
+  @Column()
+  quantity: string;
 
   @CreateDateColumn()
   createdAt: Date;

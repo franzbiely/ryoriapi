@@ -5,13 +5,16 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'stores' })
-export class Store {
+@Entity({ name: 'menucategory' })
+export class MenuCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  storeName: string;
+  title: string;
+
+  @Column()
+  photo: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,12 +1,11 @@
-/* eslint-disable prettier/prettier */
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class CreateStoreDto {
+export class CreateTransactionItemDto {
   @IsInt()
   id: number;
 
   @IsString()
-  storeName: string;
+  status: string;
 
   @IsDate()
   createdAt: Date;
