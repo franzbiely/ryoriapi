@@ -13,7 +13,7 @@ export class FoodService {
     constructor(
         @InjectRepository(Foods)
         private foodRepository: FoodsRepository,
-        @InjectRepository(CategoryRepository)
+        @InjectRepository(Category)
         private categoryRepository: CategoryRepository
     ) {}
 

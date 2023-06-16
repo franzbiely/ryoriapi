@@ -31,6 +31,8 @@ import { ItemModule } from './inventory/item/item.module';
 import { TransactionModule as InventoryTransactionModule} from './inventory/transaction/transaction.module';
 import { ReportModule as InventoryReportModule} from './inventory/reports/report.module';
 import { ReportModule } from './pos/reports/report.module';
+import { Consumption } from './general/consumption/consumption.entity';
+import { ConsumptionModule } from './general/consumption/consumption.module';
 
 @Module({
   imports: [
@@ -46,6 +48,7 @@ import { ReportModule } from './pos/reports/report.module';
       database: process.env.DATABASE_NAME,
       entities: [
         // general
+        Consumption,
         Users, 
         Store, 
         Outlet, 
@@ -67,7 +70,8 @@ import { ReportModule } from './pos/reports/report.module';
       autoLoadEntities: true,
     }), 
       // general
-      AuthModule, 
+      AuthModule,
+      ConsumptionModule, 
       UserModule,
       StoreModule, 
       OutletModule, 
