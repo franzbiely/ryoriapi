@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'menuitem' })
+@Entity({ name: 'menu_item' })
 export class MenuItem {
   @PrimaryGeneratedColumn()
   id: number;
