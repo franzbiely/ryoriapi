@@ -28,9 +28,9 @@ import { TransactionItem } from './pos/transaction/transactionItem/transactionIt
 import { TransactionItemModule } from './pos/transaction/transactionItem/transactionItem.module';
 
 import { Item } from './inventory/item/item.entity';
-import { Category as InventoryCategory } from './inventory/category/category.entity';
+import { RawCategory as InventoryCategory } from './inventory/rawCategory/rawCategory.entity';
 import { Transaction as InventoryTransaction } from './inventory/transaction/transaction.entity';
-import { CategoryModule as InventoryCategoryModule } from './inventory/category/category.module';
+import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCategory/rawCategory.module';
 import { Report as InventoryReport } from './inventory/reports/report.entity';
 import { ItemModule } from './inventory/item/item.module';
 import { TransactionModule as InventoryTransactionModule } from './inventory/transaction/transaction.module';
