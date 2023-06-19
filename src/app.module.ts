@@ -40,6 +40,10 @@ import { Consumption } from './general/consumption/consumption.entity';
 import { ConsumptionModule } from './general/consumption/consumption.module';
 import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
+import { InvLogs } from './inventory/inventoryLogs/inv_logs/logs.entity';
+import { InvLogsModule } from './inventory/inventoryLogs/inv_logs/logs.module';
+import { LogsType } from './inventory/inventoryLogs/logsType/logType.entity';
+import { LogsTypeModule } from './inventory/inventoryLogs/logsType/logType.module';
 
 @Module({
   imports: [
@@ -67,6 +71,8 @@ import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
         InventoryTransaction,
         InventoryReport,
         RawGrocery,
+        InvLogs,
+        LogsType,
 
         // pos
         MenuItem,
@@ -92,6 +98,8 @@ import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
     InventoryTransactionModule,
     InventoryReportModule,
     RawGroceryModule,
+    InvLogsModule,
+    LogsTypeModule,
 
     // pos
     // CategoryModule,
