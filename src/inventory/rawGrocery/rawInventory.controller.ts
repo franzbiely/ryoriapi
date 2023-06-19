@@ -7,41 +7,41 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { RawInvGrocService } from './rawInventory.service';
-import { CreateRawInvGrocDto } from './dto/create-rawInventory.dto';
-import { UpdateRawInvGrocDto } from './dto/update-rawInventory.dto';
+import { RawGroceryService } from './rawInventory.service';
+import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
+import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
 
 @Controller('inventory/rawgrocery')
-export class RawInvGrocController {
-  constructor(private rawInvGrocService: RawInvGrocService) {}
+export class RawGroceryController {
+  constructor(private rawGroceryService: RawGroceryService) {}
 
   @Get()
   async fillAll() {
-    return this.rawInvGrocService.findAll();
+    return this.rawGroceryService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.rawInvGrocService.findOne(+id);
+    return this.rawGroceryService.findOne(+id);
   }
 
   @Post()
-  create(@Body() createRawInvGrocDto: CreateRawInvGrocDto) {
-    return this.rawInvGrocService.create(createRawInvGrocDto);
+  create(@Body() createRawGroceyDto: CreateRawGroceryDto) {
+    return this.rawGroceryService.create(createRawGroceyDto);
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateRawInvGrocDto: UpdateRawInvGrocDto,
+    @Body() updateRawGroceryDto: UpdateRawGroceryDto,
   ) {
-    this.rawInvGrocService.update(+id, updateRawInvGrocDto);
+    this.rawGroceryService.update(+id, updateRawGroceryDto);
     return 'Updated';
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.rawInvGrocService.remove(+id);
+    this.rawGroceryService.remove(+id);
     return 'Deleted!';
   }
 }

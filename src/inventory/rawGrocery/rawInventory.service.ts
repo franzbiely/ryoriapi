@@ -1,39 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RawInvGroc } from './rawInventory.entity';
-import { CreateRawInvGrocDto } from './dto/create-rawInventory.dto';
+import { RawGrocery } from './rawInventory.entity';
+import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
 
 @Injectable()
-export class RawInvGrocService {
+export class RawGroceryService {
   constructor(
-    @InjectRepository(RawInvGroc)
-    private rawInvGrocRepository: Repository<RawInvGroc>,
+    @InjectRepository(RawGrocery)
+    private rawGroceryRepository: Repository<RawGrocery>,
   ) {}
 
   //Get All User
-  findAll(): Promise<RawInvGroc[]> {
-    return this.rawInvGrocRepository.find({});
+  findAll(): Promise<RawGrocery[]> {
+    return this.rawGroceryRepository.find({});
   }
 
-  findOne(id: number): Promise<RawInvGroc> {
-    const x = this.rawInvGrocRepository.findOneBy({ id });
+  findOne(id: number): Promise<RawGrocery> {
+    const x = this.rawGroceryRepository.findOneBy({ id });
     return x;
   }
 
-  async create(_rawInv: CreateRawInvGrocDto): Promise<RawInvGroc> {
-    const rawInvGroc = new RawInvGroc();
-    rawInvGroc.item = _rawInv.item;
-    rawInvGroc.weight = _rawInv.weight;
-    rawInvGroc.quantity = _rawInv.quantity;
-    return this.rawInvGrocRepository.save(rawInvGroc);
+  async create(_rawInv: CreateRawGroceryDto): Promise<RawGrocery> {
+    const rawGroc = new RawGrocery();
+    rawGroc.item = _rawInv.item;
+    rawGroc.weight = _rawInv.weight;
+    rawGroc.quantity = _rawInv.quantity;
+    return this.rawGroceryRepository.save(rawGroc);
   }
 
-  async update(id: number, rawInvGroc: RawInvGroc) {
-    await this.rawInvGrocRepository.update(id, rawInvGroc);
+  async update(id: number, rawGrocey: RawGrocery) {
+    await this.rawGroceryRepository.update(id, rawGrocey);
   }
 
   async remove(id: number): Promise<void> {
-    await this.rawInvGrocRepository.delete(id);
+    await this.rawGroceryRepository.delete(id);
   }
 }

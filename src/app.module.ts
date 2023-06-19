@@ -38,6 +38,8 @@ import { ReportModule as InventoryReportModule } from './inventory/reports/repor
 import { ReportModule } from './pos/reports/report.module';
 import { Consumption } from './general/consumption/consumption.entity';
 import { ConsumptionModule } from './general/consumption/consumption.module';
+import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
+import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
 
 @Module({
   imports: [
@@ -64,6 +66,7 @@ import { ConsumptionModule } from './general/consumption/consumption.module';
         Item,
         InventoryTransaction,
         InventoryReport,
+        RawGrocery,
 
         // pos
         MenuItem,
@@ -88,6 +91,7 @@ import { ConsumptionModule } from './general/consumption/consumption.module';
     ItemModule,
     InventoryTransactionModule,
     InventoryReportModule,
+    RawGroceryModule,
 
     // pos
     // CategoryModule,

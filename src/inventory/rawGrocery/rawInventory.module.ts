@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RawInvGroc } from './rawInventory.entity';
-import { RawInvGrocController } from './rawInventory.controller';
-import { RawInvGrocService } from './rawInventory.service';
+import { RawGrocery } from './rawInventory.entity';
+import { RawGroceryController } from './rawInventory.controller';
+import { RawGroceryService } from './rawInventory.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RawInvGroc])],
-  controllers: [RawInvGrocController],
-  providers: [RawInvGrocService],
+  imports: [TypeOrmModule.forFeature([RawGrocery])],
+  controllers: [RawGroceryController],
+  providers: [RawGroceryService],
 })
-export class RawInvGrocModule {}
+export class RawGroceryModule {}

@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'rawinventorygrocery' })
-export class RawInvGroc {
+export class RawGrocery {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,7 +17,7 @@ export class RawInvGroc {
   weight: string;
 
   @Column()
-  quantity: string;
+  quantity: number;
 
   @CreateDateColumn()
   createdAt: Date;
