@@ -1,10 +1,11 @@
-/* eslint-disable prettier/prettier */
 import {
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Store } from '../store/store.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -22,6 +23,9 @@ export class Branch {
 
   @Column()
   address: string;
+
+  @ManyToOne(() => Store, (store) => store.branch, { onDelete: 'CASCADE' })
+  store: Store;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -3,7 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
+import { Users } from '../user/user.entity';
+import { Branch } from '../branch/branch.entity';
 
 @Entity({ name: 'stores' })
 export class Store {
@@ -12,6 +16,9 @@ export class Store {
 
   @Column()
   storeName: string;
+
+  @OneToMany(() => Branch, (branch) => branch.store)
+  branch: Branch[];
 
   @CreateDateColumn()
   createdAt: Date;

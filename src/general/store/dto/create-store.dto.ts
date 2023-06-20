@@ -1,5 +1,6 @@
-/* eslint-disable prettier/prettier */
-import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
+import { Branch } from 'src/general/branch/branch.entity';
+import { Users } from 'src/general/user/user.entity';
 
 export class CreateStoreDto {
   @IsInt()
@@ -7,6 +8,9 @@ export class CreateStoreDto {
 
   @IsString()
   storeName: string;
+
+  @IsInt()
+  branchId: number;
 
   @IsDate()
   createdAt: Date;

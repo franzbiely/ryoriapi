@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateBranchDto {
@@ -16,6 +15,9 @@ export class CreateBranchDto {
 
   @IsString()
   address: string;
+
+  @IsInt()
+  storeId: number;
 
   @IsDate()
   createdAt: Date;
