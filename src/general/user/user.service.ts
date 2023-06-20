@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,13 +11,17 @@ export class UserService {
     private usersRepository: Repository<Users>,
   ) {}
 
+  userCredential(query: object | any): Promise<Users> {
+    const x = this.usersRepository.findOneBy(query);
+    return x;
+  }
   findAll(): Promise<Users[]> {
     return this.usersRepository.find({});
   }
 
-  findOne(query: object | any): Promise<Users> {
-    const x = this.usersRepository.findOneBy(query);
-    return x;
+  findById(id: object | any): Promise<Users> {
+    const getOneById = this.usersRepository.findOneBy({ id });
+    return getOneById;
   }
 
   async create(_user: CreateUsersDto): Promise<Users> {
@@ -30,7 +33,7 @@ export class UserService {
     user.email = _user.email;
     user.password = _user.password;
     user.address = _user.address;
-    console.log('USER', user);
+
     return this.usersRepository.save(user);
   }
 
