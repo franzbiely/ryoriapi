@@ -19,6 +19,9 @@ export class CreateBranchDto {
   @IsInt()
   storeId: number;
 
+  @IsInt()
+  user_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

@@ -5,6 +5,7 @@ import { Users } from './user.entity';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { Store } from '../store/store.entity';
 import { UpdateUserDto } from './dto/update-users.dto';
+import { Branch } from '../branch/branch.entity';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,8 @@ export class UserService {
     private usersRepository: Repository<Users>,
     @InjectRepository(Store)
     private storeRepository: Repository<Store>,
+    @InjectRepository(Branch)
+    private branchRepository: Repository<Branch>,
   ) {}
 
   userCredential(query: object | any): Promise<Users> {
@@ -28,7 +31,7 @@ export class UserService {
       where: {
         id: id,
       },
-      relations: ['store'],
+      relations: ['store', 'branch'],
     });
     return getOneById;
   }
@@ -50,6 +53,12 @@ export class UserService {
       user.store = [store];
     }
 
+    if (_user.branch_Id) {
+      const branch = await this.branchRepository.findOne({
+        where: { id: _user.branch_Id },
+      });
+      user.branch = [branch];
+    }
     return this.usersRepository.save(user);
   }
 
@@ -64,6 +73,7 @@ export class UserService {
       password,
       address,
       store_Id,
+      branch_Id,
     } = updateUserDto;
 
     user.role = role;
@@ -79,6 +89,13 @@ export class UserService {
         where: { id: store_Id },
       });
       user.store = [store];
+    }
+
+    if (branch_Id) {
+      const branch = await this.branchRepository.findOne({
+        where: { id: branch_Id },
+      });
+      user.branch = [branch];
     }
     return this.usersRepository.save(user);
   }

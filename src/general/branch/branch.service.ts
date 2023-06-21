@@ -5,6 +5,7 @@ import { Branch } from './branch.entity';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { Store } from '../store/store.entity';
 import { UpdateBranchDto } from './dto/update-branch.dto';
+import { Users } from '../user/user.entity';
 
 @Injectable()
 export class BranchService {
@@ -13,6 +14,8 @@ export class BranchService {
     private storeRepository: Repository<Store>,
     @InjectRepository(Branch)
     private branchRepository: Repository<Branch>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
   ) {}
 
   //Get All User
@@ -20,9 +23,14 @@ export class BranchService {
     return this.branchRepository.find({});
   }
 
-  findOne(id: number): Promise<Branch> {
-    const x = this.branchRepository.findOneBy({ id });
-    return x;
+  async findOneId(id: number): Promise<Branch> {
+    const getOneById = this.branchRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['store', 'user'],
+    });
+    return getOneById;
   }
 
   async create(_branch: CreateBranchDto): Promise<Branch> {
@@ -38,13 +46,21 @@ export class BranchService {
       });
       branch.store = storeBranchID;
     }
+
+    if (_branch.user_Id) {
+      const user = await this.userRepository.findOne({
+        where: { id: _branch.user_Id },
+      });
+      branch.user = [user];
+    }
     return this.branchRepository.save(branch);
   }
 
   async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
-    const branch = await this.findOne(id);
+    const branch = await this.findOneId(id);
 
-    const { name, email, address, contactNumber, storeId } = updateBranchDto;
+    const { name, email, address, contactNumber, storeId, user_Id } =
+      updateBranchDto;
     branch.name = name;
     branch.email = email;
     branch.address = address;
@@ -56,6 +72,14 @@ export class BranchService {
       });
       branch.store = store;
     }
+
+    if (user_Id) {
+      const user = await this.userRepository.findOne({
+        where: { id: user_Id },
+      });
+      branch.user = [user];
+    }
+
     return this.branchRepository.save(branch);
   }
 

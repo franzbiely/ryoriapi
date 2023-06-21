@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
+import { Branch } from '../branch/branch.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -35,6 +38,10 @@ export class Users {
 
   @OneToMany(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
   store: Store[];
+
+  @ManyToMany(() => Branch, (branch) => branch.user, { onDelete: 'CASCADE' })
+  @JoinTable()
+  branch: Branch[];
 
   @CreateDateColumn()
   createdAt: Date;

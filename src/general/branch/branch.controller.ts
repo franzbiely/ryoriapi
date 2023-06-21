@@ -23,7 +23,7 @@ export class BranchController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.branchService.findOne(+id);
+    return this.branchService.findOneId(+id);
   }
 
   @Post()

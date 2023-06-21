@@ -4,8 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  ManyToMany,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
+import { Users } from '../user/user.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -26,6 +28,9 @@ export class Branch {
 
   @ManyToOne(() => Store, (store) => store.branch, { onDelete: 'CASCADE' })
   store: Store;
+
+  @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
+  user: Users[];
 
   @CreateDateColumn()
   createdAt: Date;

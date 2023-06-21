@@ -28,6 +28,9 @@ export class CreateUsersDto {
   @IsInt()
   store_Id: number;
 
+  @IsInt()
+  branch_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

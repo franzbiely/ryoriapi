@@ -12,10 +12,11 @@ import { UserService } from 'src/general/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/general/user/user.entity';
 import { Store } from 'src/general/store/store.entity';
+import { Branch } from 'src/general/branch/branch.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Users, Store]),
+    TypeOrmModule.forFeature([Users, Store, Branch]),
     Users,
     UserModule,
     PassportModule,

@@ -1,7 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBranchDto } from './create-branch.dto';
 import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
-import { Store } from 'src/general/store/store.entity';
 
 export class UpdateBranchDto extends PartialType(CreateBranchDto) {
   @IsInt()
@@ -21,6 +20,9 @@ export class UpdateBranchDto extends PartialType(CreateBranchDto) {
 
   @IsInt()
   storeId: number;
+
+  @IsInt()
+  user_Id: number;
 
   @IsDate()
   createdAt: Date;
