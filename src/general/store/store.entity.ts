@@ -20,6 +20,9 @@ export class Store {
   @OneToMany(() => Branch, (branch) => branch.store)
   branch: Branch[];
 
+  @ManyToOne(() => Users, (user) => user.store, { onDelete: 'CASCADE' })
+  user: Users;
+
   @CreateDateColumn()
   createdAt: Date;
 }

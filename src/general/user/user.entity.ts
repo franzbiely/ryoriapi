@@ -1,10 +1,11 @@
-/* eslint-disable prettier/prettier */
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Store } from '../store/store.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -31,6 +32,9 @@ export class Users {
 
   @Column()
   address: string;
+
+  @OneToMany(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
+  store: Store[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateUsersDto {
@@ -25,6 +24,9 @@ export class CreateUsersDto {
 
   @IsString()
   address: string;
+
+  @IsInt()
+  store_Id: number;
 
   @IsDate()
   createdAt: Date;

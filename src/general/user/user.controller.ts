@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Post,
@@ -27,7 +26,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.usersService.findById(+id);
+    return this.usersService.findOneId(+id);
   }
 
   // @UseGuards(JwtAuthGuard)

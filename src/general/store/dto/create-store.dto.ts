@@ -12,6 +12,9 @@ export class CreateStoreDto {
   @IsInt()
   branchId: number;
 
+  @IsInt()
+  user_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

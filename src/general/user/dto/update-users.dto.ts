@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUsersDto } from './create-users.dto';
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
@@ -27,6 +26,9 @@ export class UpdateUserDto extends PartialType(CreateUsersDto) {
 
   @IsString()
   address: string;
+
+  @IsInt()
+  store_Id: number;
 
   @IsDate()
   createdAt: Date;
