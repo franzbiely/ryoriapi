@@ -34,7 +34,9 @@ export class Branch {
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
   user: Users[];
 
-  @ManyToMany(() => MenuItem, (user) => user.branch, { onDelete: 'CASCADE' })
+  @ManyToMany(() => MenuItem, (menuItem) => menuItem.branch, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   menuItem: MenuItem[];
 
