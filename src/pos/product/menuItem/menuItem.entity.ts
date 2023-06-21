@@ -1,7 +1,9 @@
+import { Branch } from 'src/general/branch/branch.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -27,6 +29,11 @@ export class MenuItem {
 
   @Column()
   cookingTime: string;
+
+  @ManyToMany(() => Branch, (branch) => branch.menuItem, {
+    onDelete: 'CASCADE',
+  })
+  branch: Branch[];
 
   @CreateDateColumn()
   createdAt: Date;

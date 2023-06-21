@@ -6,6 +6,7 @@ import { CreateBranchDto } from './dto/create-branch.dto';
 import { Store } from '../store/store.entity';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { Users } from '../user/user.entity';
+import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 
 @Injectable()
 export class BranchService {
@@ -16,6 +17,8 @@ export class BranchService {
     private branchRepository: Repository<Branch>,
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    @InjectRepository(MenuItem)
+    private menuItemRepository: Repository<MenuItem>,
   ) {}
 
   //Get All User
@@ -28,7 +31,7 @@ export class BranchService {
       where: {
         id: id,
       },
-      relations: ['store', 'user'],
+      relations: ['store', 'user', 'menuItem'],
     });
     return getOneById;
   }
@@ -53,14 +56,27 @@ export class BranchService {
       });
       branch.user = [user];
     }
+    if (_branch.menuItem_Id) {
+      const menuItem = await this.menuItemRepository.findOne({
+        where: { id: _branch.menuItem_Id },
+      });
+      branch.menuItem = [menuItem];
+    }
     return this.branchRepository.save(branch);
   }
 
   async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
     const branch = await this.findOneId(id);
 
-    const { name, email, address, contactNumber, storeId, user_Id } =
-      updateBranchDto;
+    const {
+      name,
+      email,
+      address,
+      contactNumber,
+      storeId,
+      user_Id,
+      menuItem_Id,
+    } = updateBranchDto;
     branch.name = name;
     branch.email = email;
     branch.address = address;
@@ -78,6 +94,13 @@ export class BranchService {
         where: { id: user_Id },
       });
       branch.user = [user];
+    }
+
+    if (menuItem_Id) {
+      const menuItem = await this.menuItemRepository.findOne({
+        where: { id: menuItem_Id },
+      });
+      branch.menuItem = [menuItem];
     }
 
     return this.branchRepository.save(branch);

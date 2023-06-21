@@ -22,6 +22,9 @@ export class CreateBranchDto {
   @IsInt()
   user_Id: number;
 
+  @IsInt()
+  menuItem_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

@@ -5,9 +5,11 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
 import { Users } from '../user/user.entity';
+import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -31,6 +33,10 @@ export class Branch {
 
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
   user: Users[];
+
+  @ManyToMany(() => MenuItem, (user) => user.branch, { onDelete: 'CASCADE' })
+  @JoinTable()
+  menuItem: MenuItem[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -5,9 +5,10 @@ import { Branch } from './branch.entity';
 import { BranchController } from './branch.controller';
 import { Store } from '../store/store.entity';
 import { Users } from '../user/user.entity';
+import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Branch, Store, Users])],
+  imports: [TypeOrmModule.forFeature([Branch, Store, Users, MenuItem])],
   controllers: [BranchController],
   providers: [BranchService],
 })
