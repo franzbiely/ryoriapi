@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RawCategory as Category } from './rawCategory.entity';
 import { CreateRawCategoryDto } from './dto/create-rawCategory.dto';
+import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
 
 @Injectable()
 export class RawCategoryService {
@@ -28,8 +29,13 @@ export class RawCategoryService {
     return this.categoryRepository.save(category);
   }
 
-  async update(id: number, category: Category) {
-    await this.categoryRepository.update(id, category);
+  async update(id: number, _category: UpdateRawCategoryDto) {
+    const rawCategory = await this.findOne(id);
+    const {title} = _category;
+
+    rawCategory.title = title;
+
+    return await this.categoryRepository.save(rawCategory);
   }
 
   async remove(id: number): Promise<void> {

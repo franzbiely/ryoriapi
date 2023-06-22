@@ -36,13 +36,11 @@ export class RawCategoryController {
     @Param('id') id: string,
     @Body() updateRawCategoryDto: UpdateRawCategoryDto,
   ) {
-    this.rawCategoryService.update(+id, updateRawCategoryDto);
-    return 'Updated';
+    return this.rawCategoryService.update(+id, updateRawCategoryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.rawCategoryService.remove(+id);
-    return 'Deleted!';
+    return this.rawCategoryService.remove(+id);
   }
 }

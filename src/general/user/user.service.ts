@@ -31,7 +31,7 @@ export class UserService {
       where: {
         id: id,
       },
-      relations: ['store', 'branch'],
+      relations: ['store'],
     });
     return getOneById;
   }
@@ -50,7 +50,7 @@ export class UserService {
       const store = await this.storeRepository.findOne({
         where: { id: _user.store_Id },
       });
-      user.store = [store];
+      user.store = store;
     }
 
     if (_user.branch_Id) {
@@ -62,8 +62,10 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> 
+  {
     const user = await this.findOneId(id);
+    console.log({updateUserDto, user})
     const {
       role,
       username,
@@ -88,7 +90,7 @@ export class UserService {
       const store = await this.storeRepository.findOne({
         where: { id: store_Id },
       });
-      user.store = [store];
+      user.store = store;
     }
 
     if (branch_Id) {

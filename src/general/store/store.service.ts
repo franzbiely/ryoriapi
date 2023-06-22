@@ -39,7 +39,7 @@ export class StoreService {
       const user = await this.usersRepository.findOne({
         where: { id: _store.user_Id },
       });
-      store.user = user;
+      store.user = [user];
     }
 
     return this.storeRepository.save(store);
@@ -54,9 +54,9 @@ export class StoreService {
       const user = await this.usersRepository.findOne({
         where: { id: user_Id },
       });
-      stores.user = user;
+      stores.user = [user];
     }
-    return this.storeRepository.save(stores);
+    return await this.storeRepository.save(stores);
   }
 
   async remove(id: number): Promise<void> {

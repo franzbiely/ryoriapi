@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Branch } from './branch.entity';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { Store } from '../store/store.entity';
@@ -31,7 +31,7 @@ export class BranchService {
       where: {
         id: id,
       },
-      relations: ['store', 'user', 'menuItem'],
+      relations: ['store','user'],
     });
     return getOneById;
   }
@@ -56,12 +56,6 @@ export class BranchService {
       });
       branch.user = [user];
     }
-    if (_branch.menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: _branch.menuItem_Id },
-      });
-      branch.menuItem = [menuItem];
-    }
     return this.branchRepository.save(branch);
   }
 
@@ -75,7 +69,6 @@ export class BranchService {
       contactNumber,
       storeId,
       user_Id,
-      menuItem_Id,
     } = updateBranchDto;
     branch.name = name;
     branch.email = email;
@@ -94,13 +87,6 @@ export class BranchService {
         where: { id: user_Id },
       });
       branch.user = [user];
-    }
-
-    if (menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: menuItem_Id },
-      });
-      branch.menuItem = [menuItem];
     }
 
     return this.branchRepository.save(branch);

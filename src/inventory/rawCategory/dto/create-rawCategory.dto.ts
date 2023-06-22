@@ -10,6 +10,4 @@ export class CreateRawCategoryDto {
   @IsDate()
   createdAt: Date;
 
-  @IsInt()
-  parent_category_id: number;
 }

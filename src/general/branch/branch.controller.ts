@@ -33,13 +33,11 @@ export class BranchController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBranchDto: UpdateBranchDto) {
-    this.branchService.update(+id, updateBranchDto);
-    return 'Updated';
+    return this.branchService.update(+id, updateBranchDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.branchService.remove(+id);
-    return 'Deleted!';
+    return this.branchService.remove(+id);
   }
 }

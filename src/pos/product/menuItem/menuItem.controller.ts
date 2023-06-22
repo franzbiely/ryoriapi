@@ -36,13 +36,11 @@ export class MenuItemController {
     @Param('id') id: string,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
   ) {
-    this.menuItemService.update(+id, updateMenuItemDto);
-    return 'Updated';
+    return this.menuItemService.update(+id, updateMenuItemDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.menuItemService.remove(+id);
-    return 'Deleted!';
+    return this.menuItemService.remove(+id);
   }
 }

@@ -22,6 +22,9 @@ export class CreateMenuItemDto {
   @IsString()
   cookingTime: string;
 
+  @IsInt()
+  category_Id: number;
+
   @IsString()
   createdAt: Date;
 }

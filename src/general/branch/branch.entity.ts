@@ -6,10 +6,13 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
 import { Users } from '../user/user.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
+import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
+import { RawGrocery } from 'src/inventory/rawGrocery/rawInventory.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -32,13 +35,14 @@ export class Branch {
   store: Store;
 
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
+  @JoinTable()
   user: Users[];
 
-  @ManyToMany(() => MenuItem, (menuItem) => menuItem.branch, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  menuItem: MenuItem[];
+  @OneToMany(() => Transaction, (transaction) => transaction.branch, { onDelete: 'CASCADE' })
+  transaction: Transaction[];
+
+  @OneToMany(() => RawGrocery, (rawGrocery) => rawGrocery.branch, { onDelete: 'CASCADE' })
+  rawGrocery: RawGrocery[];
 
   @CreateDateColumn()
   createdAt: Date;

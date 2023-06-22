@@ -35,8 +35,8 @@ export class TransactionController {
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    this.transactionService.update(+id, updateTransactionDto);
-    return 'Updated';
+    // this.transactionService.update(+id, updateTransactionDto);
+    // return 'Updated';
   }
 
   @Delete(':id')

@@ -1,11 +1,16 @@
 import { Branch } from 'src/general/branch/branch.entity';
+import { Store } from 'src/general/store/store.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { MenuCategory } from '../menuCategory/menuCategory.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -30,10 +35,12 @@ export class MenuItem {
   @Column()
   cookingTime: string;
 
-  @ManyToMany(() => Branch, (branch) => branch.menuItem, {
-    onDelete: 'CASCADE',
-  })
-  branch: Branch[];
+  @ManyToMany(() => MenuCategory, (menuCategory) => menuCategory.menuItem, {onDelete: 'CASCADE'})
+  @JoinTable()
+  menuCategory: MenuCategory[];
+
+  @ManyToOne(() => Store, (store) => store.menuItem, { onDelete: 'CASCADE' })
+  store: Store;
 
   @CreateDateColumn()
   createdAt: Date;

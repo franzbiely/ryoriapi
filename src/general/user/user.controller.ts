@@ -38,13 +38,11 @@ export class UserController {
   // @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    this.usersService.update(+id, updateUserDto);
-    return 'Updated';
+    return this.usersService.update(+id, updateUserDto);
   }
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.usersService.remove(+id);
-    return 'Deleted!';
+    return this.usersService.remove(+id);
   }
 }

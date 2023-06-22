@@ -13,6 +13,9 @@ export class CreateRawGroceryDto {
   @IsInt()
   quantity: number;
 
+  @IsInt()
+  branch_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

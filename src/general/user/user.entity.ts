@@ -4,6 +4,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -36,8 +37,8 @@ export class Users {
   @Column()
   address: string;
 
-  @OneToMany(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
-  store: Store[];
+  @ManyToOne(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
+  store: Store;
 
   @ManyToMany(() => Branch, (branch) => branch.user, { onDelete: 'CASCADE' })
   @JoinTable()

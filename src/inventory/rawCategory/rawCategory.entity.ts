@@ -1,10 +1,15 @@
 /* eslint-disable prettier/prettier */
+import { Store } from 'src/general/store/store.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { RawGrocery } from '../rawGrocery/rawInventory.entity';
 
 @Entity({ name: 'raw_category' })
 export class RawCategory {
@@ -14,12 +19,12 @@ export class RawCategory {
   @Column()
   title: string;
 
-  @Column()
-  parent_category_id: number;
+  @ManyToMany(() => RawGrocery, (rawGrocery) => rawGrocery.rawCategory, {onDelete: 'CASCADE'})
+  @JoinTable()
+  rawGrocery?: RawGrocery[];
 
-  // @Todo: Set as foreign key
-  // @Column()
-  // store_id: string;
+  @ManyToOne(() => Store, (store) => store.rawCategory, {onDelete: 'CASCADE'})
+  store?: Store;
 
   @CreateDateColumn()
   createdAt: Date;

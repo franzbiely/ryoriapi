@@ -36,8 +36,8 @@ export class MenuCategoryController {
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    this.menuCategoryService.update(+id, updateMenuCategoryDto);
-    return 'Updated';
+    // this.menuCategoryService.update(+id, updateMenuCategoryDto);
+    // return 'Updated';
   }
 
   @Delete(':id')

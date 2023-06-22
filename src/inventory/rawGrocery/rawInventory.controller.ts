@@ -35,13 +35,11 @@ export class RawGroceryController {
     @Param('id') id: string,
     @Body() updateRawGroceryDto: UpdateRawGroceryDto,
   ) {
-    this.rawGroceryService.update(+id, updateRawGroceryDto);
-    return 'Updated';
+    return this.rawGroceryService.update(+id, updateRawGroceryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.rawGroceryService.remove(+id);
-    return 'Deleted!';
+    return this.rawGroceryService.remove(+id);
   }
 }

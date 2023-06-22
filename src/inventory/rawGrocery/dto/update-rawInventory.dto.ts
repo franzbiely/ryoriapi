@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateRawGroceryDto } from './create-rawInventory.dto';
-import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 
 export class UpdateRawGroceryDto extends PartialType(CreateRawGroceryDto) {
   @IsInt()
@@ -14,6 +14,9 @@ export class UpdateRawGroceryDto extends PartialType(CreateRawGroceryDto) {
 
   @IsInt()
   quantity: number;
+
+  @IsOptional()
+  rawCategoryId: number; 
 
   @IsDate()
   createdAt: Date;

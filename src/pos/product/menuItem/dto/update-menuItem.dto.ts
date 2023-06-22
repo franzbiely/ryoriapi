@@ -24,6 +24,9 @@ export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
   @IsString()
   cookingTime: string;
 
+  @IsInt()
+  category_Id: number;
+  
   @IsString()
   createdAt: Date;
 }

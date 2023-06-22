@@ -27,23 +27,13 @@ import { MenuCategoryModule } from './pos/product/menuCategory/menuCategory.modu
 import { TransactionItem } from './pos/transaction/transactionItem/transactionItem.entity';
 import { TransactionItemModule } from './pos/transaction/transactionItem/transactionItem.module';
 
-import { Item } from './inventory/item/item.entity';
 import { RawCategory as InventoryCategory } from './inventory/rawCategory/rawCategory.entity';
-import { Transaction as InventoryTransaction } from './inventory/transaction/transaction.entity';
 import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCategory/rawCategory.module';
-import { Report as InventoryReport } from './inventory/reports/report.entity';
-import { ItemModule } from './inventory/item/item.module';
-import { TransactionModule as InventoryTransactionModule } from './inventory/transaction/transaction.module';
-import { ReportModule as InventoryReportModule } from './inventory/reports/report.module';
 import { ReportModule } from './pos/reports/report.module';
 import { Consumption } from './general/consumption/consumption.entity';
 import { ConsumptionModule } from './general/consumption/consumption.module';
 import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
-import { InvLogs } from './inventory/inventoryLogs/inv_logs/logs.entity';
-import { InvLogsModule } from './inventory/inventoryLogs/inv_logs/logs.module';
-import { LogsType } from './inventory/inventoryLogs/logsType/logType.entity';
-import { LogsTypeModule } from './inventory/inventoryLogs/logsType/logType.module';
 
 @Module({
   imports: [
@@ -67,12 +57,7 @@ import { LogsTypeModule } from './inventory/inventoryLogs/logsType/logType.modul
 
         // inventory
         InventoryCategory,
-        Item,
-        InventoryTransaction,
-        InventoryReport,
         RawGrocery,
-        InvLogs,
-        LogsType,
 
         // pos
         MenuItem,
@@ -94,12 +79,7 @@ import { LogsTypeModule } from './inventory/inventoryLogs/logsType/logType.modul
 
     // inventory
     InventoryCategoryModule,
-    ItemModule,
-    InventoryTransactionModule,
-    InventoryReportModule,
     RawGroceryModule,
-    InvLogsModule,
-    LogsTypeModule,
 
     // pos
     // CategoryModule,
