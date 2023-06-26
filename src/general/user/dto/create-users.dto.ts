@@ -5,7 +5,7 @@ export class CreateUsersDto {
   id: number;
 
   @IsString()
-  role: string;
+  role?: string;
 
   @IsString()
   username: string;
@@ -23,7 +23,10 @@ export class CreateUsersDto {
   password: string;
 
   @IsString()
-  address: string;
+  phone: string;
+
+  @IsString()
+  address?: string;
 
   @IsInt()
   store_Id: number;

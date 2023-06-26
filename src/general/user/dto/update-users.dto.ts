@@ -25,7 +25,10 @@ export class UpdateUserDto extends PartialType(CreateUsersDto) {
   password: string;
 
   @IsString()
-  address: string;
+  address?: string;
+
+  @IsString()
+  phone: string;
 
   @IsInt()
   store_Id: number;

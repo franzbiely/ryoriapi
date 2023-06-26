@@ -38,13 +38,14 @@ export class UserService {
 
   async create(_user: CreateUsersDto): Promise<Users> {
     const user = new Users();
-    user.role = _user.role;
+    user.role = _user.role || 'admin';
     user.username = _user.username;
     user.firstName = _user.firstName;
     user.lastName = _user.lastName;
     user.email = _user.email;
     user.password = _user.password;
-    user.address = _user.address;
+    user.address = _user.address || '';
+    user.phone = _user.phone;
 
     if (_user.store_Id) {
       const store = await this.storeRepository.findOne({

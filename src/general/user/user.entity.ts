@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Store } from '../store/store.entity';
 import { Branch } from '../branch/branch.entity';
+import { IsOptional } from '@nestjs/class-validator';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -32,9 +33,12 @@ export class Users {
   email: string;
 
   @Column()
-  password: string;
+  phone: string;
 
   @Column()
+  password: string;
+
+  @IsOptional()
   address: string;
 
   @ManyToOne(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
