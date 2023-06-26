@@ -23,9 +23,15 @@ export class MenuItemService {
     return this.menuItemRepository.find({});
   }
 
-  findOne(id: number): Promise<MenuItem> {
-    const x = this.menuItemRepository.findOneBy({ id });
-    return x;
+  async findOne(id: number): Promise<MenuItem> {
+    const getOneById = this.menuItemRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['menuCategory'],
+    });
+    return getOneById;
+    
   }
 
   async create(_menuItem: CreateMenuItemDto): Promise<MenuItem> {

@@ -22,7 +22,6 @@ export class MenuCategory {
   photo: string;
 
   @ManyToMany(() => MenuItem, (menuItem ) => menuItem .menuCategory, {onDelete: 'CASCADE'})
-  @JoinTable()
   menuItem : MenuItem[];
 
   @ManyToOne(() => Store, (store) => store.menuCategory, {onDelete: 'CASCADE'})
