@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { UserService } from '../general/user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -36,6 +35,7 @@ export class AuthService {
         lastName: user.user.lastName,
         address: user.user.address,
         created_at: user.user.created_at,
+        store_Id: user.user.store_Id,
       },
     };
     return {
