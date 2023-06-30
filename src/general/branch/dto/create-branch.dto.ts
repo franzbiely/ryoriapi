@@ -17,7 +17,7 @@ export class CreateBranchDto {
   address: string;
 
   @IsInt()
-  storeId: number;
+  store_Id: number;
 
   @IsInt()
   user_Id: number;

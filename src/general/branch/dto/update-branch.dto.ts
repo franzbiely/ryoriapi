@@ -19,7 +19,7 @@ export class UpdateBranchDto extends PartialType(CreateBranchDto) {
   address: string;
 
   @IsInt()
-  storeId: number;
+  store_Id: number;
 
   @IsInt()
   user_Id: number;

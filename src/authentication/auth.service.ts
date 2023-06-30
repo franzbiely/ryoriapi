@@ -35,7 +35,8 @@ export class AuthService {
         lastName: user.user.lastName,
         address: user.user.address,
         created_at: user.user.created_at,
-        store_Id: user.user.store_Id,
+        store_Id: user.user.store.id,
+        // Branch_Id: user.user.branch.id,
       },
     };
     return {

@@ -33,13 +33,17 @@ export class BranchController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createBranchDto: CreateBranchDto, @Request() req) {
+    console.log({ createBranchDto });
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    console.log('User:', decodedToken);
+    console.log('User--:', decodedToken);
     const store_Id = decodedToken.userPayload.store_Id;
-    createBranchDto.storeId = store_Id;
+    const user_Id = decodedToken.userPayload.id;
+    console.log('StoreID--:', decodedToken.userPayload.store_Id);
+    createBranchDto.store_Id = store_Id;
+    createBranchDto.user_Id = user_Id;
     return this.branchService.create(createBranchDto);
   }
 
