@@ -31,9 +31,9 @@ export class UserController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    console.log('User:', decodedToken);
+    console.log('Userzzzz:', decodedToken);
     const user_Id = decodedToken.userPayload.id;
-    console.log('User ID:', user_Id);
+
     return this.usersService.findOneId(+user_Id);
   }
 

@@ -38,7 +38,7 @@ export class StoreController {
     );
     const user_Id = decodedToken.userPayload.id;
     createStoreDto.user_Id = user_Id;
-    console.log(decodedToken);
+    console.log('Store IDxxx:', user_Id);
     return this.storeService.create(createStoreDto);
   }
 

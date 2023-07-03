@@ -35,12 +35,13 @@ export class AuthService {
         lastName: user.user.lastName,
         address: user.user.address,
         created_at: user.user.created_at,
-        store_Id: user.user.store.id,
-        // Branch_Id: user.user.branch.id,
       },
     };
+    console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
+      store_Id: user.user.store?.id,
+      Branch_Id: user.user.branch?.id,
     };
   }
 

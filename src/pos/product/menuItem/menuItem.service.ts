@@ -6,6 +6,7 @@ import { CreateMenuItemDto } from './dto/create-menuItem.dto';
 import { Branch } from 'src/general/branch/branch.entity';
 import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
+import { Store } from 'src/general/store/store.entity';
 
 @Injectable()
 export class MenuItemService {
@@ -14,8 +15,8 @@ export class MenuItemService {
     private menuItemRepository: Repository<MenuItem>,
     @InjectRepository(MenuCategory)
     private menuCategoryRepository: Repository<MenuCategory>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
+    @InjectRepository(Store)
+    private storeRepository: Repository<Store>,
   ) {}
 
   //Get All User
@@ -31,7 +32,6 @@ export class MenuItemService {
       relations: ['menuCategory'],
     });
     return getOneById;
-    
   }
 
   async create(_menuItem: CreateMenuItemDto): Promise<MenuItem> {
@@ -50,6 +50,13 @@ export class MenuItemService {
       menuItem.menuCategory = [menuCategory];
     }
 
+    if (_menuItem.store_Id) {
+      const store = await this.storeRepository.findOne({
+        where: { id: _menuItem.store_Id },
+      });
+      menuItem.store = store;
+    }
+
     return this.menuItemRepository.save(menuItem);
   }
 
@@ -58,8 +65,15 @@ export class MenuItemService {
     updateMenuItemDto: UpdateMenuItemDto,
   ): Promise<MenuItem> {
     const menuItem = await this.findOne(id);
-    const { title, photo, price, quantity, description, cookingTime, category_Id } =
-      updateMenuItemDto;
+    const {
+      title,
+      photo,
+      price,
+      quantity,
+      description,
+      cookingTime,
+      category_Id,
+    } = updateMenuItemDto;
 
     menuItem.title = title;
     menuItem.photo = photo;

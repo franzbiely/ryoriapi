@@ -10,6 +10,9 @@ export class CreateMenuCategoryDto {
   @IsString()
   photo: string;
 
+  @IsInt()
+  store_Id: number;
+
   @IsString()
   createdAt: Date;
 }

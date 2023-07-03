@@ -48,6 +48,7 @@ export class BranchService {
       const store = await this.storeRepository.findOne({
         where: { id: _branch.store_Id },
       });
+      console.log({ store });
       branch.store = store;
     }
 
@@ -55,6 +56,7 @@ export class BranchService {
       const user = await this.userRepository.findOne({
         where: { id: _branch.user_Id },
       });
+      // console.log({ user });
       branch.user = [user];
     }
     console.log({ branch });

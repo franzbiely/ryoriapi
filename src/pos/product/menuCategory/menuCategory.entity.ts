@@ -21,11 +21,15 @@ export class MenuCategory {
   @Column()
   photo: string;
 
-  @ManyToMany(() => MenuItem, (menuItem ) => menuItem .menuCategory, {onDelete: 'CASCADE'})
-  menuItem : MenuItem[];
+  @ManyToMany(() => MenuItem, (menuItem) => menuItem.menuCategory, {
+    onDelete: 'CASCADE',
+  })
+  menuItem: MenuItem[];
 
-  @ManyToOne(() => Store, (store) => store.menuCategory, {onDelete: 'CASCADE'})
-  store: Store[];
+  @ManyToOne(() => Store, (store) => store.menuCategory, {
+    onDelete: 'CASCADE',
+  })
+  store: Store;
 
   @CreateDateColumn()
   createdAt: Date;

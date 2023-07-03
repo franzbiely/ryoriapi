@@ -6,6 +6,7 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { Branch } from '../branch/branch.entity';
 import { Users } from '../user/user.entity';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 
 @Injectable()
 export class StoreService {
@@ -14,6 +15,8 @@ export class StoreService {
     private storeRepository: Repository<Store>,
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    @InjectRepository(MenuItem)
+    private menuItemRepository: Repository<MenuItem>,
   ) {}
 
   //Get All food

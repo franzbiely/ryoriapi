@@ -37,7 +37,6 @@ export class Branch {
   store: Store;
 
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
-  @JoinTable()
   user: Users[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.branch, {
