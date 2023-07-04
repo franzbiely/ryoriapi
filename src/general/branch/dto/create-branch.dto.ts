@@ -5,7 +5,7 @@ export class CreateBranchDto {
   id: number;
 
   @IsString()
-  name: string;
+  branchName: string;
 
   @IsString()
   email: string;

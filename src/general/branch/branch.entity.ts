@@ -21,7 +21,7 @@ export class Branch {
   id: number;
 
   @Column()
-  name: string;
+  branchName: string;
 
   @Column()
   email: string;

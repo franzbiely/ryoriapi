@@ -38,7 +38,7 @@ export class BranchService {
 
   async create(_branch: CreateBranchDto): Promise<Branch> {
     const branch = new Branch();
-    branch.name = _branch.name;
+    branch.branchName = _branch.branchName;
     branch.email = _branch.email;
     branch.contactNumber = _branch.contactNumber;
     branch.address = _branch.address;
@@ -62,9 +62,9 @@ export class BranchService {
   async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
     const branch = await this.findOneId(id);
 
-    const { name, email, address, contactNumber, store_Id, user_Id } =
+    const { branchName, email, address, contactNumber, store_Id, user_Id } =
       updateBranchDto;
-    branch.name = name;
+    branch.branchName = branchName;
     branch.email = email;
     branch.address = address;
     branch.contactNumber = contactNumber;
