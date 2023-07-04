@@ -37,7 +37,6 @@ export class AuthService {
         created_at: user.user.created_at,
       },
     };
-    console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
       store_Id: user.user.store?.id,

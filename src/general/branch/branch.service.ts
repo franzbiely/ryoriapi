@@ -42,13 +42,11 @@ export class BranchService {
     branch.email = _branch.email;
     branch.contactNumber = _branch.contactNumber;
     branch.address = _branch.address;
-    console.log('Branch', { _branch });
+
     if (_branch.store_Id) {
-      console.log('hello world');
       const store = await this.storeRepository.findOne({
         where: { id: _branch.store_Id },
       });
-      console.log({ store });
       branch.store = store;
     }
 
@@ -56,10 +54,8 @@ export class BranchService {
       const user = await this.userRepository.findOne({
         where: { id: _branch.user_Id },
       });
-      // console.log({ user });
       branch.user = [user];
     }
-    console.log({ branch });
     return this.branchRepository.save(branch);
   }
 
