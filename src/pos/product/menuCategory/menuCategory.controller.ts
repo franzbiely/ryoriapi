@@ -19,13 +19,11 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 export class MenuCategoryController {
   constructor(private menuCategoryService: MenuCategoryService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async fillAll() {
     return this.menuCategoryService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.menuCategoryService.findOne(+id);
