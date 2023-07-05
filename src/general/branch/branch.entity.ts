@@ -36,6 +36,9 @@ export class Branch {
   @JoinColumn()
   store: Store;
 
+  @Column()
+  storeId: number;
+
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
   user: Users[];
 

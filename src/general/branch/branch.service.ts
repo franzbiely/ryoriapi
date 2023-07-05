@@ -22,8 +22,13 @@ export class BranchService {
   ) {}
 
   //Get All User
-  findAll(): Promise<Branch[]> {
-    return this.branchRepository.find({});
+  findAll(store_Id: number): Promise<Branch[]> {
+    return this.branchRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store'],
+    });
   }
 
   async findOneId(id: number): Promise<Branch> {

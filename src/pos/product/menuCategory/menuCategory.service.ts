@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { MenuCategory } from './menuCategory.entity';
 import { CreateMenuCategoryDto } from './dto/create-menuCategory.dto';
 import { Store } from 'src/general/store/store.entity';
+import { UpdateMenuCategoryDto } from './dto/update-menuCategory.dto';
 
 @Injectable()
 export class MenuCategoryService {
@@ -19,7 +20,7 @@ export class MenuCategoryService {
     return this.menuCategoryRepository.find({});
   }
 
-  findOne(id: number): Promise<MenuCategory> {
+  findOneId(id: number): Promise<MenuCategory> {
     const x = this.menuCategoryRepository.findOneBy({ id });
     return x;
   }
@@ -40,8 +41,23 @@ export class MenuCategoryService {
     return this.menuCategoryRepository.save(menuCategory);
   }
 
-  async update(id: number, menuCategory: MenuCategory) {
-    await this.menuCategoryRepository.update(id, menuCategory);
+  async update(
+    id: number,
+    menuCategoryDto: UpdateMenuCategoryDto,
+  ): Promise<MenuCategory> {
+    const menuCategory = await this.findOneId(id);
+
+    const { title, photo, store_Id } = menuCategoryDto;
+    menuCategory.title = title;
+    menuCategory.photo = photo;
+
+    if (store_Id) {
+      const store = await this.storeRepository.findOne({
+        where: { id: store_Id },
+      });
+      menuCategory.store = store;
+    }
+    return this.menuCategoryRepository.save(menuCategory);
   }
 
   async remove(id: number): Promise<void> {

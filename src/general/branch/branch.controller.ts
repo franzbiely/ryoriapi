@@ -8,6 +8,7 @@ import {
   Patch,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
@@ -20,14 +21,14 @@ export class BranchController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.branchService.findAll();
+  async fillAll(@Query('store_Id') store_Id: number) {
+    return this.branchService.findAll(store_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.branchService.findOneId(+id);
+  async findOne(@Query('store_Id') store_Id: number) {
+    return this.branchService.findOneId(store_Id);
   }
 
   @UseGuards(JwtAuthGuard)
