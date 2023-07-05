@@ -16,6 +16,9 @@ export class CreateRawGroceryDto {
   @IsInt()
   branch_Id: number;
 
+  @IsInt()
+  rawCategory_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

@@ -8,6 +8,7 @@ import {
   Patch,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { MenuItemService } from './menuItem.service';
@@ -20,8 +21,8 @@ export class MenuItemController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.menuItemService.findAll();
+  async fillAll(@Query('store_Id') store_Id: number) {
+    return this.menuItemService.findAll(store_Id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -37,8 +38,6 @@ export class MenuItemController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    const store_Id = decodedToken.userPayload.id;
-    createMenuItemDto.store_Id = store_Id;
     return this.menuItemService.create(createMenuItemDto);
   }
 

@@ -19,9 +19,13 @@ export class MenuItemService {
     private storeRepository: Repository<Store>,
   ) {}
 
-  //Get All User
-  findAll(): Promise<MenuItem[]> {
-    return this.menuItemRepository.find({});
+  async findAll(store_Id: number): Promise<MenuItem[]> {
+    return this.menuItemRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store'],
+    });
   }
 
   async findOne(id: number): Promise<MenuItem> {

@@ -38,8 +38,6 @@ export class MenuCategoryController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    const store_Id = decodedToken.userPayload.id;
-    createMenuCategoryDto.store_Id = store_Id;
 
     return this.menuCategoryService.create(createMenuCategoryDto);
   }
