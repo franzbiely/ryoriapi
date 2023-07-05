@@ -19,7 +19,10 @@ export class UserService {
   ) {}
 
   userCredential(query: object | any): Promise<Users> {
-    const x = this.usersRepository.findOneBy(query);
+    const x = this.usersRepository.findOne({
+      where: query,
+      relations: ['store'],
+    });
     return x;
   }
   findAll(): Promise<Users[]> {
@@ -63,10 +66,9 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> 
-  {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
     const user = await this.findOneId(id);
-    console.log({updateUserDto, user})
+    console.log({ updateUserDto, user });
     const {
       role,
       username,

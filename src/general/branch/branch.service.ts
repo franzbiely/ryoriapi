@@ -31,23 +31,23 @@ export class BranchService {
       where: {
         id: id,
       },
-      relations: ['store','user'],
+      relations: ['store', 'user'],
     });
     return getOneById;
   }
 
   async create(_branch: CreateBranchDto): Promise<Branch> {
     const branch = new Branch();
-    branch.name = _branch.name;
+    branch.branchName = _branch.branchName;
     branch.email = _branch.email;
     branch.contactNumber = _branch.contactNumber;
     branch.address = _branch.address;
 
-    if (_branch.storeId) {
-      const storeBranchID = await this.storeRepository.findOne({
-        where: { id: _branch.storeId },
+    if (_branch.store_Id) {
+      const store = await this.storeRepository.findOne({
+        where: { id: _branch.store_Id },
       });
-      branch.store = storeBranchID;
+      branch.store = store;
     }
 
     if (_branch.user_Id) {
@@ -62,22 +62,16 @@ export class BranchService {
   async update(id: number, updateBranchDto: UpdateBranchDto): Promise<Branch> {
     const branch = await this.findOneId(id);
 
-    const {
-      name,
-      email,
-      address,
-      contactNumber,
-      storeId,
-      user_Id,
-    } = updateBranchDto;
-    branch.name = name;
+    const { branchName, email, address, contactNumber, store_Id, user_Id } =
+      updateBranchDto;
+    branch.branchName = branchName;
     branch.email = email;
     branch.address = address;
     branch.contactNumber = contactNumber;
 
-    if (storeId) {
+    if (store_Id) {
       const store = await this.storeRepository.findOne({
-        where: { id: storeId },
+        where: { id: store_Id },
       });
       branch.store = store;
     }

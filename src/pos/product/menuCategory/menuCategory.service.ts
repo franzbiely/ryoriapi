@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MenuCategory } from './menuCategory.entity';
 import { CreateMenuCategoryDto } from './dto/create-menuCategory.dto';
+import { Store } from 'src/general/store/store.entity';
 
 @Injectable()
 export class MenuCategoryService {
   constructor(
     @InjectRepository(MenuCategory)
     private menuCategoryRepository: Repository<MenuCategory>,
+    @InjectRepository(Store)
+    private storeRepository: Repository<Store>,
   ) {}
 
   //Get All User
@@ -25,6 +28,13 @@ export class MenuCategoryService {
     const menuCategory = new MenuCategory();
     menuCategory.title = _menuCategory.title;
     menuCategory.photo = _menuCategory.photo;
+
+    if (_menuCategory.store_Id) {
+      const store = await this.storeRepository.findOne({
+        where: { id: _menuCategory.store_Id },
+      });
+      menuCategory.store = store;
+    }
 
     console.log('menuCategory', menuCategory);
     return this.menuCategoryRepository.save(menuCategory);

@@ -33,36 +33,40 @@ export class RawGroceryService {
     rawGroc.item = _rawInv.item;
     rawGroc.weight = _rawInv.weight;
     rawGroc.quantity = _rawInv.quantity;
+
     if (_rawInv.branch_Id) {
       const branch = await this.branchRepository.findOne({
         where: { id: _rawInv.branch_Id },
       });
       rawGroc.branch = branch;
     }
+    if (_rawInv.rawCategory_Id) {
+      const rawCategory = await this.rawCategoryRepository.findOne({
+        where: { id: _rawInv.rawCategory_Id },
+      });
+      rawGroc.rawCategory = [rawCategory];
+    }
     return this.rawGroceryRepository.save(rawGroc);
   }
 
-  async update(id: number, rawGroceryDto: UpdateRawGroceryDto): Promise<RawGrocery> 
-  {
+  async update(
+    id: number,
+    rawGroceryDto: UpdateRawGroceryDto,
+  ): Promise<RawGrocery> {
     const rawGrocery = await this.findOne(id);
-    const {
-      item,
-      weight,
-      quantity,
-      rawCategoryId
-    } = rawGroceryDto;
+    const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
     rawGrocery.item = item;
     rawGrocery.weight = weight;
     rawGrocery.quantity = quantity;
 
-    if(rawCategoryId) {
+    if (rawCategory_Id) {
       const rawCategory = await this.rawCategoryRepository.findOne({
-        where: { id: rawCategoryId },
+        where: { id: rawCategory_Id },
       });
       rawGrocery.rawCategory = [rawCategory];
     }
-    console.log({rawGrocery})
+
     return await this.rawGroceryRepository.save(rawGrocery);
   }
 

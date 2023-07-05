@@ -18,6 +18,9 @@ export class UpdateStoreDto extends PartialType(CreateStoreDto) {
   branch: Branch[];
 
   @IsInt()
+  menuItem_Id: number;
+
+  @IsInt()
   user_Id: number;
 
   @IsDate()

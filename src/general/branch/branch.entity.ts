@@ -7,6 +7,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
 import { Users } from '../user/user.entity';
@@ -20,7 +21,7 @@ export class Branch {
   id: number;
 
   @Column()
-  name: string;
+  branchName: string;
 
   @Column()
   email: string;
@@ -32,16 +33,20 @@ export class Branch {
   address: string;
 
   @ManyToOne(() => Store, (store) => store.branch, { onDelete: 'CASCADE' })
+  @JoinColumn()
   store: Store;
 
   @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
-  @JoinTable()
   user: Users[];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.branch, { onDelete: 'CASCADE' })
+  @OneToMany(() => Transaction, (transaction) => transaction.branch, {
+    onDelete: 'CASCADE',
+  })
   transaction: Transaction[];
 
-  @OneToMany(() => RawGrocery, (rawGrocery) => rawGrocery.branch, { onDelete: 'CASCADE' })
+  @OneToMany(() => RawGrocery, (rawGrocery) => rawGrocery.branch, {
+    onDelete: 'CASCADE',
+  })
   rawGrocery: RawGrocery[];
 
   @CreateDateColumn()
