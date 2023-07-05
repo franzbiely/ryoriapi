@@ -32,6 +32,7 @@ export class MenuCategoryController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createMenuCategoryDto: CreateMenuCategoryDto, @Request() req) {
+    console.log("In menuCategory controller")
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
@@ -46,8 +47,8 @@ export class MenuCategoryController {
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    // this.menuCategoryService.update(+id, updateMenuCategoryDto);
-    // return 'Updated';
+    this.menuCategoryService.update(+id, updateMenuCategoryDto);
+    return 'Updated';
   }
 
   @UseGuards(JwtAuthGuard)
