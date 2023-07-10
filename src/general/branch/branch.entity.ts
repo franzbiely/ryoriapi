@@ -14,6 +14,7 @@ import { Users } from '../user/user.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
 import { RawGrocery } from 'src/inventory/rawGrocery/rawInventory.entity';
+import { RawCategory } from 'src/inventory/rawCategory/rawCategory.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -51,6 +52,11 @@ export class Branch {
     onDelete: 'CASCADE',
   })
   rawGrocery: RawGrocery[];
+
+  @OneToMany(() => RawCategory, (rawCategory) => rawCategory.branch, {
+    onDelete: 'CASCADE',
+  })
+  rawCategory: RawCategory[];
 
   @CreateDateColumn()
   createdAt: Date;

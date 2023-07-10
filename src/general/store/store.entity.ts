@@ -26,14 +26,15 @@ export class Store {
   @OneToMany(() => Users, (user) => user.store, { onDelete: 'CASCADE' })
   user: Users[];
 
-  @OneToMany(() => MenuItem, (menuItem) => menuItem.store, { onDelete: 'CASCADE' })
+  @OneToMany(() => MenuItem, (menuItem) => menuItem.store, {
+    onDelete: 'CASCADE',
+  })
   menuItem: MenuItem[];
 
-  @OneToMany(() => MenuCategory, (menuCategory) => menuCategory.store, { onDelete: 'CASCADE' })
+  @OneToMany(() => MenuCategory, (menuCategory) => menuCategory.store, {
+    onDelete: 'CASCADE',
+  })
   menuCategory: MenuCategory[];
-
-  @OneToMany(() => RawCategory, (rawCategory) => rawCategory.store, { onDelete: 'CASCADE' })
-  rawCategory: RawCategory[];
 
   @CreateDateColumn()
   createdAt: Date;
