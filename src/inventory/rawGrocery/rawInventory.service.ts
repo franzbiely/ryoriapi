@@ -19,8 +19,13 @@ export class RawGroceryService {
   ) {}
 
   //Get All User
-  findAll(): Promise<RawGrocery[]> {
-    return this.rawGroceryRepository.find({});
+  findAll(branch_Id: number): Promise<RawGrocery[]> {
+    return this.rawGroceryRepository.find({
+      where: {
+        branchId: branch_Id,
+      },
+      relations: ['branch'],
+    });
   }
 
   findOne(id: number): Promise<RawGrocery> {

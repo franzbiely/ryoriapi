@@ -17,13 +17,18 @@ export class MenuCategoryService {
     private readonly s3Service: S3Service
   ) {}
 
-  //Get All User
-  findAll(): Promise<MenuCategory[]> {
-    return this.menuCategoryRepository.find({});
+  findAll(store_Id: number): Promise<MenuCategory[]> {
+    return this.menuCategoryRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store'],
+    });
   }
 
-  findOne(id: number): Promise<MenuCategory> {
-    return this.menuCategoryRepository.findOneBy({ id });
+  findOneId(id: number): Promise<MenuCategory> {
+    const x = this.menuCategoryRepository.findOneBy({ id });
+    return x;
   }
 
   async create(_menuCategory: CreateMenuCategoryDto): Promise<MenuCategory> {
@@ -42,17 +47,23 @@ export class MenuCategoryService {
     return this.menuCategoryRepository.save(menuCategory);
   }
 
-  async update(id: number, updateItemDto: UpdateMenuCategoryDto): Promise<MenuCategory> { 
-    const item = await this.findOne(id);
-    const {
-      title,
-      photo,
-    } = updateItemDto;
+  async update(
+    id: number,
+    menuCategoryDto: UpdateMenuCategoryDto,
+  ): Promise<MenuCategory> {
+    const menuCategory = await this.findOneId(id);
 
-    item.title = title;
-    item.photo = photo;
+    const { title, photo, store_Id } = menuCategoryDto;
+    menuCategory.title = title;
+    menuCategory.photo = photo;
 
-    return this.menuCategoryRepository.save(item);
+    if (store_Id) {
+      const store = await this.storeRepository.findOne({
+        where: { id: store_Id },
+      });
+      menuCategory.store = store;
+    }
+    return this.menuCategoryRepository.save(menuCategory);
   }
 
   async remove(id: number): Promise<void> {

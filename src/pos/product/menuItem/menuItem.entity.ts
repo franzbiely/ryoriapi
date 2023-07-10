@@ -1,4 +1,3 @@
-import { Branch } from 'src/general/branch/branch.entity';
 import { Store } from 'src/general/store/store.entity';
 import {
   Column,

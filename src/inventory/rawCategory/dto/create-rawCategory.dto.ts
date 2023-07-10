@@ -7,7 +7,9 @@ export class CreateRawCategoryDto {
   @IsString()
   title: string;
 
+  @IsInt()
+  branch_Id: number;
+
   @IsDate()
   createdAt: Date;
-
 }

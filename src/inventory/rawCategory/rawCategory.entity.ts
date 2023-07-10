@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-import { Store } from 'src/general/store/store.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RawGrocery } from '../rawGrocery/rawInventory.entity';
+import { Branch } from 'src/general/branch/branch.entity';
 
 @Entity({ name: 'raw_category' })
 export class RawCategory {
@@ -19,12 +18,19 @@ export class RawCategory {
   @Column()
   title: string;
 
-  @ManyToMany(() => RawGrocery, (rawGrocery) => rawGrocery.rawCategory, {onDelete: 'CASCADE'})
+  @Column()
+  branchId: number;
+
+  @ManyToMany(() => RawGrocery, (rawGrocery) => rawGrocery.rawCategory, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   rawGrocery?: RawGrocery[];
 
-  @ManyToOne(() => Store, (store) => store.rawCategory, {onDelete: 'CASCADE'})
-  store?: Store;
+  @ManyToOne(() => Branch, (branch) => branch.rawCategory, {
+    onDelete: 'CASCADE',
+  })
+  branch: Branch;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -21,6 +21,9 @@ export class MenuCategory {
   @Column()
   photo: string;
 
+  @Column()
+  storeId: number;
+
   @ManyToMany(() => MenuItem, (menuItem) => menuItem.menuCategory, {
     onDelete: 'CASCADE',
   })

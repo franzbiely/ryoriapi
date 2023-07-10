@@ -24,13 +24,20 @@ export class RawGrocery {
   @Column()
   quantity: number;
 
-  @ManyToOne(() => Branch, (branch) => branch.rawGrocery, { onDelete: 'CASCADE' })
+  @Column()
+  branchId: number;
+
+  @ManyToOne(() => Branch, (branch) => branch.rawGrocery, {
+    onDelete: 'CASCADE',
+  })
   branch: Branch;
 
-  @ManyToMany(() => RawCategory, (rawCategory) => rawCategory.rawGrocery, {onDelete: 'CASCADE'})
+  @ManyToMany(() => RawCategory, (rawCategory) => rawCategory.rawGrocery, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   rawCategory: RawCategory[];
-  
+
   @CreateDateColumn()
   createdAt: Date;
 }

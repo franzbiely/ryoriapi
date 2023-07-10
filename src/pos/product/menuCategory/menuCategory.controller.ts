@@ -10,6 +10,7 @@ import {
   Request,
   UseGuards,
   UploadedFile, UseInterceptors
+  Query,
 } from '@nestjs/common';
 import { MenuCategoryService } from './menuCategory.service';
 import { CreateMenuCategoryDto } from './dto/create-menuCategory.dto';
@@ -23,8 +24,8 @@ export class MenuCategoryController {
   constructor(private menuCategoryService: MenuCategoryService, private readonly s3Service: S3Service) {}
 
   @Get()
-  async fillAll() {
-    return this.menuCategoryService.findAll();
+  async fillAll(@Query('store_Id') store_Id: number) {
+    return this.menuCategoryService.findAll(store_Id);
   }
 
   @Get(':id')
