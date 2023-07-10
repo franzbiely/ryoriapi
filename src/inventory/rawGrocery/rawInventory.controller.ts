@@ -6,7 +6,11 @@ import {
   Body,
   Delete,
   Patch,
+  UseGuards,
+  Request,
+  Query,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { RawGroceryService } from './rawInventory.service';
 import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
 import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
@@ -15,21 +19,30 @@ import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
 export class RawGroceryController {
   constructor(private rawGroceryService: RawGroceryService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.rawGroceryService.findAll();
+  async fillAll(@Query('branch_Id') branch_Id: number) {
+    return this.rawGroceryService.findAll(branch_Id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.rawGroceryService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createRawGroceyDto: CreateRawGroceryDto) {
+  create(@Body() createRawGroceyDto: CreateRawGroceryDto, @Request() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
+    );
+    console.log({ token });
     return this.rawGroceryService.create(createRawGroceyDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -38,6 +51,7 @@ export class RawGroceryController {
     return this.rawGroceryService.update(+id, updateRawGroceryDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.rawGroceryService.remove(+id);

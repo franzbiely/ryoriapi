@@ -27,8 +27,8 @@ export class BranchController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Query('store_Id') store_Id: number) {
-    return this.branchService.findOneId(store_Id);
+  async findOne(@Param('id') id: number) {
+    return this.branchService.findOneId(+id);
   }
 
   @UseGuards(JwtAuthGuard)

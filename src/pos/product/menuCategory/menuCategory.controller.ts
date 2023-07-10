@@ -9,6 +9,7 @@ import {
   Res,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MenuCategoryService } from './menuCategory.service';
 import { CreateMenuCategoryDto } from './dto/create-menuCategory.dto';
@@ -19,9 +20,14 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 export class MenuCategoryController {
   constructor(private menuCategoryService: MenuCategoryService) {}
 
+  // @Get()
+  // async fillAll() {
+  //   return this.menuCategoryService.findAll();
+  // }
+
   @Get()
-  async fillAll() {
-    return this.menuCategoryService.findAll();
+  async fillAll(@Query('store_Id') store_Id: number) {
+    return this.menuCategoryService.findAll(store_Id);
   }
 
   @Get(':id')

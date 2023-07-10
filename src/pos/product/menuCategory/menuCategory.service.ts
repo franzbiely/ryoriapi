@@ -15,9 +15,13 @@ export class MenuCategoryService {
     private storeRepository: Repository<Store>,
   ) {}
 
-  //Get All User
-  findAll(): Promise<MenuCategory[]> {
-    return this.menuCategoryRepository.find({});
+  findAll(store_Id: number): Promise<MenuCategory[]> {
+    return this.menuCategoryRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store'],
+    });
   }
 
   findOneId(id: number): Promise<MenuCategory> {
