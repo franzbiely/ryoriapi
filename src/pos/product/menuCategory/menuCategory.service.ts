@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import { MenuCategory } from './menuCategory.entity';
 import { CreateMenuCategoryDto } from './dto/create-menuCategory.dto';
 import { Store } from 'src/general/store/store.entity';
+import { UpdateMenuItemDto } from '../menuItem/dto/update-menuItem.dto';
 import { UpdateMenuCategoryDto } from './dto/update-menuCategory.dto';
-
+import { S3Service } from 'src/utils/S3Service';
 @Injectable()
 export class MenuCategoryService {
   constructor(
@@ -13,6 +14,7 @@ export class MenuCategoryService {
     private menuCategoryRepository: Repository<MenuCategory>,
     @InjectRepository(Store)
     private storeRepository: Repository<Store>,
+    private readonly s3Service: S3Service
   ) {}
 
   findAll(store_Id: number): Promise<MenuCategory[]> {
