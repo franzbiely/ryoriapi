@@ -43,7 +43,6 @@ export class MenuItemService {
     menuItem.title = _menuItem.title;
     menuItem.photo = _menuItem.photo;
     menuItem.price = _menuItem.price;
-    menuItem.quantity = _menuItem.quantity;
     menuItem.description = _menuItem.description;
     menuItem.cookingTime = _menuItem.cookingTime;
 
@@ -82,7 +81,6 @@ export class MenuItemService {
     menuItem.title = title;
     menuItem.photo = photo;
     menuItem.price = price;
-    menuItem.quantity = quantity;
     menuItem.description = description;
     menuItem.cookingTime = cookingTime;
 

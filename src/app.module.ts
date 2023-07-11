@@ -26,6 +26,7 @@ import { MenuCategory } from './pos/product/menuCategory/menuCategory.entity';
 import { MenuCategoryModule } from './pos/product/menuCategory/menuCategory.module';
 import { TransactionItem } from './pos/transaction/transactionItem/transactionItem.entity';
 import { TransactionItemModule } from './pos/transaction/transactionItem/transactionItem.module';
+import { Quantity } from './pos/productQuantity/quantity.entity';
 
 import { RawCategory as InventoryCategory } from './inventory/rawCategory/rawCategory.entity';
 import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCategory/rawCategory.module';
@@ -34,6 +35,7 @@ import { Consumption } from './general/consumption/consumption.entity';
 import { ConsumptionModule } from './general/consumption/consumption.module';
 import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
+import { QuantityModule } from './pos/productQuantity/quantity.module';
 
 @Module({
   imports: [
@@ -65,6 +67,7 @@ import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
         Transaction,
         Report,
         TransactionItem,
+        Quantity,
       ],
       synchronize: true,
       autoLoadEntities: true,
@@ -89,6 +92,7 @@ import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
     MenuItemModule,
     MenuCategoryModule,
     TransactionItemModule,
+    QuantityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

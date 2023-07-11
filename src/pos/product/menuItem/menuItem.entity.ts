@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
+import { Quantity } from 'src/pos/productQuantity/quantity.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -24,9 +25,6 @@ export class MenuItem {
 
   @Column()
   price: number;
-
-  @Column()
-  quantity: number;
 
   @Column()
   description: string;
@@ -46,6 +44,11 @@ export class MenuItem {
   @ManyToOne(() => Store, (store) => store.menuItem, { onDelete: 'CASCADE' })
   @JoinColumn()
   store: Store;
+
+  @ManyToMany(() => Quantity, (quantity) => quantity.menuItem, {
+    onDelete: 'CASCADE',
+  })
+  quantity: Quantity;
 
   @CreateDateColumn()
   createdAt: Date;
