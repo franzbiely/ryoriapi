@@ -15,7 +15,7 @@ import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
 import { RawGrocery } from 'src/inventory/rawGrocery/rawInventory.entity';
 import { RawCategory } from 'src/inventory/rawCategory/rawCategory.entity';
-import { Quantity } from 'src/pos/productQuantity/quantity.entity';
+import { BranchItem } from 'src/pos/productQuantity/branchItem.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -54,10 +54,10 @@ export class Branch {
   })
   rawGrocery: RawGrocery[];
 
-  @ManyToMany(() => Quantity, (quantity) => quantity.branch, {
+  @ManyToMany(() => BranchItem, (quantity) => quantity.branch, {
     onDelete: 'CASCADE',
   })
-  quantity: Quantity[];
+  branchItem: BranchItem[];
 
   @OneToMany(() => RawCategory, (rawCategory) => rawCategory.branch, {
     onDelete: 'CASCADE',

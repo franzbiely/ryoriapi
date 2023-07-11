@@ -11,49 +11,49 @@ import {
   Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
-import { QuantityService } from './quantity.service';
-import { CreateQuantityDto } from './dto/create-quantity.dto';
-import { UpdateQuantityDto } from './dto/update-quantity.dto';
+import { BranchItemService } from './branchItem.service';
+import { CreateBranchItemDto } from './dto/create-branchItem.dto';
+import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 
-@Controller('quantity')
+@Controller('branchItem')
 export class QuantityController {
-  constructor(private quantityService: QuantityService) {}
+  constructor(private branchItemService: BranchItemService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number) {
-    return this.quantityService.findAll(branch_Id);
+  async fillAll(@Query('store_Id') menuItem_Id: number) {
+    return this.branchItemService.findAll(menuItem_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.quantityService.findOne(+id);
+    return this.branchItemService.findOne(+id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createQuantityDto: CreateQuantityDto, @Request() req) {
+  create(@Body() createQuantityDto: CreateBranchItemDto, @Request() req) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
     console.log({ token });
-    return this.quantityService.create(createQuantityDto);
+    return this.branchItemService.create(createQuantityDto);
   }
 
   // @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateQuantityDto: UpdateQuantityDto,
+    @Body() updateQuantityDto: UpdateBranchItemDto,
   ) {
-    return this.quantityService.update(+id, updateQuantityDto);
+    return this.branchItemService.update(+id, updateQuantityDto);
   }
 
   // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.quantityService.remove(+id);
+    return this.branchItemService.remove(+id);
   }
 }

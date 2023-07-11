@@ -26,7 +26,7 @@ import { MenuCategory } from './pos/product/menuCategory/menuCategory.entity';
 import { MenuCategoryModule } from './pos/product/menuCategory/menuCategory.module';
 import { TransactionItem } from './pos/transaction/transactionItem/transactionItem.entity';
 import { TransactionItemModule } from './pos/transaction/transactionItem/transactionItem.module';
-import { Quantity } from './pos/productQuantity/quantity.entity';
+import { BranchItem } from './pos/productQuantity/branchItem.entity';
 
 import { RawCategory as InventoryCategory } from './inventory/rawCategory/rawCategory.entity';
 import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCategory/rawCategory.module';
@@ -35,7 +35,7 @@ import { Consumption } from './general/consumption/consumption.entity';
 import { ConsumptionModule } from './general/consumption/consumption.module';
 import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
-import { QuantityModule } from './pos/productQuantity/quantity.module';
+import { BranchItemModule } from './pos/productQuantity/branchItem.module';
 
 @Module({
   imports: [
@@ -67,7 +67,7 @@ import { QuantityModule } from './pos/productQuantity/quantity.module';
         Transaction,
         Report,
         TransactionItem,
-        Quantity,
+        BranchItem,
       ],
       synchronize: true,
       autoLoadEntities: true,
@@ -92,7 +92,7 @@ import { QuantityModule } from './pos/productQuantity/quantity.module';
     MenuItemModule,
     MenuCategoryModule,
     TransactionItemModule,
-    QuantityModule,
+    BranchItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

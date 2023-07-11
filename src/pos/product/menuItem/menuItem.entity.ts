@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
-import { Quantity } from 'src/pos/productQuantity/quantity.entity';
+import { BranchItem } from 'src/pos/productQuantity/branchItem.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -41,14 +41,17 @@ export class MenuItem {
   @Column()
   storeId: number;
 
+  // @Column()
+  // branchItemId: number;
+
   @ManyToOne(() => Store, (store) => store.menuItem, { onDelete: 'CASCADE' })
   @JoinColumn()
   store: Store;
 
-  @ManyToMany(() => Quantity, (quantity) => quantity.menuItem, {
+  @ManyToMany(() => BranchItem, (quantity) => quantity.menuItem, {
     onDelete: 'CASCADE',
   })
-  quantity: Quantity;
+  branchItem: BranchItem;
 
   @CreateDateColumn()
   createdAt: Date;

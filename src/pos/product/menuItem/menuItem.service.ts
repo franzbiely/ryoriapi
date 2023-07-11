@@ -33,7 +33,7 @@ export class MenuItemService {
       where: {
         id: id,
       },
-      relations: ['menuCategory'],
+      relations: ['menuCategory', 'branchItem'],
     });
     return getOneById;
   }
@@ -68,15 +68,8 @@ export class MenuItemService {
     updateMenuItemDto: UpdateMenuItemDto,
   ): Promise<MenuItem> {
     const menuItem = await this.findOne(id);
-    const {
-      title,
-      photo,
-      price,
-      quantity,
-      description,
-      cookingTime,
-      category_Id,
-    } = updateMenuItemDto;
+    const { title, photo, price, description, cookingTime, category_Id } =
+      updateMenuItemDto;
 
     menuItem.title = title;
     menuItem.photo = photo;

@@ -12,27 +12,28 @@ import {
 } from 'typeorm';
 import { MenuItem } from '../product/menuItem/menuItem.entity';
 
-@Entity({ name: 'productquantity' })
-export class Quantity {
+@Entity({ name: 'branch_item' })
+export class BranchItem {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  qty: number;
+  branchItem: number;
 
-  @ManyToMany(() => Branch, (branch) => branch.quantity, {
+  @ManyToMany(() => Branch, (branch) => branch.branchItem, {
     onDelete: 'CASCADE',
   })
   @JoinTable()
   branch: Branch[];
 
   @Column()
-  branchId: number;
+  menuItemId: number;
 
-  @ManyToMany(() => MenuItem, (menuItem) => menuItem.quantity, {
+  @ManyToMany(() => MenuItem, (menuItem) => menuItem.branchItem, {
     onDelete: 'CASCADE',
   })
-  menuItem: MenuItem;
+  @JoinTable()
+  menuItem: MenuItem[];
 
   @CreateDateColumn()
   createdAt: Date;
