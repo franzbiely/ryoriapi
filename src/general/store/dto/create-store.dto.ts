@@ -12,6 +12,9 @@ export class CreateStoreDto {
   @IsInt()
   branchId: number;
 
+  @IsString()
+  photo: string;
+
   @IsInt()
   menuItem_Id: number;
 

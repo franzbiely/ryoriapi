@@ -37,6 +37,7 @@ export class StoreService {
   async create(_store: CreateStoreDto): Promise<Store> {
     const store = new Store();
     store.storeName = _store.storeName;
+    store.photo = _store.photo || ''
 
     if (_store.user_Id) {
       const user = await this.usersRepository.findOne({

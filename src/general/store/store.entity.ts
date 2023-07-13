@@ -23,6 +23,9 @@ export class Store {
   @OneToMany(() => Branch, (branch) => branch.store)
   branch: Branch[];
 
+  @Column()
+  photo: string;
+  
   @OneToMany(() => Users, (user) => user.store, { onDelete: 'CASCADE' })
   user: Users[];
 
