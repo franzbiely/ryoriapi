@@ -19,10 +19,19 @@ import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
 export class MenuItemController {
   constructor(private menuItemService: MenuItemService) {}
 
+  // @UseGuards(JwtAuthGuard)
+  // @Get()
+  // async fillAll(@Query('store_Id') store_Id: number) {
+  //   return this.menuItemService.findAll(store_Id);
+  // }
+
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('store_Id') store_Id: number) {
-    return this.menuItemService.findAll(store_Id);
+  async findAllWithBranchQty(
+    @Query('store_Id') store_Id: number,
+    @Query('branch_Id') branch_Id: number,
+  ) {
+    return this.menuItemService.findAllWithBranchQty(store_Id, branch_Id);
   }
 
   @UseGuards(JwtAuthGuard)

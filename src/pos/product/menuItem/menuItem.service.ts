@@ -28,6 +28,29 @@ export class MenuItemService {
     });
   }
 
+  async findAllWithBranchQty(store_Id: number, branch_Id: number) {
+    const menuItem = this.menuItemRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store', 'branchItem'],
+    });
+    const data = await menuItem;
+    return data.map((item) => {
+      console.log({ branch_Id });
+      const newBranch = item.branchItem.filter(
+        (subItem) => subItem.branchId == branch_Id,
+      );
+      console.log({ newBranch });
+
+      return {
+        ...item,
+        branchItem: null,
+        quantity: newBranch[0]?.quantity || 0,
+      };
+    });
+  }
+
   async findOne(id: number): Promise<MenuItem> {
     const getOneById = this.menuItemRepository.findOne({
       where: {

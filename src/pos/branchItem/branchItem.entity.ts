@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { MenuItem } from '../product/menuItem/menuItem.entity';
 
-@Entity({ name: 'branch_item' })
+@Entity({ name: 'branchitem' })
 export class BranchItem {
   @PrimaryGeneratedColumn()
   id: number;
