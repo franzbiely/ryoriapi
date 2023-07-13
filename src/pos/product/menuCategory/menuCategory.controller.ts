@@ -51,8 +51,10 @@ export class MenuCategoryController {
   ) {
     console.log('In menuCategory controller');
 
-    const response = await this.s3Service.uploadFile(photo);
-    createMenuCategoryDto.photo = response.Key;
+    if(photo) {
+      const response = await this.s3Service.uploadFile(photo)
+      createMenuCategoryDto.photo = response.Key;
+    }
     return this.menuCategoryService.create(createMenuCategoryDto);
   }
 

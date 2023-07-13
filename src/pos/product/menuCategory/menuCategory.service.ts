@@ -34,7 +34,7 @@ export class MenuCategoryService {
   async create(_menuCategory: CreateMenuCategoryDto): Promise<MenuCategory> {
     const menuCategory = new MenuCategory();
     menuCategory.title = _menuCategory.title;
-    menuCategory.photo = _menuCategory.photo;
+    menuCategory.photo = _menuCategory.photo || '';
 
     if (_menuCategory.store_Id) {
       const store = await this.storeRepository.findOne({
