@@ -24,7 +24,30 @@ export class MenuItemService {
       where: {
         storeId: store_Id,
       },
-      relations: ['store'],
+      relations: ['store', 'branchItem'],
+    });
+  }
+
+  async findAllWithBranchQty(store_Id: number, branch_Id: number) {
+    const menuItem = this.menuItemRepository.find({
+      where: {
+        storeId: store_Id,
+      },
+      relations: ['store', 'branchItem'],
+    });
+    const data = await menuItem;
+    return data.map((item) => {
+      console.log({ branch_Id });
+      const newBranch = item.branchItem.filter(
+        (subItem) => subItem.branchId == branch_Id,
+      );
+      console.log({ newBranch });
+
+      return {
+        ...item,
+        branchItem: null,
+        quantity: newBranch[0]?.quantity || 0,
+      };
     });
   }
 
@@ -33,7 +56,7 @@ export class MenuItemService {
       where: {
         id: id,
       },
-      relations: ['menuCategory'],
+      relations: ['menuCategory', 'branchItem'],
     });
     return getOneById;
   }
@@ -43,7 +66,6 @@ export class MenuItemService {
     menuItem.title = _menuItem.title;
     menuItem.photo = _menuItem.photo;
     menuItem.price = _menuItem.price;
-    menuItem.quantity = _menuItem.quantity;
     menuItem.description = _menuItem.description;
     menuItem.cookingTime = _menuItem.cookingTime;
 
@@ -69,20 +91,12 @@ export class MenuItemService {
     updateMenuItemDto: UpdateMenuItemDto,
   ): Promise<MenuItem> {
     const menuItem = await this.findOne(id);
-    const {
-      title,
-      photo,
-      price,
-      quantity,
-      description,
-      cookingTime,
-      category_Id,
-    } = updateMenuItemDto;
+    const { title, photo, price, description, cookingTime, category_Id } =
+      updateMenuItemDto;
 
     menuItem.title = title;
     menuItem.photo = photo;
     menuItem.price = price;
-    menuItem.quantity = quantity;
     menuItem.description = description;
     menuItem.cookingTime = cookingTime;
 

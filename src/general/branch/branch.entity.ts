@@ -5,9 +5,9 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   ManyToMany,
-  JoinTable,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Store } from '../store/store.entity';
 import { Users } from '../user/user.entity';
@@ -15,6 +15,7 @@ import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
 import { RawGrocery } from 'src/inventory/rawGrocery/rawInventory.entity';
 import { RawCategory } from 'src/inventory/rawCategory/rawCategory.entity';
+import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -52,6 +53,11 @@ export class Branch {
     onDelete: 'CASCADE',
   })
   rawGrocery: RawGrocery[];
+
+  @OneToMany(() => BranchItem, (quantity) => quantity.branch, {
+    onDelete: 'CASCADE',
+  })
+  branchItem: BranchItem[];
 
   @OneToMany(() => RawCategory, (rawCategory) => rawCategory.branch, {
     onDelete: 'CASCADE',

@@ -7,9 +7,11 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
+import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -26,9 +28,6 @@ export class MenuItem {
   price: number;
 
   @Column()
-  quantity: number;
-
-  @Column()
   description: string;
 
   @Column()
@@ -43,9 +42,17 @@ export class MenuItem {
   @Column()
   storeId: number;
 
+  // @Column()
+  // branchItemId: number;
+
   @ManyToOne(() => Store, (store) => store.menuItem, { onDelete: 'CASCADE' })
   @JoinColumn()
   store: Store;
+
+  @OneToMany(() => BranchItem, (quantity) => quantity.menuItem, {
+    onDelete: 'CASCADE',
+  })
+  branchItem: BranchItem[];
 
   @CreateDateColumn()
   createdAt: Date;

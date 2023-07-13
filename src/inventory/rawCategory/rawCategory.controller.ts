@@ -15,7 +15,7 @@ import { CreateRawCategoryDto } from './dto/create-rawCategory.dto';
 import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
-@Controller('inventrory/rawcategory')
+@Controller('inventory/rawcategory')
 export class RawCategoryController {
   constructor(private rawCategoryService: RawCategoryService) {}
 
