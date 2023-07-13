@@ -24,7 +24,7 @@ export class MenuItemService {
       where: {
         storeId: store_Id,
       },
-      relations: ['store'],
+      relations: ['store', 'branchItem'],
     });
   }
 

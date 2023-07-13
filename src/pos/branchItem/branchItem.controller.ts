@@ -21,8 +21,8 @@ export class QuantityController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('store_Id') menuItem_Id: number) {
-    return this.branchItemService.findAll(menuItem_Id);
+  async fillAll(@Query('branch_Id') branch_Id: number) {
+    return this.branchItemService.findAll(branch_Id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -42,7 +42,7 @@ export class QuantityController {
     return this.branchItemService.create(createQuantityDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -51,7 +51,7 @@ export class QuantityController {
     return this.branchItemService.update(+id, updateQuantityDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.branchItemService.remove(+id);

@@ -7,7 +7,7 @@ export class UpdateBranchItemDto extends PartialType(CreateBranchItemDto) {
   id: number;
 
   @IsInt()
-  branchItem: number;
+  quantity: number;
 
   @IsInt()
   branch_Id: number;

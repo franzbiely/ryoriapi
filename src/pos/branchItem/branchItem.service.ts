@@ -19,12 +19,12 @@ export class BranchItemService {
     private menuItemRepository: Repository<MenuItem>,
   ) {}
 
-  findAll(menuItem_Id: number): Promise<BranchItem[]> {
+  findAll(branch_Id: number): Promise<BranchItem[]> {
     return this.quantityRepository.find({
       where: {
-        menuItemId: menuItem_Id,
+        branchId: branch_Id,
       },
-      relations: ['menuItem'],
+      relations: ['branch', 'menuItem'],
     });
   }
 
@@ -33,52 +33,52 @@ export class BranchItemService {
       where: {
         id: id,
       },
-      relations: ['menuItem', 'branch'],
+      relations: ['branch', 'menuItem'],
     });
     return getOneById;
   }
 
   async create(_quantity: CreateBranchItemDto): Promise<BranchItem> {
-    const quantity = new BranchItem();
-    quantity.branchItem = _quantity.branchItem;
+    const qty = new BranchItem();
+    qty.quantity = _quantity.quantity;
 
     if (_quantity.branch_Id) {
       const branch = await this.branchRepository.findOne({
         where: { id: _quantity.branch_Id },
       });
-      quantity.branch = [branch];
+      qty.branch = branch;
     }
     if (_quantity.menuItem_Id) {
       const menuItem = await this.menuItemRepository.findOne({
         where: { id: _quantity.menuItem_Id },
       });
-      quantity.menuItem = [menuItem];
+      qty.menuItem = menuItem;
     }
-    return this.quantityRepository.save(quantity);
+    return this.quantityRepository.save(qty);
   }
 
   async update(
     id: number,
     updateQuantityDto: UpdateBranchItemDto,
   ): Promise<BranchItem> {
-    const quantity = await this.findOne(id);
-    const { branchItem, branch_Id, menuItem_Id } = updateQuantityDto;
-    quantity.branchItem = branchItem;
+    const qty = await this.findOne(id);
+    const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
+    qty.quantity = quantity;
 
     if (branch_Id) {
       const branch = await this.branchRepository.findOne({
         where: { id: branch_Id },
       });
-      quantity.branch = [branch];
+      qty.branch = branch;
     }
     if (menuItem_Id) {
       const menuItem = await this.menuItemRepository.findOne({
         where: { id: menuItem_Id },
       });
-      quantity.menuItem = [menuItem];
+      qty.menuItem = menuItem;
     }
 
-    return await this.quantityRepository.save(quantity);
+    return await this.quantityRepository.save(qty);
   }
 
   async remove(id: number): Promise<void> {

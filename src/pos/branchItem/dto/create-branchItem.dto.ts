@@ -5,7 +5,7 @@ export class CreateBranchItemDto {
   id: number;
 
   @IsInt()
-  branchItem: number;
+  quantity: number;
 
   @IsInt()
   branch_Id: number;

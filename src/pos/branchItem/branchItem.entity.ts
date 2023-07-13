@@ -7,6 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -18,22 +19,22 @@ export class BranchItem {
   id: number;
 
   @Column()
-  branchItem: number;
-
-  @ManyToMany(() => Branch, (branch) => branch.branchItem, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  branch: Branch[];
+  quantity: number;
 
   @Column()
-  menuItemId: number;
+  branchId: number;
 
-  @ManyToMany(() => MenuItem, (menuItem) => menuItem.branchItem, {
+  @ManyToOne(() => Branch, (branch) => branch.branchItem, {
     onDelete: 'CASCADE',
   })
-  @JoinTable()
-  menuItem: MenuItem[];
+  @JoinColumn()
+  branch: Branch;
+
+  @ManyToOne(() => MenuItem, (menuItem) => menuItem.branchItem, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  menuItem: MenuItem;
 
   @CreateDateColumn()
   createdAt: Date;
