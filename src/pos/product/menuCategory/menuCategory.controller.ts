@@ -9,7 +9,7 @@ import {
   Res,
   Request,
   UseGuards,
-  UploadedFile, UseInterceptors
+  UploadedFile, UseInterceptors,
   Query,
 } from '@nestjs/common';
 import { MenuCategoryService } from './menuCategory.service';
@@ -30,7 +30,7 @@ export class MenuCategoryController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    const response  = await this.menuCategoryService.findOne(+id);
+    const response  = await this.menuCategoryService.findOneId(+id);
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo),
