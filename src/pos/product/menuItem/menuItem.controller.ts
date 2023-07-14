@@ -9,15 +9,18 @@ import {
   UseGuards,
   Request,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { MenuItemService } from './menuItem.service';
 import { CreateMenuItemDto } from './dto/create-menuItem.dto';
 import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { S3Service } from 'src/utils/S3Service';
 @Controller('menuItem')
 export class MenuItemController {
-  constructor(private menuItemService: MenuItemService) {}
+  constructor(private menuItemService: MenuItemService, private readonly s3Service: S3Service) {}
 
   // @UseGuards(JwtAuthGuard)
   // @Get()
@@ -37,16 +40,25 @@ export class MenuItemController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.menuItemService.findOne(+id);
+    const response = await this.menuItemService.findOne(+id);
+    return {
+      ...response,
+      photo: await this.s3Service.getFile(response.photo),
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createMenuItemDto: CreateMenuItemDto, @Request() req) {
+  @UseInterceptors(FileInterceptor('photo'))
+  async create(@Body() createMenuItemDto: CreateMenuItemDto, @Request() req, @UploadedFile() photo) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
+    if(photo) {
+      const response = await this.s3Service.uploadFile(photo)
+      createMenuItemDto.photo = response.Key;
+    }
     return this.menuItemService.create(createMenuItemDto);
   }
 
