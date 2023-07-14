@@ -8,15 +8,19 @@ import {
   Patch,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { StoreService } from './store.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { S3Service } from 'src/utils/S3Service';
 
 @Controller('store')
 export class StoreController {
-  constructor(private storeService: StoreService) {}
+  constructor(private storeService: StoreService, private readonly s3Service: S3Service) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -27,18 +31,27 @@ export class StoreController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.storeService.findOneId(+id);
+    const response = await this.storeService.findOneId(+id);
+    return {
+      ...response,
+      photo: await this.s3Service.getFile(response.photo),
+    }
   }
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createStoreDto: CreateStoreDto, @Request() req) {
+  @UseInterceptors(FileInterceptor('photo'))
+  async create(@Body() createStoreDto: CreateStoreDto, @Request() req, @UploadedFile() photo) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
     const user_Id = decodedToken.userPayload.id;
     createStoreDto.user_Id = user_Id;
-    console.log('Store IDxxx:', user_Id);
+    if(photo) {
+      const response = await this.s3Service.uploadFile(photo)
+      createStoreDto.photo = response.Key;
+    }
+    console.log({createStoreDto})
     return this.storeService.create(createStoreDto);
   }
 

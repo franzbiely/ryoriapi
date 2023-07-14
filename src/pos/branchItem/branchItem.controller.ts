@@ -14,15 +14,27 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { BranchItemService } from './branchItem.service';
 import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
+import { S3Service } from 'src/utils/S3Service';
 
 @Controller('branchItem')
 export class QuantityController {
-  constructor(private branchItemService: BranchItemService) {}
+  constructor(private branchItemService: BranchItemService, private readonly s3Service: S3Service) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async fillAll(@Query('branch_Id') branch_Id: number) {
-    return this.branchItemService.findAll(branch_Id);
+    const response = await this.branchItemService.findAll(branch_Id);
+    // @Todo: Refactor and remove other non used properties..
+    return await Promise.all(
+      response.map(async (item) => {
+        return {
+          ...item,
+          ...item.menuItem,
+          photo: await this.s3Service.getFile(item.menuItem.photo),
+          
+        }
+      })
+    );
   }
 
   @UseGuards(JwtAuthGuard)

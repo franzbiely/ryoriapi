@@ -64,7 +64,7 @@ export class MenuItemService {
   async create(_menuItem: CreateMenuItemDto): Promise<MenuItem> {
     const menuItem = new MenuItem();
     menuItem.title = _menuItem.title;
-    menuItem.photo = _menuItem.photo;
+    menuItem.photo = _menuItem.photo || '';
     menuItem.price = _menuItem.price;
     menuItem.description = _menuItem.description;
     menuItem.cookingTime = _menuItem.cookingTime;
