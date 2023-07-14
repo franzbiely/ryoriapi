@@ -24,6 +24,9 @@ export class BranchItem {
   @Column()
   branchId: number;
 
+  @Column()
+  menuItemId: number;
+
   @ManyToOne(() => Branch, (branch) => branch.branchItem, {
     onDelete: 'CASCADE',
   })

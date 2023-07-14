@@ -33,13 +33,13 @@ export class QuantityController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createQuantityDto: CreateBranchItemDto, @Request() req) {
+  save(@Body() dto: CreateBranchItemDto, @Request() req) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
     console.log({ token });
-    return this.branchItemService.create(createQuantityDto);
+    return this.branchItemService.save(dto);
   }
 
   @UseGuards(JwtAuthGuard)

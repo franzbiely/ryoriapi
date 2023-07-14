@@ -106,6 +106,12 @@ export class MenuItemService {
       });
       menuItem.menuCategory = [menuCategory];
     }
+    if (category_Id) {
+      const menuCategory = await this.menuCategoryRepository.findOne({
+        where: { id: category_Id },
+      });
+      menuItem.menuCategory = [menuCategory];
+    }
 
     return this.menuItemRepository.save(menuItem);
   }

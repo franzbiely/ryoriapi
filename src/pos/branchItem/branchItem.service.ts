@@ -17,6 +17,8 @@ export class BranchItemService {
     private branchRepository: Repository<Branch>,
     @InjectRepository(MenuItem)
     private menuItemRepository: Repository<MenuItem>,
+    @InjectRepository(MenuItem)
+    private branchItemRepository: Repository<BranchItem>,
   ) {}
 
   findAll(branch_Id: number): Promise<BranchItem[]> {
@@ -36,6 +38,20 @@ export class BranchItemService {
       relations: ['branch', 'menuItem'],
     });
     return getOneById;
+  }
+
+  async save(dto: CreateBranchItemDto) {
+    const branchItem = await this.branchItemRepository.findOne({
+      where: {
+        branchId: dto.branch_Id,
+        menuItemId: dto.menuItem_Id,
+      },
+    });
+    if (branchItem) {
+      this.update(branchItem.id, dto);
+    } else {
+      this.create(dto);
+    }
   }
 
   async create(_quantity: CreateBranchItemDto): Promise<BranchItem> {
