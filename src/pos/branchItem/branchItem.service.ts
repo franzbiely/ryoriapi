@@ -17,7 +17,7 @@ export class BranchItemService {
     private branchRepository: Repository<Branch>,
     @InjectRepository(MenuItem)
     private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(MenuItem)
+    @InjectRepository(BranchItem)
     private branchItemRepository: Repository<BranchItem>,
   ) {}
 
@@ -48,9 +48,9 @@ export class BranchItemService {
       },
     });
     if (branchItem) {
-      this.update(branchItem.id, dto);
+      return await this.update(branchItem.id, dto);
     } else {
-      this.create(dto);
+      return await this.create(dto);
     }
   }
 

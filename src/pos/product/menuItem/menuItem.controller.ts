@@ -20,7 +20,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
 @Controller('menuItem')
 export class MenuItemController {
-  constructor(private menuItemService: MenuItemService, private readonly s3Service: S3Service) {}
+  constructor(
+    private menuItemService: MenuItemService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   // @UseGuards(JwtAuthGuard)
   // @Get()
@@ -34,7 +37,18 @@ export class MenuItemController {
     @Query('store_Id') store_Id: number,
     @Query('branch_Id') branch_Id: number,
   ) {
-    return this.menuItemService.findAllWithBranchQty(store_Id, branch_Id);
+    const response = await this.menuItemService.findAllWithBranchQty(
+      store_Id,
+      branch_Id,
+    );
+    return await Promise.all(
+      response.map(async (item) => {
+        return {
+          ...item,
+          photo: await this.s3Service.getFile(item.photo),
+        };
+      }),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -44,19 +58,23 @@ export class MenuItemController {
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo),
-    }
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  async create(@Body() createMenuItemDto: CreateMenuItemDto, @Request() req, @UploadedFile() photo) {
+  async create(
+    @Body() createMenuItemDto: CreateMenuItemDto,
+    @Request() req,
+    @UploadedFile() photo,
+  ) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    if(photo) {
-      const response = await this.s3Service.uploadFile(photo)
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
       createMenuItemDto.photo = response.Key;
     }
     return this.menuItemService.create(createMenuItemDto);
