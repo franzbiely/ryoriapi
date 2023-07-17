@@ -33,7 +33,7 @@ export class MenuItemService {
       where: {
         storeId: store_Id,
       },
-      relations: ['store', 'branchItem'],
+      relations: ['store', 'branchItem', 'menuCategory'],
     });
     const data = await menuItem;
     return data.map((item) => {

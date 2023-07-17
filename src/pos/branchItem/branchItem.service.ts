@@ -21,12 +21,20 @@ export class BranchItemService {
     private branchItemRepository: Repository<BranchItem>,
   ) {}
 
-  findAll(branch_Id: number): Promise<BranchItem[]> {
+  findAll(branch_Id: number, category_Id: number = -1): Promise<BranchItem[]> {
+    const where = (category_Id < 0) ? {
+      branchId: branch_Id
+    } : {
+      branchId: branch_Id,
+      menuItem : {
+        menuCategory: {
+          id: category_Id
+        }
+      }
+    }
     return this.quantityRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'menuItem'],
+      where,
+      relations: ['branch', 'menuItem', 'menuItem.menuCategory'],
     });
   }
 

@@ -31,7 +31,6 @@ export class MenuItemController {
   //   return this.menuItemService.findAll(store_Id);
   // }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAllWithBranchQty(
     @Query('store_Id') store_Id: number,

@@ -20,10 +20,10 @@ import { S3Service } from 'src/utils/S3Service';
 export class QuantityController {
   constructor(private branchItemService: BranchItemService, private readonly s3Service: S3Service) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard), need to be accessible in front end
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number) {
-    const response = await this.branchItemService.findAll(branch_Id);
+  async fillAll(@Query('branch_Id') branch_Id: number, @Query('category_Id') category_Id: number,) {
+    const response = await this.branchItemService.findAll(branch_Id, category_Id);
     // @Todo: Refactor and remove other non used properties..
     return await Promise.all(
       response.map(async (item) => {
@@ -37,10 +37,17 @@ export class QuantityController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.branchItemService.findOne(+id);
+    const response = await this.branchItemService.findOne(+id);
+    return {
+      ...response,
+      photo: await this.s3Service.getFile(response.menuItem.photo),
+      title: response.menuItem.title,
+      description: response.menuItem.description,
+      price: response.menuItem.price,
+      
+    }
   }
 
   @UseGuards(JwtAuthGuard)

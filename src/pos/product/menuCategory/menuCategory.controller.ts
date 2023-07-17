@@ -29,7 +29,15 @@ export class MenuCategoryController {
 
   @Get()
   async fillAll(@Query('store_Id') store_Id: number) {
-    return this.menuCategoryService.findAll(store_Id);
+    const response = await this.menuCategoryService.findAll(store_Id);
+    return await Promise.all(
+      response.map(async (item) => {
+        return {
+          ...item,
+          photo: await this.s3Service.getFile(item.photo)
+        }
+      })
+    )
   }
 
   @Get(':id')
