@@ -49,7 +49,21 @@ export class AuthService {
     const response = await this.userService.create(data);
     if (response) {
       const { password, ...result } = response;
-      return result;
+      const payload = {
+        userPayload: {
+          id: result.id,
+          role: result.role,
+          username: result.username,
+          email: result.email,
+          firstName: result.firstName,
+          lastName: result.lastName,
+          address: result.address,
+        },
+      };
+      return {
+        ...result,
+        access_token: this.jwtService.sign(payload),
+      };
     }
   }
 

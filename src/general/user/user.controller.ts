@@ -8,6 +8,7 @@ import {
   Patch,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUsersDto } from './dto/create-users.dto';
@@ -20,8 +21,8 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.usersService.findAll();
+  async getAllUsers(@Query('store_Id') store_Id: number) {
+    return this.usersService.findAll(store_Id);
   }
 
   @UseGuards(JwtAuthGuard)
