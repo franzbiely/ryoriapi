@@ -29,7 +29,7 @@ export class CreateUsersDto {
   address?: string;
 
   @IsInt()
-  store_Id: number;
+  store_Id?: number;
 
   @IsInt()
   branch_Id: number;

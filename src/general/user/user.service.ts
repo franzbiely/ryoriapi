@@ -6,6 +6,7 @@ import { CreateUsersDto } from './dto/create-users.dto';
 import { Store } from '../store/store.entity';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { Branch } from '../branch/branch.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -25,8 +26,16 @@ export class UserService {
     });
     return x;
   }
-  findAll(): Promise<Users[]> {
-    return this.usersRepository.find({});
+
+  async findAll(store_Id: number): Promise<Users[]> {
+    return this.usersRepository.find({
+      where: {
+        store: {
+          id: store_Id,
+        },
+      },
+      relations: ['store'],
+    });
   }
 
   async findOneId(id: number): Promise<Users> {
@@ -86,7 +95,7 @@ export class UserService {
     user.firstName = firstName;
     user.lastName = lastName;
     user.email = email;
-    user.password = password;
+    user.password = await bcrypt.hash(password, 10);
     user.address = address;
 
     if (store_Id) {

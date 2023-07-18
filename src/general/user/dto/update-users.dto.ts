@@ -31,7 +31,7 @@ export class UpdateUserDto extends PartialType(CreateUsersDto) {
   phone: string;
 
   @IsInt()
-  store_Id: number;
+  store_Id?: number;
 
   @IsInt()
   branch_Id: number;

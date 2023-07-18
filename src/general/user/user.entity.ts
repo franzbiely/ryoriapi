@@ -41,6 +41,9 @@ export class Users {
   @IsOptional()
   address: string;
 
+  @IsOptional()
+  storeId?: number;
+
   @ManyToOne(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
   store: Store;
 
