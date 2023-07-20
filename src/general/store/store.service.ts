@@ -37,7 +37,7 @@ export class StoreService {
   async create(_store: CreateStoreDto): Promise<Store> {
     const store = new Store();
     store.storeName = _store.storeName;
-    store.photo = _store.photo || ''
+    store.photo = _store.photo || '';
 
     if (_store.user_Id) {
       const user = await this.usersRepository.findOne({
@@ -51,8 +51,9 @@ export class StoreService {
 
   async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
     const stores = await this.findOneId(id);
-    const { storeName, user_Id } = updateStoreDto;
+    const { storeName, photo, user_Id } = updateStoreDto;
     stores.storeName = storeName;
+    stores.photo = photo;
 
     if (user_Id) {
       const user = await this.usersRepository.findOne({

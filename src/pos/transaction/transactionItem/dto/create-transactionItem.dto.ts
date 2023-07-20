@@ -7,6 +7,12 @@ export class CreateTransactionItemDto {
   @IsString()
   status: string;
 
+  @IsInt()
+  quantity: number;
+
+  @IsInt()
+  transaction_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

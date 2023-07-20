@@ -1,0 +1,3396 @@
+{
+	"info": {
+		"_postman_id": "533977f0-4025-4473-8e23-75fc777d67d2",
+		"name": "Ryori",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24410069",
+		"_collection_link": "https://winter-meteor-350424.postman.co/workspace/WorkSpace~a25a7630-72f5-4578-8718-0defdfa1979c/collection/24410069-533977f0-4025-4473-8e23-75fc777d67d2?action=share&creator=24410069&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "role",
+									"value": "waiter144",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "junjun144",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "firstName",
+									"value": "testing144",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "lastName",
+									"value": "test144",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "ryoriapp@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "ryori2023",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "mintal144",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "role",
+									"value": "fighter",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "guko",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ryoriapp@gmail.comx",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "ryori2023x",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "store_Id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "userPhoto",
+									"value": "test.png",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Niwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb215IiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgwOTI4NywiZXhwIjoxNjg5ODk1Njg3fQ.N5XcbuVp9smUSHod7EUWkBbLNVILHM8U4woImWGGOds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "role",
+									"value": "Mager",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "SanGohanasaa",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "gohan",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "magalonas",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ryoriapp@gmail.com6",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "ryori20236",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "phone",
+									"value": "123123",
+									"type": "text"
+								},
+								{
+									"key": "store_Id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "userPhoto",
+									"value": "12.png",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "consumption",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/consumption/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"consumption",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "testing",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test22",
+											"type": "text"
+										},
+										{
+											"key": "parent_consumption_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/consumption",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"consumption"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "testing33",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test2233",
+											"type": "text"
+										},
+										{
+											"key": "parent_consumption_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/consumption/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"consumption",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "testing",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test22",
+											"type": "text"
+										},
+										{
+											"key": "parent_consumption_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/consumption/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"consumption",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "branch",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRkQ3pETHlacXpELzFnMExjMGNaMVl1OGFHRkJPa1ZQazVGVDNYZzVvRU5UUk1MRFgwdEZHVyIsImZpcnN0TmFtZSI6Imd1a28iLCJsYXN0TmFtZSI6ImFkbWluIn0sImlhdCI6MTY4OTc1OTMwNywiZXhwIjoxNjg5ODQ1NzA3fQ.ZzrY0XirDtasdn9UgXtylBdOaVuTGlZ5Acxo0HUo5HM",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/branch/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branch",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6MSwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb214IiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTg0NDExNywiZXhwIjoxNjg5OTMwNTE3fQ.FB2d0lUN7O9RARryUdZJO9rRBUUKwgHKRs4ZkB6u668",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "branchName",
+											"value": "CCC",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "BBB",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "Jupiter@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "contactNumber",
+											"value": "333",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "user_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "menuItem_Id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branch",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branch"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "branchName",
+											"value": "Mang Kanor Store",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "Davao",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "qq",
+											"type": "text"
+										},
+										{
+											"key": "contactNumber",
+											"value": "qq",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branch/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branch",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "testing",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "now",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branch/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branch",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "store",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Mywicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IlNhbkd1a28iLCJlbWFpbCI6InJ5b3JpYXBwQGdtYWlsLmNvbXkiLCJwYXNzd29yZCI6IiQyYiQxMCRaSUxTVzN4Z2J2dGdxNDVWOTN6b0J1VzBhdWtJUHYxU2RSL2FOYUhBT0FsbXBuR09SajNsbSIsImZpcnN0TmFtZSI6InVzZXIzIiwibGFzdE5hbWUiOiJzdG9yZTIifSwiaWF0IjoxNjg4NTk4NzI1LCJleHAiOjE2ODg2ODUxMjV9.rG4ydS8I2wwNIhcBTBIGxE5IiKbJ32w9_j_g2h6JzsM",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "address",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "storeName",
+											"value": "test",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/store/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"store",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6MSwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb214IiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTg0NDExNywiZXhwIjoxNjg5OTMwNTE3fQ.FB2d0lUN7O9RARryUdZJO9rRBUUKwgHKRs4ZkB6u668",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "storeName",
+											"value": "Mang Kanor Store",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test.jpg",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/store",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"store"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "storeName",
+											"value": "sss",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "he.jpg",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/store/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"store",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "storeName",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/store/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"store",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJndWtvIiwibGFzdE5hbWUiOiJhZG1pbiIsImFkZHJlc3MiOiIifSwiaWF0IjoxNjg5NjY5NTczLCJleHAiOjE2ODk3NTU5NzN9.sP3EPnONijv9XYOJPdtBI4p6ImrnSgP5GkHx55XhUqk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "role",
+											"value": "waiter",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "q",
+											"type": "text"
+										},
+										{
+											"key": "firstName",
+											"value": "testingsds",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "testaaaaaaaaaaaaaaaaaaaaaaaaaa",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "test@sample.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123pass",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "mintal",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/user?store_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "store_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "role",
+											"value": "waiter",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "q",
+											"type": "text"
+										},
+										{
+											"key": "firstName",
+											"value": "testingsds",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "testaaaaaaaaaaaaaaaaaaaaaaaaaa",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "test@sample.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123pass",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "mintal",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6NCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIGFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRSa3NHZUppZnR5WS5qNDE3VlRvSS5lSU1HYVN3aG5zRkEvZEZGU2RYNEpJR25iQVhUU01YMiIsImZpcnN0TmFtZSI6ImFkbWluIiwibGFzdE5hbWUiOiJhZG1pbiJ9LCJpYXQiOjE2ODk2NjQ4OTEsImV4cCI6MTY4OTc1MTI5MX0.QKKwinG2SOq84Ozq9HDbTZT7yxCiE7JHNQ8I1elGqQI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "role",
+											"value": "waiter",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "q",
+											"type": "text"
+										},
+										{
+											"key": "firstName",
+											"value": "testingsds",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "testaaaaaaaaaaaaaaaaaaaaaaaaaa",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "guko2@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "mintal",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "2",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/8",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "role",
+											"value": "waiter144",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "junjun144",
+											"type": "text"
+										},
+										{
+											"key": "firstName",
+											"value": "testing144",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "test144",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "test@sample.com144",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123pass144",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "mintal144",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/user/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"user",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "raw_category",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "hekkoo",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "parent_category_id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawcategory/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawcategory",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawcategory/?branch_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawcategory",
+										""
+									],
+									"query": [
+										{
+											"key": "branch_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawcategory/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawcategory",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawcategory/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawcategory",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "raw_grocery",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "item",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawgrocery?branch_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawgrocery"
+									],
+									"query": [
+										{
+											"key": "branch_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IkFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRkQ3pETHlacXpELzFnMExjMGNaMVl1OGFHRkJPa1ZQazVGVDNYZzVvRU5UUk1MRFgwdEZHVyIsImZpcnN0TmFtZSI6IlNhbiIsImxhc3ROYW1lIjoiR3VrbyJ9LCJpYXQiOjE2ODk4MTc3NDUsImV4cCI6MTY4OTkwNDE0NX0.g1guDFBfEJJLA5vWfgIzq68Nh_DBz44i0TX9RZdCc2c",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "item",
+											"value": "branch3",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "123",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "rawCategory_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawgrocery",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawgrocery"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "item",
+											"value": "testtttttttt",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "11111111111",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "112",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawgrocery/7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawgrocery",
+										"7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "item",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/rawgrocery/7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"rawgrocery",
+										"7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/report",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "test123",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test123",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/report/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/report/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "123",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/report/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "transaction",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "we",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "we",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/transaction",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"transaction"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "e",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "e",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "2",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/transaction/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"transaction",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/transaction",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"transaction"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/transaction/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"transaction",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventory_logs",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "type",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "12",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "type",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "12",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "type",
+											"value": "test111",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "122222222",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logs/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logs",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "item",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logs/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logs",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventory_logs_type",
+					"item": [
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "add",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "thaw",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "throw",
+											"value": "12",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logsType",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logsType"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "add",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "thaw",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "throw",
+											"value": "qwe",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logsType",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logsType"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "add",
+											"value": "testwq",
+											"type": "text"
+										},
+										{
+											"key": "thaw",
+											"value": "12weqe",
+											"type": "text"
+										},
+										{
+											"key": "throw",
+											"value": "qweeeeeeeeee",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logsType/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logsType",
+										"4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "add",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "thaw",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "throw",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/inventory/logsType/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"inventory",
+										"logsType",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "pos",
+			"item": [
+				{
+					"name": "menu_category",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "user32",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "store22",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuCategory/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuCategory",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Mywicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IlNhbkd1a28iLCJlbWFpbCI6InJ5b3JpYXBwQGdtYWlsLmNvbXkiLCJwYXNzd29yZCI6IiQyYiQxMCRaSUxTVzN4Z2J2dGdxNDVWOTN6b0J1VzBhdWtJUHYxU2RSL2FOYUhBT0FsbXBuR09SajNsbSIsImZpcnN0TmFtZSI6InVzZXIzIiwibGFzdE5hbWUiOiJzdG9yZTIifSwiaWF0IjoxNjg4NjI4MDI1LCJleHAiOjE2ODg3MTQ0MjV9.dIm5BpRo6W6E0qv93W5_KT0tFk3_rv4K2AeRVySHq48",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "label",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuCategory?store_Id=2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuCategory"
+									],
+									"query": [
+										{
+											"key": "store_Id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuCategory/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuCategory",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "label",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuCategory/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuCategory",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "menu_Item",
+					"item": [
+						{
+							"name": "Get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IkFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRkQ3pETHlacXpELzFnMExjMGNaMVl1OGFHRkJPa1ZQazVGVDNYZzVvRU5UUk1MRFgwdEZHVyIsImZpcnN0TmFtZSI6IlNhbiIsImxhc3ROYW1lIjoiR3VrbyJ9LCJpYXQiOjE2ODk4MjA5OTQsImV4cCI6MTY4OTkwNzM5NH0.W-05MyNMscrWb-qrD2J-Y0mOuzJgp5zoEHgFGjcpTHc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "foodName",
+											"value": "test",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "price",
+											"value": "test",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "store_Id",
+											"value": "2",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuItem?store_Id=1&branch_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuItem"
+									],
+									"query": [
+										{
+											"key": "store_Id",
+											"value": "1"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get one",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IkFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRkQ3pETHlacXpELzFnMExjMGNaMVl1OGFHRkJPa1ZQazVGVDNYZzVvRU5UUk1MRFgwdEZHVyIsImZpcnN0TmFtZSI6IlNhbiIsImxhc3ROYW1lIjoiR3VrbyJ9LCJpYXQiOjE2ODk4MjA5OTQsImV4cCI6MTY4OTkwNzM5NH0.W-05MyNMscrWb-qrD2J-Y0mOuzJgp5zoEHgFGjcpTHc",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "foodName",
+											"value": "test",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "price",
+											"value": "test",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "store_Id",
+											"value": "2",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuItem/?store_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuItem",
+										""
+									],
+									"query": [
+										{
+											"key": "store_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6MSwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRpTDRZa3BRMWNncy9oM3V0cVFsNEV1UkU5TFR1d0dmUTdod3hrd1pXTUR4NVlreEV6QTBUVyIsImZpcnN0TmFtZSI6Imd1a28iLCJsYXN0TmFtZSI6ImFkbWluIn0sImlhdCI6MTY4OTg0MzYwMiwiZXhwIjoxNjg5OTMwMDAyfQ.xz-SzIgPeiOWrkDKPzWyRoXKK6qzCubxxgV5I9bGrFE",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "xyz",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "1231.jpg",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "999",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "99",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "hello ",
+											"type": "text"
+										},
+										{
+											"key": "cookingTime",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "category_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "store_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "transactionItem_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuItem/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuItem",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "1wqe",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "2wqe",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "312",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "4213",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "512",
+											"type": "text"
+										},
+										{
+											"key": "cookingTime",
+											"value": "99",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuItem/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuItem",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6OCwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJyeW9yaWFwcEBnbWFpbC5jb21zIiwiZmlyc3ROYW1lIjoiZ3VrbyIsImxhc3ROYW1lIjoiYWRtaW4iLCJhZGRyZXNzIjoiIn0sImlhdCI6MTY4OTgzODY5MywiZXhwIjoxNjg5OTI1MDkzfQ.4kIbMXKHKBcmD6xn91-eOwhPDw0yoYskLltcgg7u0sk",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "foodName",
+											"value": "testing",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "now",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/menuItem/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"menuItem",
+										"5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "customer",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/customer",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "test23",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "test23",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/customer/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"customer",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/customer/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"customer",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "lastName",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/customer/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"customer",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report",
+					"item": [
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "parent_transaction_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/report",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "test123",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"value": "test123",
+											"type": "text"
+										},
+										{
+											"key": "parent_report_id",
+											"value": "2",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/report/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/report",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/report/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"report",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "transaction",
+					"item": [
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transaction",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transaction"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "test1",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "item",
+											"value": "{\"id\": 2, \"qty\": 1}",
+											"type": "text"
+										},
+										{
+											"key": "item",
+											"value": "{\"id\": 1, \"qty\": 2}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transaction",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transaction"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "e",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transaction/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transaction",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transaction/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transaction",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "transactionItem",
+					"item": [
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transactionItem",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transactionItem"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "qwe",
+											"type": "text"
+										},
+										{
+											"key": "quantity",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "transaction_Id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "menuItem_Id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transactionItem",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transactionItem"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "edsfsd",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transactionItem/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transactionItem",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/pos/transactionItem/11",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"pos",
+										"transactionItem",
+										"11"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "branchItem",
+					"item": [
+						{
+							"name": "get",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IlNhbkd1a28iLCJlbWFpbCI6InJ5b3JpYXBwQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJG4uUjJqR1NpZm90dDJUbGJjWldzNGVhai91WU9pQzVXS29TOEFkZ25HcjE4TnJWcG5xYlVPIiwiZmlyc3ROYW1lIjoiR3VrbyIsImxhc3ROYW1lIjoic2Fuc2FueSJ9LCJpYXQiOjE2ODkzMDQwMDQsImV4cCI6MTY4OTM5MDQwNH0.dJcvMwRp2idbreof53S_YzggpabVgx13WSlnv7LcO1s",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "qty",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branchItem/?branch_Id=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branchItem",
+										""
+									],
+									"query": [
+										{
+											"key": "branch_Id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IlNhbkd1a28iLCJlbWFpbCI6InJ5b3JpYXBwQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJG4uUjJqR1NpZm90dDJUbGJjWldzNGVhai91WU9pQzVXS29TOEFkZ25HcjE4TnJWcG5xYlVPIiwiZmlyc3ROYW1lIjoiR3VrbyIsImxhc3ROYW1lIjoic2Fuc2FueSJ9LCJpYXQiOjE2ODkzMDQwMDQsImV4cCI6MTY4OTM5MDQwNH0.dJcvMwRp2idbreof53S_YzggpabVgx13WSlnv7LcO1s",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "quantity",
+											"value": "12",
+											"type": "text"
+										},
+										{
+											"key": "branch_Id",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "menuItem_Id",
+											"value": "26",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branchItem",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branchItem"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "qty",
+											"value": "222",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:3000/branchItem/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branchItem",
+										"5"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyUGF5bG9hZCI6eyJpZCI6Miwicm9sZSI6ImZpZ2h0ZXIiLCJ1c2VybmFtZSI6IlNhbkd1a28iLCJlbWFpbCI6InJ5b3JpYXBwQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJG4uUjJqR1NpZm90dDJUbGJjWldzNGVhai91WU9pQzVXS29TOEFkZ25HcjE4TnJWcG5xYlVPIiwiZmlyc3ROYW1lIjoiR3VrbyIsImxhc3ROYW1lIjoic2Fuc2FueSJ9LCJpYXQiOjE2ODkzMDQwMDQsImV4cCI6MTY4OTM5MDQwNH0.dJcvMwRp2idbreof53S_YzggpabVgx13WSlnv7LcO1s",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/branchItem/19",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"branchItem",
+										"19"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

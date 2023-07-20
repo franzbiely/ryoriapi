@@ -11,6 +11,12 @@ export class UpdateTransactionItemDto extends PartialType(
   @IsString()
   status: string;
 
+  @IsInt()
+  quantity: number;
+
+  @IsInt()
+  transaction_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TransactionItem } from './transactionItem.entity';
 import { CreateTransactionItemDto } from './dto/create-transactionItem.dto';
+import { Transaction } from '../transaction/transaction.entity';
 
 @Injectable()
 export class TransactionItemService {
   constructor(
     @InjectRepository(TransactionItem)
     private transactionItemRepository: Repository<TransactionItem>,
+    @InjectRepository(Transaction)
+    private transactionRepository: Repository<Transaction>,
   ) {}
 
   //Get All User
@@ -26,6 +29,14 @@ export class TransactionItemService {
   ): Promise<TransactionItem> {
     const transactionItem = new TransactionItem();
     transactionItem.status = _transaction.status;
+    transactionItem.quantity = _transaction.quantity;
+
+    if (_transaction.transaction_Id) {
+      const transaction = await this.transactionRepository.findOne({
+        where: { id: _transaction.transaction_Id },
+      });
+      transactionItem.transaction = transaction;
+    }
     return this.transactionItemRepository.save(transactionItem);
   }
 

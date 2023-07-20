@@ -9,6 +9,12 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   @IsString()
   status: string;
 
+  @IsInt()
+  branch_Id: number;
+
+  @IsString()
+  item: string[];
+
   @IsDate()
   createdAt: Date;
 }

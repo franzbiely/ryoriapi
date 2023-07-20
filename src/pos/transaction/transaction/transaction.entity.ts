@@ -17,11 +17,17 @@ export class Transaction {
   @Column()
   status: string;
 
-  @ManyToOne(() => Branch, (branch) => branch.transaction, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Branch, (branch) => branch.transaction, {
+    onDelete: 'CASCADE',
+  })
   branch: Branch;
 
-  @OneToMany(() => TransactionItem, (transactionItem) => transactionItem.transaction, { onDelete: 'CASCADE' })
-  transactionItem: TransactionItem;
+  @OneToMany(
+    () => TransactionItem,
+    (transactionItem) => transactionItem.transaction,
+    { onDelete: 'CASCADE' },
+  )
+  transactionItem: TransactionItem[];
 
   @CreateDateColumn()
   createdAt: Date;
