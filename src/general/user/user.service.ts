@@ -58,6 +58,7 @@ export class UserService {
     user.password = _user.password;
     user.address = _user.address || '';
     user.phone = _user.phone;
+    user.userPhoto = _user.userPhoto;
 
     if (_user.store_Id) {
       const store = await this.storeRepository.findOne({
@@ -87,6 +88,7 @@ export class UserService {
       password,
       address,
       phone,
+      userPhoto,
       store_Id,
       branch_Id,
     } = updateUserDto;
@@ -98,6 +100,7 @@ export class UserService {
     user.email = email;
     user.address = address;
     user.phone = phone;
+    user.userPhoto = userPhoto;
 
     if (password) {
       user.password = await bcrypt.hash(password, 10);
