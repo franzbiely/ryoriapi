@@ -38,6 +38,9 @@ export class Users {
   @Column()
   password: string;
 
+  @Column()
+  userPhoto: string;
+
   @IsOptional()
   address: string;
 

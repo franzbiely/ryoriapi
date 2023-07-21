@@ -8,10 +8,12 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
 import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
+import { TransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -42,9 +44,6 @@ export class MenuItem {
   @Column()
   storeId: number;
 
-  // @Column()
-  // branchItemId: number;
-
   @ManyToOne(() => Store, (store) => store.menuItem, { onDelete: 'CASCADE' })
   @JoinColumn()
   store: Store;
@@ -53,6 +52,7 @@ export class MenuItem {
     onDelete: 'CASCADE',
   })
   branchItem: BranchItem[];
+  transactionItem: TransactionItem[];
 
   @CreateDateColumn()
   createdAt: Date;

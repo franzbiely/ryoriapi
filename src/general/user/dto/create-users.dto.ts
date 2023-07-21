@@ -26,6 +26,9 @@ export class CreateUsersDto {
   phone: string;
 
   @IsString()
+  userPhoto: string;
+
+  @IsString()
   address?: string;
 
   @IsInt()
