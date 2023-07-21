@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOperator, Repository, In } from 'typeorm';
 import { MenuItem } from './menuItem.entity';
 import { CreateMenuItemDto } from './dto/create-menuItem.dto';
 import { Branch } from 'src/general/branch/branch.entity';
@@ -23,6 +23,16 @@ export class MenuItemService {
     return this.menuItemRepository.find({
       where: {
         storeId: store_Id,
+      },
+      relations: ['store', 'branchItem'],
+    });
+  }
+  
+  async findByBatch(ids: string[]): Promise<MenuItem[]> {
+    return this.menuItemRepository.find(
+    {
+      where: {
+        id: In(ids)
       },
       relations: ['store', 'branchItem'],
     });

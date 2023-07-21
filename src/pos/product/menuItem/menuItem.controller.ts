@@ -31,6 +31,21 @@ export class MenuItemController {
   //   return this.menuItemService.findAll(store_Id);
   // }
 
+  @Get('batch')
+  async findByBatch(@Query('ids') _ids: string) {
+    const ids = _ids.split(',') || []
+    const response = await this.menuItemService.findByBatch(ids);
+
+    return await Promise.all(
+      response.map(async (item) => {
+        return {
+          ...item,
+          photo: await this.s3Service.getFile(item.photo),  
+        }
+      })
+    );
+  }
+
   @Get()
   async findAllWithBranchQty(
     @Query('store_Id') store_Id: number,
@@ -50,7 +65,6 @@ export class MenuItemController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const response = await this.menuItemService.findOne(+id);
@@ -59,6 +73,8 @@ export class MenuItemController {
       photo: await this.s3Service.getFile(response.photo),
     };
   }
+
+  
 
   @UseGuards(JwtAuthGuard)
   @Post()
