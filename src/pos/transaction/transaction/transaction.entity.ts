@@ -17,6 +17,9 @@ export class Transaction {
   @Column()
   status: string;
 
+  @Column()
+  branchId: number;
+
   @ManyToOne(() => Branch, (branch) => branch.transaction, {
     onDelete: 'CASCADE',
   })

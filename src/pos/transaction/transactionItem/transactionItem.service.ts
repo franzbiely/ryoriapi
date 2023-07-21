@@ -73,25 +73,25 @@ export class TransactionItemService {
     id: number,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<TransactionItem> {
-    const transaction = await this.findOne(id);
+    const transactionItem = await this.findOne(id);
     const { status, quantity, transaction_Id, menuItem_Id } =
       updateTransactionItem;
-    transaction.status = status;
-    transaction.quantity = quantity;
+    transactionItem.status = status;
+    transactionItem.quantity = quantity;
 
     if (transaction_Id) {
       const _transaction = await this.transactionRepository.findOne({
         where: { id: transaction_Id },
       });
-      transaction.transaction = _transaction;
+      transactionItem.transaction = _transaction;
     }
     if (menuItem_Id) {
       const _menuItem = await this.menuItemRepository.findOne({
         where: { id: menuItem_Id },
       });
-      transaction.menuItem = _menuItem;
+      transactionItem.menuItem = _menuItem;
     }
-    return await this.transactionItemRepository.save(transaction);
+    return await this.transactionItemRepository.save(transactionItem);
   }
 
   async remove(id: number): Promise<void> {

@@ -6,6 +6,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Branch } from 'src/general/branch/branch.entity';
 import { TransactionItem } from '../transactionItem/transactionItem.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Injectable()
 export class TransactionService {
@@ -21,13 +22,23 @@ export class TransactionService {
   ) {}
 
   //Get All User
-  findAll(): Promise<Transaction[]> {
-    return this.transactionRepository.find({});
+  findAll(branch_Id: number): Promise<Transaction[]> {
+    return this.transactionRepository.find({
+      where: {
+        branchId: branch_Id,
+      },
+      relations: ['branch', 'transactionItem'],
+    });
   }
 
   findOne(id: number): Promise<Transaction> {
-    const x = this.transactionRepository.findOneBy({ id });
-    return x;
+    const findId = this.transactionRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['branch', 'transactionItem'],
+    });
+    return findId;
   }
 
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
@@ -71,8 +82,15 @@ export class TransactionService {
     return currentTransaction;
   }
 
-  async update(id: number, transaction: Transaction) {
-    await this.transactionRepository.update(id, transaction);
+  async update(
+    id: number,
+    updateTransactionDto: UpdateTransactionDto,
+  ): Promise<Transaction> {
+    const transaction = await this.findOne(id);
+    const { status } = updateTransactionDto;
+    transaction.status = status;
+
+    return await this.transactionRepository.save(transaction);
   }
 
   async remove(id: number): Promise<void> {

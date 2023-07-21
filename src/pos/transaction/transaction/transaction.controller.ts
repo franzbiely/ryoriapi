@@ -7,6 +7,7 @@ import {
   Delete,
   Patch,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -17,36 +18,35 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 export class TransactionController {
   constructor(private transactionService: TransactionService) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.transactionService.findAll();
+  async fillAll(@Query('branch_Id') branch_Id: number) {
+    return this.transactionService.findAll(branch_Id);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.transactionService.findOne(+id);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createTransactionDto: CreateTransactionDto) {
-    // console.log({ createTransactionDto });
     return this.transactionService.create(createTransactionDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    // this.transactionService.update(+id, updateTransactionDto);
-    // return 'Updated';
+    this.transactionService.update(+id, updateTransactionDto);
+    return 'Updated';
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     this.transactionService.remove(+id);
