@@ -33,16 +33,22 @@ export class TransactionService {
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
     const transaction = new Transaction();
     transaction.status = _transaction.status;
-
+    let branch;
     if (_transaction.branch_Id) {
-      const branch = await this.branchRepository.findOne({
+      branch = await this.branchRepository.findOne({
         where: { id: _transaction.branch_Id },
       });
+    }
+    if (_transaction.branch_Id) {
       transaction.branch = branch;
     }
     const currentTransaction = await this.transactionRepository.save(
       transaction,
     );
+    console.log({ _transaction });
+    if (!Array.isArray(_transaction.item)) {
+      _transaction.item = [_transaction.item];
+    }
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);
@@ -53,8 +59,11 @@ export class TransactionService {
         const transactionItem = new TransactionItem();
         transactionItem.quantity = _item.qty;
         transactionItem.status = 'new';
-        transactionItem.menuItem = [menuItem];
+        transactionItem.menuItem = menuItem;
         transactionItem.transaction = currentTransaction;
+        if (_transaction.branch_Id) {
+          transactionItem.branch = branch;
+        }
         console.log({ transactionItem });
         await this.transactionItemRepository.save(transactionItem);
       }),

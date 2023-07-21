@@ -13,6 +13,12 @@ export class CreateTransactionItemDto {
   @IsInt()
   transaction_Id: number;
 
+  @IsInt()
+  menuItem_Id: number;
+
+  @IsInt()
+  branch_Id: number;
+
   @IsDate()
   createdAt: Date;
 }

@@ -10,7 +10,7 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   status: string;
 
   @IsInt()
-  branch_Id: number;
+  branch_Id?: number;
 
   @IsString()
   item: string[];

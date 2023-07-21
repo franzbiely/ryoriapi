@@ -13,7 +13,6 @@ import {
 } from 'typeorm';
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
 import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
-import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
 import { TransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.entity';
 
 @Entity({ name: 'menu_item' })
@@ -53,13 +52,6 @@ export class MenuItem {
     onDelete: 'CASCADE',
   })
   branchItem: BranchItem[];
-  @ManyToMany(
-    () => TransactionItem,
-    (transactionItem) => transactionItem.menuItem,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
   transactionItem: TransactionItem[];
 
   @CreateDateColumn()
