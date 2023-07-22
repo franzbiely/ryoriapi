@@ -30,7 +30,6 @@ export class TransactionController {
     return this.transactionService.findOne(+id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionService.create(createTransactionDto);

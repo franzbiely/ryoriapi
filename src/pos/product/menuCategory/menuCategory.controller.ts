@@ -19,6 +19,7 @@ import { UpdateMenuCategoryDto } from './dto/update-menuCategory.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
+import { exit } from 'process';
 
 @Controller('menuCategory')
 export class MenuCategoryController {
@@ -29,12 +30,13 @@ export class MenuCategoryController {
 
   @Get()
   async fillAll(@Query('store_Id') store_Id: number) {
+    console.log("HERE I AM")
     const response = await this.menuCategoryService.findAll(store_Id);
     return await Promise.all(
       response.map(async (item) => {
         return {
           ...item,
-          photo: await this.s3Service.getFile(item.photo)
+          photo: await this.s3Service.getFile(item.photo) || ''
         }
       })
     )
@@ -45,7 +47,7 @@ export class MenuCategoryController {
     const response = await this.menuCategoryService.findOneId(+id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo),
+      photo: await this.s3Service.getFile(response.photo) || '',
     };
   }
 
@@ -61,7 +63,9 @@ export class MenuCategoryController {
 
     if(photo) {
       const response = await this.s3Service.uploadFile(photo)
-      createMenuCategoryDto.photo = response.Key;
+      if(response) {
+        createMenuCategoryDto.photo = response.Key;
+      }
     }
     return this.menuCategoryService.create(createMenuCategoryDto);
   }

@@ -40,7 +40,7 @@ export class MenuItemController {
       response.map(async (item) => {
         return {
           ...item,
-          photo: await this.s3Service.getFile(item.photo),  
+          photo: await this.s3Service.getFile(item.photo) || '',  
         }
       })
     );
@@ -59,7 +59,7 @@ export class MenuItemController {
       response.map(async (item) => {
         return {
           ...item,
-          photo: await this.s3Service.getFile(item.photo),
+          photo: await this.s3Service.getFile(item.photo) || '',
         };
       }),
     );
@@ -70,7 +70,7 @@ export class MenuItemController {
     const response = await this.menuItemService.findOne(+id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo),
+      photo: await this.s3Service.getFile(response.photo) || '',
     };
   }
 
@@ -90,7 +90,9 @@ export class MenuItemController {
     );
     if (photo) {
       const response = await this.s3Service.uploadFile(photo);
-      createMenuItemDto.photo = response.Key;
+      if(response) {
+        createMenuItemDto.photo = response.Key;
+      }
     }
     return this.menuItemService.create(createMenuItemDto);
   }

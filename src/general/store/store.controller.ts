@@ -34,7 +34,7 @@ export class StoreController {
     const response = await this.storeService.findOneId(+id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo),
+      photo: await this.s3Service.getFile(response.photo) || '',
     }
   }
   @UseGuards(JwtAuthGuard)
@@ -49,7 +49,9 @@ export class StoreController {
     createStoreDto.user_Id = user_Id;
     if(photo) {
       const response = await this.s3Service.uploadFile(photo)
-      createStoreDto.photo = response.Key;
+      if(response) {
+        createStoreDto.photo = response.Key;
+      }
     }
     console.log({createStoreDto})
     return this.storeService.create(createStoreDto);

@@ -30,7 +30,7 @@ export class QuantityController {
         return {
           ...item,
           ...item.menuItem,
-          photo: await this.s3Service.getFile(item.menuItem.photo),
+          photo: await this.s3Service.getFile(item.menuItem.photo) || '',
           
         }
       })
@@ -42,7 +42,7 @@ export class QuantityController {
     const response = await this.branchItemService.findOne(+id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.menuItem.photo),
+      photo: await this.s3Service.getFile(response.menuItem.photo) || '',
       title: response.menuItem.title,
       description: response.menuItem.description,
       price: response.menuItem.price,
