@@ -27,7 +27,7 @@ export class TransactionService {
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch', 'transactionItem'],
+      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
     });
   }
 
