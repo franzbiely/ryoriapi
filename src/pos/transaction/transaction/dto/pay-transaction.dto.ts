@@ -1,24 +1,17 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateTransactionDto } from './create-transaction.dto';
-import { IsString, IsInt, IsDate, IsArray, IsNumber } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsArray, IsNumber, IsOptional } from '@nestjs/class-validator';
 
 export class PayTransactionDto extends PartialType(CreateTransactionDto) {
   @IsInt()
   id: number;
 
-  @IsNumber()
-  amount: number;
+  @IsOptional()
+  phone: number;
 
-  @IsNumber()
-  discounts: number;
+  @IsOptional()
+  email: number;
 
-  @IsString()
-  type: string;
-  
-  @IsString()
-  redirect_success: string;
-
-  @IsString()
-  redirect_failed: string;
-
+  @IsOptional()
+  name: number;
 }

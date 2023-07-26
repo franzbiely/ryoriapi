@@ -41,6 +41,39 @@ export class TransactionService {
     });
     return findId;
   }
+  
+  async getStatus(id: number): Promise<{status: string}> {
+    const transaction = await this.transactionRepository.findOne({
+      where: {
+        id: id,
+      }
+    });
+    if(transaction.paymongo_pi_id) {
+      const config: AxiosRequestConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Basic " + Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64')
+        },
+      };
+      const response = await axios.get('https://api.paymongo.com/v1/payment_intents/' + transaction.paymongo_pi_id, config)
+
+      const data = response.data.data.attributes
+      
+      if(data.status === 'succeeded') {
+        transaction.status = 'closed'
+        await this.transactionRepository.save(transaction);
+      }
+
+      return {
+        status: data.status
+      };
+    }
+    else {
+      return {
+        status: transaction.status
+      };
+    }
+  }
 
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
     const transaction = new Transaction();
@@ -55,6 +88,7 @@ export class TransactionService {
     if (_transaction.branch_Id) {
       transaction.branch = branch;
     }
+    console.log({transaction})
     const currentTransaction = await this.transactionRepository.save(
       transaction,
     );
@@ -91,6 +125,10 @@ export class TransactionService {
     const { status } = updateTransactionDto;
     transaction.status = status;
 
+    if(updateTransactionDto.paymongo_pi_id) {
+      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id
+    }
+
     return await this.transactionRepository.save(transaction);
   }
 
@@ -98,45 +136,101 @@ export class TransactionService {
     await this.transactionRepository.delete(id);
   }
 
-  async create_payment(id: number, payTransactionDto: PayTransactionDto) {
-    // @TODO : Add validation, amount should > 2000
-    const transaction = await this.findOne(id);
-
-    // @TODO: Deductions/discounts to be implemented on FE.
-    const discounts = payTransactionDto.discounts || 0
-    const totalAmount = transaction.transactionItem.reduce((prev, cur) => (prev + (cur.menuItem.price * cur.quantity)) , 0) - discounts
-    const config: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Basic " + process.env.PAYMONGO_API_PUB_KEY
-      },
-    };
-
-    const body = JSON.stringify({
-      "data": {
-        "attributes": {
-          "amount": totalAmount * 100, // multiply to 100 because paymongo's value on 100 is 10000
-          "redirect": {
-            "success": payTransactionDto.redirect_success,
-            "failed": payTransactionDto.redirect_failed
+  async create_payment_intent(transaction): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      // @TODO: Deductions/discounts to be implemented on FE.
+      const discounts = 0
+      const totalAmount = transaction.transactionItem.reduce((prev, cur) => (prev + (cur.menuItem.price * cur.quantity)) , 0) - discounts      
+      const response = await axios.post(
+        'https://api.paymongo.com/v1/payment_intents', 
+        JSON.stringify({
+          "data": {
+              "attributes": {
+                "amount": totalAmount * 100, // NOTE: Paymongo rules 100.00 = 10000, @TODO: Create a function handle this.
+                "payment_method_allowed": ["card", "gcash"],
+                "currency": "PHP"
+              }
+          }
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + Buffer.from(process.env.PAYMONGO_API_PUBL_KEY).toString('base64')
           },
-          "type": payTransactionDto.type,
-          "currency": "PHP"
-        }
-      }
-    });
+      })
 
-    const response = await axios.post('https://api.paymongo.com/v1/sources', 
-      body, config)
-    const data = response.data.data
-    if(data.attributes.status === 'pending') {
+      resolve(response.data.data)
+      return;
+    })
+  }
+
+  async create_payment_method(payTransactionDto: PayTransactionDto): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const response = await axios.post(
+        'https://api.paymongo.com/v1/payment_methods', 
+        JSON.stringify({
+          "data": {
+                "attributes": {
+                  "billing": {
+                    "phone": payTransactionDto.phone,
+                    "email": payTransactionDto.email,
+                    "name": payTransactionDto.name
+                },
+                "type": "gcash"
+              }
+          }
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64')
+          },
+      })
+
+      resolve(response.data.data)
+      return;
+    })
+  }
+  
+  async attach_payment_intent_to_method(pi_Id:string, pm_Id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const response = await axios.post(
+        `https://api.paymongo.com/v1/payment_intents/${pi_Id}/attach`, 
+        JSON.stringify({
+          "data": {
+              "attributes": {
+                "payment_method": pm_Id,
+                "return_url": process.env.RYORI_FE_SUCCESS_URL   
+              }
+          }
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64')
+          },
+      })
+
+      resolve(response.data.data)
+      return;
+    })
+  }
+
+  // @TODO : Add validation, amount should > 2000
+  async create_payment(payTransactionDto: PayTransactionDto) {
+    
+    const transaction = await this.findOne(payTransactionDto.id);
+    
+    const payment_intent_data = await this.create_payment_intent(transaction)
+    
+    if(payment_intent_data.attributes.status === 'awaiting_payment_method') {
       transaction.status = 'payment_on_process'
+      transaction.paymongo_pi_id = payment_intent_data.id
       await this.transactionRepository.save(transaction);
-      return {
-        redirect: data.attributes.redirect.checkout_url,
-        id: data.id,
-        type: data.source
-      }
+    }
+
+    const payment_method_data = await this.create_payment_method(payTransactionDto)
+    const payment_intent_attach_data = await this.attach_payment_intent_to_method(payment_intent_data.id, payment_method_data.id)
+
+    return {
+      redirect: payment_intent_attach_data.attributes.next_action.redirect.url
     }
   }
 }

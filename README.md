@@ -71,3 +71,30 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+## Paymongo documentation
+
+﻿I'll be providing a short summary of our Credit Cards, Direct Online Banking, GCash, and Maya documentation here:
+﻿
+﻿In a Nutshell: Accepting Credit Cards, Direct Online Banking, GCash, and Maya Payments
+﻿Credit Cards, Direct Online Banking, GCash, and Maya follow the Payment Intent - Payment Method (PIPM) workflow.
+﻿
+﻿1. Create A Payment Intent from the server-side
+﻿When a customer initiates a credit card or a PayMaya payment, create a payment intent by calling our Create A Payment Intent API: https://developers.paymongo.com/reference/create-a-paymentintent. Store the Payment Intent ID.
+﻿
+﻿2. Create a Payment Method from the client-side
+﻿Collect Card Information from the client-side with the use of forms. We do not recommend storing this information on your server. Send this information over to us and we'll handle the rest! Create a payment method by calling our Create A Payment Method API: https://developers.paymongo.com/reference#create-a-paymentmethod. Store the Payment Method ID.
+﻿
+﻿3. Attach the Payment Intent to the Payment Method
+﻿Connect the Payment Intent to the Payment Method by calling our Attach To Payment Intent API: https://developers.paymongo.com/reference/attach-to-paymentintent.
+﻿
+﻿4. Redirect the Customer for Authentication
+﻿In live transactions or 3DS enabled test cards, the response for the Attach To Payment Intent call would include next_action. You would have to redirect the customer to their respective bank/e-wallet for them to authorize the payment.
+﻿
+﻿5. Finish
+﻿Once this is done, the customer is redirected to your success/failed URL. If you setup your webhooks, we'll also send you a webhook event whether the payment is successful or failed. You can also asynchronously call the Retrieve A Payment Intent API to check the status of the intent. https://developers.paymongo.com/reference/retrieve-a-paymentintent
+﻿
+﻿I hope this helps! Just let me know if you have more questions and I'll be right with you! 👍
+Your developer partner,
+﻿Steven

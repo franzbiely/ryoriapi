@@ -20,6 +20,11 @@ export class Transaction {
   @Column()
   table: string;
 
+  @Column({
+    default: ''
+  })
+  paymongo_pi_id?: string;
+
   @Column()
   branchId: number;
 

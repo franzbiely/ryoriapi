@@ -14,10 +14,12 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
-
+import { S3Service } from 'src/utils/S3Service';
 @Controller('pos/transaction')
 export class TransactionController {
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private readonly s3Service: S3Service) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -25,11 +27,28 @@ export class TransactionController {
     return this.transactionService.findAll(branch_Id);
   }
 
+  @Get('/status/:id')
+  async getStatus(@Param('id') id: number) {
+    return this.transactionService.getStatus(+id);
+  }
+
   // @TODO: Add security instead of guards..
   // @Note: No Guard because used in FE to get the transaction details...
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return this.transactionService.findOne(+id);
+    const response = await this.transactionService.findOne(+id);
+    const transactionItem = await Promise.all(
+      response.transactionItem.map(async (item) => {
+        return {
+          ...item,
+          photo: await this.s3Service.getFile(item.menuItem.photo) || '',  
+        }
+      })
+    );
+    return {
+      ...response,
+      transactionItem
+    };
   }
 
   @Post()
@@ -37,9 +56,9 @@ export class TransactionController {
     return this.transactionService.create(createTransactionDto);
   }
 
-  @Post('/create-payment/:id')
-  create_payment(@Param('id') id: string, @Body() payTransactionDto: PayTransactionDto) {
-    return this.transactionService.create_payment(+id, payTransactionDto);
+  @Post('/create-payment')
+  create_payment(@Body() payTransactionDto: PayTransactionDto) {
+    return this.transactionService.create_payment(payTransactionDto);
   }
 
   @UseGuards(JwtAuthGuard)
