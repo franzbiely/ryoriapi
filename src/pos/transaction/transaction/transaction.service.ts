@@ -7,7 +7,8 @@ import { Branch } from 'src/general/branch/branch.entity';
 import { TransactionItem } from '../transactionItem/transactionItem.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-
+import { PayTransactionDto } from './dto/pay-transaction.dto';
+import axios, { AxiosRequestConfig } from 'axios';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -36,7 +37,7 @@ export class TransactionService {
       where: {
         id: id,
       },
-      relations: ['branch', 'transactionItem'],
+      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
     });
     return findId;
   }
@@ -44,6 +45,7 @@ export class TransactionService {
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
     const transaction = new Transaction();
     transaction.status = _transaction.status;
+    transaction.table = _transaction.table;
     let branch;
     if (_transaction.branch_Id) {
       branch = await this.branchRepository.findOne({
@@ -56,7 +58,6 @@ export class TransactionService {
     const currentTransaction = await this.transactionRepository.save(
       transaction,
     );
-    console.log({ _transaction });
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
@@ -95,5 +96,47 @@ export class TransactionService {
 
   async remove(id: number): Promise<void> {
     await this.transactionRepository.delete(id);
+  }
+
+  async create_payment(id: number, payTransactionDto: PayTransactionDto) {
+    // @TODO : Add validation, amount should > 2000
+    const transaction = await this.findOne(id);
+
+    // @TODO: Deductions/discounts to be implemented on FE.
+    const discounts = payTransactionDto.discounts || 0
+    const totalAmount = transaction.transactionItem.reduce((prev, cur) => (prev + (cur.menuItem.price * cur.quantity)) , 0) - discounts
+    const config: AxiosRequestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Basic " + process.env.PAYMONGO_API_PUB_KEY
+      },
+    };
+
+    const body = JSON.stringify({
+      "data": {
+        "attributes": {
+          "amount": totalAmount * 100, // multiply to 100 because paymongo's value on 100 is 10000
+          "redirect": {
+            "success": payTransactionDto.redirect_success,
+            "failed": payTransactionDto.redirect_failed
+          },
+          "type": payTransactionDto.type,
+          "currency": "PHP"
+        }
+      }
+    });
+
+    const response = await axios.post('https://api.paymongo.com/v1/sources', 
+      body, config)
+    const data = response.data.data
+    if(data.attributes.status === 'pending') {
+      transaction.status = 'payment_on_process'
+      await this.transactionRepository.save(transaction);
+      return {
+        redirect: data.attributes.redirect.checkout_url,
+        id: data.id,
+        type: data.source
+      }
+    }
   }
 }

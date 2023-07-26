@@ -18,6 +18,9 @@ export class Transaction {
   status: string;
 
   @Column()
+  table: string;
+
+  @Column()
   branchId: number;
 
   @ManyToOne(() => Branch, (branch) => branch.transaction, {

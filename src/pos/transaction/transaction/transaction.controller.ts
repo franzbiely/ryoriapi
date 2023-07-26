@@ -13,6 +13,7 @@ import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { PayTransactionDto } from './dto/pay-transaction.dto';
 
 @Controller('pos/transaction')
 export class TransactionController {
@@ -24,7 +25,8 @@ export class TransactionController {
     return this.transactionService.findAll(branch_Id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @TODO: Add security instead of guards..
+  // @Note: No Guard because used in FE to get the transaction details...
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.transactionService.findOne(+id);
@@ -33,6 +35,11 @@ export class TransactionController {
   @Post()
   create(@Body() createTransactionDto: CreateTransactionDto) {
     return this.transactionService.create(createTransactionDto);
+  }
+
+  @Post('/create-payment/:id')
+  create_payment(@Param('id') id: string, @Body() payTransactionDto: PayTransactionDto) {
+    return this.transactionService.create_payment(+id, payTransactionDto);
   }
 
   @UseGuards(JwtAuthGuard)
