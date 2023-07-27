@@ -75,7 +75,8 @@ export class TransactionService {
       where: {
         branchId: bid,
         table: tid
-      }
+      },
+      order: { id: 'DESC' }
     });
     return this.getTransactionStatus(transaction)
   }
@@ -93,6 +94,7 @@ export class TransactionService {
     const transaction = new Transaction();
     transaction.status = _transaction.status;
     transaction.table = _transaction.table;
+    transaction.notes = _transaction.notes;
     let branch;
     if (_transaction.branch_Id) {
       branch = await this.branchRepository.findOne({
@@ -102,7 +104,7 @@ export class TransactionService {
     if (_transaction.branch_Id) {
       transaction.branch = branch;
     }
-    console.log({transaction})
+    
     const currentTransaction = await this.transactionRepository.save(
       transaction,
     );

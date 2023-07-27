@@ -20,6 +20,9 @@ export class Transaction {
   @Column()
   table: string;
 
+  @Column()
+  notes: string;
+
   @Column({
     default: ''
   })

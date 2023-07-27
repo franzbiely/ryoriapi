@@ -11,6 +11,9 @@ export class CreateReviewsDto {
     @IsNumber()
     rating: number;
 
+    @IsInt()
+    branch_Id: number;
+
     @IsDate()
     createdAt: Date;
 }

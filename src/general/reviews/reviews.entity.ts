@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Branch } from "../branch/branch.entity";
 
 @Entity({name: "reviews"})
 export class Reviews{
@@ -11,6 +12,14 @@ export class Reviews{
 
     @Column()
     rating: number;
+
+    @Column()
+    branchId: number;
+
+    @ManyToOne(() => Branch, (branch) => branch.rawCategory, {
+        onDelete: 'CASCADE',
+    })
+    branch: Branch;
 
     @CreateDateColumn()
     createdAt: Date;

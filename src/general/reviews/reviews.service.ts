@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import {Repository } from "typeorm";
 import { Reviews } from "./reviews.entity";
 import { CreateReviewsDto } from './dto/create-reviews.dto';
+import { UpdateReviewsDto } from "./dto/update-reviews.dto";
 
 @Injectable()
 export class ReviewsService {
@@ -26,11 +27,12 @@ export class ReviewsService {
         const reviews = new Reviews();
         reviews.description = _reviews.description
         reviews.rating = _reviews.rating
-        console.log("USERRR", reviews)
+        reviews.branchId = _reviews.branch_Id
+        
         return this.reviewsRepository.save(reviews);
     }
 
-    async update(id: number, reviews:Reviews) {
+    async update(id: number, reviews:UpdateReviewsDto) {
         await this.reviewsRepository.update(id, reviews)
     }
 

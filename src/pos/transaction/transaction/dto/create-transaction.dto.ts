@@ -8,6 +8,9 @@ export class CreateTransactionDto {
   status: string;
 
   @IsString()
+  notes: string;
+
+  @IsString()
   table: string;
 
   @IsInt()
