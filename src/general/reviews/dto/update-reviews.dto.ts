@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateOutletDto } from './create-outlet.dto';
+import { CreateReviewsDto } from './create-reviews.dto';
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
+import { IsNumber } from 'class-validator';
 
-export class UpdateOutletDto extends PartialType(CreateOutletDto) {
+export class UpdateReviewsDto extends PartialType(CreateReviewsDto) {
     @IsInt()
     id: number;
 
     @IsString()
-    name: string;
+    description: string;
 
-    @IsString()
-    address: string;
+    @IsNumber()
+    rating: number;
 
     @IsDate()
     createdAt: Date;

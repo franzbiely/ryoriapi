@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: "outlets"})
-export class Outlet{
+@Entity({name: "reviews"})
+export class Reviews{
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    name: string;
+    description: string;
 
     @Column()
-    address: string;
+    rating: number;
 
     @CreateDateColumn()
     createdAt: Date;

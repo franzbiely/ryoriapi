@@ -10,8 +10,8 @@ import { Users } from './general/user/user.entity';
 import { UserModule } from './general/user/user.module';
 import { Store } from './general/store/store.entity';
 import { StoreModule } from './general/store/store.module';
-import { Outlet } from './general/outlet/outlet.entity';
-import { OutletModule } from './general/outlet/outlet.module';
+import { Reviews } from './general/reviews/reviews.entity';
+import { ReviewsModule } from './general/reviews/reviews.module';
 import { Branch } from './general/branch/branch.entity';
 import { BranchModule } from './general/branch/branch.module';
 
@@ -54,7 +54,7 @@ import { BranchItemModule } from './pos/branchItem/branchItem.module';
         Consumption,
         Users,
         Store,
-        Outlet,
+        Reviews,
         Branch,
 
         // inventory
@@ -77,7 +77,7 @@ import { BranchItemModule } from './pos/branchItem/branchItem.module';
     ConsumptionModule,
     UserModule,
     StoreModule,
-    OutletModule,
+    ReviewsModule,
     BranchModule,
 
     // inventory
