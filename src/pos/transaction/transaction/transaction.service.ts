@@ -42,12 +42,7 @@ export class TransactionService {
     return findId;
   }
   
-  async getStatus(id: number): Promise<{status: string}> {
-    const transaction = await this.transactionRepository.findOne({
-      where: {
-        id: id,
-      }
-    });
+  async getTransactionStatus(transaction: Transaction): Promise<{status: string}> {
     if(transaction.paymongo_pi_id) {
       const config: AxiosRequestConfig = {
         headers: {
@@ -73,6 +68,25 @@ export class TransactionService {
         status: transaction.status
       };
     }
+  }
+
+  async getStatusByBidAndTid(sid: number, bid: number, tid: string): Promise<{status: string}> {
+    const transaction = await this.transactionRepository.findOne({
+      where: {
+        branchId: bid,
+        table: tid
+      }
+    });
+    return this.getTransactionStatus(transaction)
+  }
+
+  async getStatusById(id: number): Promise<{status: string}> {
+    const transaction = await this.transactionRepository.findOne({
+      where: {
+        id: id,
+      }
+    });
+    return this.getTransactionStatus(transaction)
   }
 
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
@@ -217,14 +231,11 @@ export class TransactionService {
   async create_payment(payTransactionDto: PayTransactionDto) {
     
     const transaction = await this.findOne(payTransactionDto.id);
-    
     const payment_intent_data = await this.create_payment_intent(transaction)
     
-    if(payment_intent_data.attributes.status === 'awaiting_payment_method') {
-      transaction.status = 'payment_on_process'
-      transaction.paymongo_pi_id = payment_intent_data.id
-      await this.transactionRepository.save(transaction);
-    }
+    transaction.status = payment_intent_data.attributes.status
+    transaction.paymongo_pi_id = payment_intent_data.id
+    await this.transactionRepository.save(transaction);
 
     const payment_method_data = await this.create_payment_method(payTransactionDto)
     const payment_intent_attach_data = await this.attach_payment_intent_to_method(payment_intent_data.id, payment_method_data.id)

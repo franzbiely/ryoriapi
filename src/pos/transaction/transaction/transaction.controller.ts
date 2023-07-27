@@ -28,8 +28,16 @@ export class TransactionController {
   }
 
   @Get('/status/:id')
-  async getStatus(@Param('id') id: number) {
-    return this.transactionService.getStatus(+id);
+  async getStatusById(@Param('id') id: number) {
+    return this.transactionService.getStatusById(+id);
+  }
+
+  @Get('/status/')
+  async getStatus(
+    @Query('sid') sid: number, 
+    @Query('bid') bid: number, 
+    @Query('tid') tid: string) {
+      return this.transactionService.getStatusByBidAndTid(+sid, +bid, tid);
   }
 
   // @TODO: Add security instead of guards..
