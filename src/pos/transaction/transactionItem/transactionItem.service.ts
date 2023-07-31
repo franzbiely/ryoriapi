@@ -68,30 +68,52 @@ export class TransactionItemService {
     }
     return this.transactionItemRepository.save(transactionItem);
   }
+  checkSameStatus(data) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return null;
+    }
+    const firstStatus = data[0].status;
+    for (let i = 1; i < data.length; i++) {
+      console.log(data[i]);
+      if (data[i].status !== firstStatus) {
+        return null;
+      }
+    }
+    return firstStatus;
+  }
 
   async update(
     id: number,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<TransactionItem> {
     const transactionItem = await this.findOne(id);
-    const { status, quantity, transaction_Id, menuItem_Id } =
-      updateTransactionItem;
+    const { status, quantity } = updateTransactionItem;
     transactionItem.status = status;
     transactionItem.quantity = quantity;
 
-    if (transaction_Id) {
-      const _transaction = await this.transactionRepository.findOne({
-        where: { id: transaction_Id },
-      });
-      transactionItem.transaction = _transaction;
+    const _transaction = await this.transactionRepository.findOne({
+      where: { id: transactionItem.transaction.id },
+    });
+    transactionItem.transaction = _transaction;
+    const result = await this.transactionItemRepository.save(transactionItem);
+
+    const itemStatus = await this.transactionItemRepository.find({
+      where: {
+        transaction: {
+          id: transactionItem.transaction.id,
+        },
+      },
+    });
+
+    const data = this.checkSameStatus(itemStatus);
+    if (data) {
+      _transaction.status = data;
+      await this.transactionRepository.save(_transaction);
     }
-    if (menuItem_Id) {
-      const _menuItem = await this.menuItemRepository.findOne({
-        where: { id: menuItem_Id },
-      });
-      transactionItem.menuItem = _menuItem;
-    }
-    return await this.transactionItemRepository.save(transactionItem);
+
+    console.log({ transactionItem });
+
+    return result;
   }
 
   async remove(id: number): Promise<void> {
