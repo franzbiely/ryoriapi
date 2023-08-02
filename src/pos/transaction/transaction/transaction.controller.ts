@@ -19,7 +19,8 @@ import { S3Service } from 'src/utils/S3Service';
 export class TransactionController {
   constructor(
     private transactionService: TransactionService,
-    private readonly s3Service: S3Service) {}
+    private readonly s3Service: S3Service,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -34,10 +35,11 @@ export class TransactionController {
 
   @Get('/status/')
   async getStatus(
-    @Query('sid') sid: number, 
-    @Query('bid') bid: number, 
-    @Query('tid') tid: string) {
-      return this.transactionService.getStatusByBidAndTid(+sid, +bid, tid);
+    @Query('sid') sid: number,
+    @Query('bid') bid: number,
+    @Query('tid') tid: string,
+  ) {
+    return this.transactionService.getStatusByBidAndTid(+sid, +bid, tid);
   }
 
   // @TODO: Add security instead of guards..
@@ -49,13 +51,13 @@ export class TransactionController {
       response.transactionItem.map(async (item) => {
         return {
           ...item,
-          photo: await this.s3Service.getFile(item.menuItem.photo) || '',  
-        }
-      })
+          photo: (await this.s3Service.getFile(item.menuItem.photo)) || '',
+        };
+      }),
     );
     return {
       ...response,
-      transactionItem
+      transactionItem,
     };
   }
 
@@ -69,7 +71,6 @@ export class TransactionController {
     return this.transactionService.create_payment(payTransactionDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
