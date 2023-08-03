@@ -22,7 +22,7 @@ export class UserService {
   userCredential(query: object | any): Promise<Users> {
     const x = this.usersRepository.findOne({
       where: query,
-      relations: ['store'],
+      relations: ['store', 'branch'],
     });
     return x;
   }
