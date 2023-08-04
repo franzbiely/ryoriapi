@@ -18,7 +18,7 @@ export class UpdateInventoryLogsDto extends PartialType(
   user_Id: number;
 
   @IsInt()
-  menuItem_Id: number;
+  rawGrocery_Id: number;
 
   @IsInt()
   branch_Id: number;

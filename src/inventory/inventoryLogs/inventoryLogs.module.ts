@@ -6,9 +6,12 @@ import { InventoryLogsService } from './inventoryLogs.service';
 import { Users } from 'src/general/user/user.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { Branch } from 'src/general/branch/branch.entity';
+import { RawGrocery } from '../rawGrocery/rawInventory.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([InventoryLogs, Users, MenuItem, Branch])],
+  imports: [
+    TypeOrmModule.forFeature([InventoryLogs, Users, RawGrocery, Branch]),
+  ],
   controllers: [InvLogsController],
   providers: [InventoryLogsService],
 })

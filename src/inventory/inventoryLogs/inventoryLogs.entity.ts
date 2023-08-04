@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Branch } from 'src/general/branch/branch.entity';
 import { Users } from 'src/general/user/user.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
@@ -8,9 +6,9 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { RawGrocery } from '../rawGrocery/rawInventory.entity';
 
 @Entity({ name: 'inventory_logs' })
 export class InventoryLogs {
@@ -29,10 +27,10 @@ export class InventoryLogs {
   @ManyToOne(() => Users, (user) => user.inventoryLogs, { onDelete: 'CASCADE' })
   user: Users;
 
-  @ManyToOne(() => MenuItem, (menuItem) => menuItem.inventoryLogs, {
+  @ManyToOne(() => RawGrocery, (rawGrocery) => rawGrocery.inventoryLogs, {
     onDelete: 'CASCADE',
   })
-  menuItem: MenuItem;
+  rawGrocery: RawGrocery;
 
   @ManyToOne(() => Branch, (branch) => branch.inventoryLogs, {
     onDelete: 'CASCADE',

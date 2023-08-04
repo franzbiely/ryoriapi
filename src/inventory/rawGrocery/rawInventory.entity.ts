@@ -6,9 +6,11 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RawCategory } from '../rawCategory/rawCategory.entity';
+import { InventoryLogs } from '../inventoryLogs/inventoryLogs.entity';
 
 @Entity({ name: 'raw_inventory_grocery' })
 export class RawGrocery {
@@ -37,6 +39,11 @@ export class RawGrocery {
   })
   @JoinTable()
   rawCategory: RawCategory[];
+
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
+    onDelete: 'CASCADE',
+  })
+  inventoryLogs: InventoryLogs[];
 
   @CreateDateColumn()
   createdAt: Date;

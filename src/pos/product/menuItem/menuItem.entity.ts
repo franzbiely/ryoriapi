@@ -55,11 +55,6 @@ export class MenuItem {
   branchItem: BranchItem[];
   transactionItem: TransactionItem[];
 
-  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
-    onDelete: 'CASCADE',
-  })
-  inventoryLogs: InventoryLogs[];
-
   @CreateDateColumn()
   createdAt: Date;
 }

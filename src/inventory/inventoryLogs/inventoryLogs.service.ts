@@ -7,6 +7,7 @@ import { UpdateInventoryLogsDto } from './dto/update-inventoryLogs.dto';
 import { Users } from 'src/general/user/user.entity';
 import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { Branch } from 'src/general/branch/branch.entity';
+import { RawGrocery } from '../rawGrocery/rawInventory.entity';
 
 @Injectable()
 export class InventoryLogsService {
@@ -15,23 +16,18 @@ export class InventoryLogsService {
     private invLogsRepository: Repository<InventoryLogs>,
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
+    @InjectRepository(RawGrocery)
+    private rawGroceryRepository: Repository<RawGrocery>,
     @InjectRepository(Branch)
     private branchRepository: Repository<Branch>,
   ) {}
-
-  //Get All User
-  // findAll(): Promise<InventoryLogs[]> {
-  //   return this.invLogsRepository.find({});
-  // }
 
   findAll(branch_Id: number): Promise<InventoryLogs[]> {
     return this.invLogsRepository.find({
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch', 'menuItem'],
+      relations: ['branch', 'rawGrocery'],
     });
   }
 
@@ -40,7 +36,7 @@ export class InventoryLogsService {
       where: {
         id: id,
       },
-      relations: ['menuItem', 'user'],
+      relations: ['rawGrocery', 'user'],
     });
     return getOneById;
   }
@@ -56,11 +52,11 @@ export class InventoryLogsService {
       });
       logs.user = user;
     }
-    if (_inventoryLogs.menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: _inventoryLogs.menuItem_Id },
+    if (_inventoryLogs.rawGrocery_Id) {
+      const rawGrocery = await this.rawGroceryRepository.findOne({
+        where: { id: _inventoryLogs.rawGrocery_Id },
       });
-      logs.menuItem = menuItem;
+      logs.rawGrocery = rawGrocery;
     }
     if (_inventoryLogs.branch_Id) {
       const branch = await this.branchRepository.findOne({
@@ -77,7 +73,7 @@ export class InventoryLogsService {
   ): Promise<InventoryLogs> {
     const inventoryLog = await this.findOne(id);
 
-    const { type, qtyReady, user_Id, menuItem_Id } = updateInvLogsDto;
+    const { type, qtyReady, user_Id } = updateInvLogsDto;
     inventoryLog.type = type;
     inventoryLog.qtyReady = qtyReady;
 
@@ -86,12 +82,6 @@ export class InventoryLogsService {
         where: { id: user_Id },
       });
       inventoryLog.user = user;
-    }
-    if (menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: menuItem_Id },
-      });
-      inventoryLog.menuItem = menuItem;
     }
     return this.invLogsRepository.save(inventoryLog);
   }

@@ -75,7 +75,7 @@ export class Branch {
   )
   transactionItem: TransactionItem[];
 
-  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.branch, {
     onDelete: 'CASCADE',
   })
   inventoryLogs: InventoryLogs[];
