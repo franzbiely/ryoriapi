@@ -16,6 +16,6 @@ import { AppGateway } from 'src/app.gateway';
     TypeOrmModule.forFeature([Transaction, Branch, TransactionItem, MenuItem]),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, S3Service, SocketService],
+  providers: [TransactionService, S3Service, SocketService, AppGateway],
 })
 export class TransactionModule {}

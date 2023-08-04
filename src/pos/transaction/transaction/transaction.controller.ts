@@ -15,11 +15,13 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import { S3Service } from 'src/utils/S3Service';
+import { AppGateway } from 'src/app.gateway';
 @Controller('pos/transaction')
 export class TransactionController {
   constructor(
     private transactionService: TransactionService,
     private readonly s3Service: S3Service,
+    private readonly appGateway: AppGateway
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -62,8 +64,15 @@ export class TransactionController {
   }
 
   @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionService.create(createTransactionDto);
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
+    
+    const result = await this.transactionService.create(createTransactionDto);
+    
+    this.appGateway.handleMessage({
+      title: `New Order: Table ${result.table}` ,
+      message: 'Please confirm the order.'
+    })
+    return result;
   }
 
   @Post('/create-payment')
