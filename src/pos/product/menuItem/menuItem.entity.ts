@@ -14,6 +14,7 @@ import {
 import { MenuCategory } from '../menuCategory/menuCategory.entity';
 import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
 import { TransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.entity';
+import { InventoryLogs } from 'src/inventory/inventoryLogs/inventoryLogs.entity';
 
 @Entity({ name: 'menu_item' })
 export class MenuItem {
@@ -53,6 +54,11 @@ export class MenuItem {
   })
   branchItem: BranchItem[];
   transactionItem: TransactionItem[];
+
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
+    onDelete: 'CASCADE',
+  })
+  inventoryLogs: InventoryLogs[];
 
   @CreateDateColumn()
   createdAt: Date;
