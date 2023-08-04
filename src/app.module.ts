@@ -36,6 +36,9 @@ import { ConsumptionModule } from './general/consumption/consumption.module';
 import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
 import { BranchItemModule } from './pos/branchItem/branchItem.module';
+import { SocketModule } from './utils/socket/socket.module';
+import { AppGateway } from './app.gateway';
+
 
 @Module({
   imports: [
@@ -93,8 +96,9 @@ import { BranchItemModule } from './pos/branchItem/branchItem.module';
     MenuCategoryModule,
     TransactionItemModule,
     BranchItemModule,
+    SocketModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {}
