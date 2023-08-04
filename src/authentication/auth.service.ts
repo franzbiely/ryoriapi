@@ -37,11 +37,17 @@ export class AuthService {
         created_at: user.user.created_at,
       },
     };
-    return {
+
+    const userdata = {
       access_token: this.jwtService.sign(payload),
       store_Id: user.user.store?.id,
-      Branch_Id: user.user.branch?.id,
+      role: user.user.role,
     };
+    console.log(JSON.stringify(user.user.role));
+    if (user.user.branch.length === 1) {
+      userdata['branch_Id'] = user.user.branch[0].id;
+    }
+    return userdata;
   }
 
   async create(data) {
