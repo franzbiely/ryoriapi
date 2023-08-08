@@ -23,6 +23,9 @@ export class Transaction {
   @Column()
   notes: string;
 
+  @Column()
+  amount: number;
+
   @Column({
     default: ''
   })

@@ -36,10 +36,10 @@ import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
 import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
 import { BranchItemModule } from './pos/branchItem/branchItem.module';
 import { SocketModule } from './utils/socket/socket.module';
-import { AppGateway } from './app.gateway';
 
 import { InventoryLogsModule } from './inventory/inventoryLogs/inventoryLogs.module';
 import { InventoryLogs } from './inventory/inventoryLogs/inventoryLogs.entity';
+import { DashboardModule } from './general/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -84,6 +84,7 @@ import { InventoryLogs } from './inventory/inventoryLogs/inventoryLogs.entity';
     StoreModule,
     ReviewsModule,
     BranchModule,
+    DashboardModule,
 
     // inventory
     InventoryCategoryModule,
@@ -102,6 +103,6 @@ import { InventoryLogs } from './inventory/inventoryLogs/inventoryLogs.entity';
     SocketModule
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway],
+  providers: [AppService],
 })
 export class AppModule {}

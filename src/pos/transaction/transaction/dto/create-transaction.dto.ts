@@ -11,6 +11,9 @@ export class CreateTransactionDto {
   notes: string;
 
   @IsString()
+  amount: number;
+
+  @IsString()
   table: string;
 
   @IsInt()

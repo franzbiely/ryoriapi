@@ -14,4 +14,7 @@ export class PayTransactionDto extends PartialType(CreateTransactionDto) {
 
   @IsOptional()
   name: number;
+
+  @IsOptional()
+  amount: number;
 }

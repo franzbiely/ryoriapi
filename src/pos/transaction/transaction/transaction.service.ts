@@ -113,6 +113,7 @@ export class TransactionService {
     transaction.status = _transaction.status;
     transaction.table = _transaction.table;
     transaction.notes = _transaction.notes;
+    transaction.amount = _transaction.amount;
     let branch;
     if (_transaction.branch_Id) {
       branch = await this.branchRepository.findOne({
@@ -275,6 +276,8 @@ export class TransactionService {
 
     transaction.status = payment_intent_data.attributes.status;
     transaction.paymongo_pi_id = payment_intent_data.id;
+    transaction.amount = payTransactionDto.amount;
+
     await this.transactionRepository.save(transaction);
 
     const payment_method_data = await this.create_payment_method(
