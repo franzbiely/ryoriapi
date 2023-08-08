@@ -29,11 +29,11 @@ export class RawGroceryService {
     const newData = response.map((data) => ({
       ...data,
       readyQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'ready' ? cur.qtyReady : 0;
+        const newQty = cur.type === 'ready' ? cur.quantity : 0;
         return prev + newQty;
       }, 0),
       wasteQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'waste' ? cur.qtyReady : 0;
+        const newQty = cur.type === 'waste' ? cur.quantity : 0;
         return prev + newQty;
       }, 0),
     }));

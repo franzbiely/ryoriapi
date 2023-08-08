@@ -12,7 +12,7 @@ export class UpdateInventoryLogsDto extends PartialType(
   type: string;
 
   @IsInt()
-  qtyReady: number;
+  quantity: number;
 
   @IsInt()
   user_Id: number;
