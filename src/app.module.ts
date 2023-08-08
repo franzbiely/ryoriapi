@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './authentication/auth.module';
@@ -39,6 +38,8 @@ import { BranchItemModule } from './pos/branchItem/branchItem.module';
 import { SocketModule } from './utils/socket/socket.module';
 import { AppGateway } from './app.gateway';
 
+import { InventoryLogsModule } from './inventory/inventoryLogs/inventoryLogs.module';
+import { InventoryLogs } from './inventory/inventoryLogs/inventoryLogs.entity';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { AppGateway } from './app.gateway';
         // inventory
         InventoryCategory,
         RawGrocery,
+        InventoryLogs,
 
         // pos
         MenuItem,
@@ -86,6 +88,7 @@ import { AppGateway } from './app.gateway';
     // inventory
     InventoryCategoryModule,
     RawGroceryModule,
+    InventoryLogsModule,
 
     // pos
     // CategoryModule,

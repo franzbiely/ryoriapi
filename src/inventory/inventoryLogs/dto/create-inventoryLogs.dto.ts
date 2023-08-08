@@ -1,6 +1,6 @@
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
-export class CreateInvLogsDto {
+export class CreateInventoryLogsDto {
   @IsInt()
   id: number;
 
@@ -9,6 +9,15 @@ export class CreateInvLogsDto {
 
   @IsInt()
   quantity: number;
+
+  @IsInt()
+  user_Id: number;
+
+  @IsInt()
+  rawGrocery_Id: number;
+
+  @IsInt()
+  branch_Id: number;
 
   @IsDate()
   createdAt: Date;

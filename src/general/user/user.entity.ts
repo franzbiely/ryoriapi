@@ -11,6 +11,7 @@ import {
 import { Store } from '../store/store.entity';
 import { Branch } from '../branch/branch.entity';
 import { IsOptional } from '@nestjs/class-validator';
+import { InventoryLogs } from 'src/inventory/inventoryLogs/inventoryLogs.entity';
 
 @Entity({ name: 'users' })
 export class Users {
@@ -53,6 +54,11 @@ export class Users {
   @ManyToMany(() => Branch, (branch) => branch.user, { onDelete: 'CASCADE' })
   @JoinTable()
   branch: Branch[];
+
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
+    onDelete: 'CASCADE',
+  })
+  inventoryLogs: InventoryLogs[];
 
   @CreateDateColumn()
   createdAt: Date;

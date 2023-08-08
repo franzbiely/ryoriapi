@@ -42,8 +42,8 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
       store_Id: user.user.store?.id,
       role: user.user.role,
+      user_Id: user.user.id,
     };
-    console.log(JSON.stringify(user.user.role));
     if (user.user.branch.length === 1) {
       userdata['branch_Id'] = user.user.branch[0].id;
     }

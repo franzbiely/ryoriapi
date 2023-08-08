@@ -17,6 +17,7 @@ import { RawGrocery } from 'src/inventory/rawGrocery/rawInventory.entity';
 import { RawCategory } from 'src/inventory/rawCategory/rawCategory.entity';
 import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
 import { TransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.entity';
+import { InventoryLogs } from 'src/inventory/inventoryLogs/inventoryLogs.entity';
 
 @Entity({ name: 'branch' })
 export class Branch {
@@ -73,6 +74,11 @@ export class Branch {
     },
   )
   transactionItem: TransactionItem[];
+
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.branch, {
+    onDelete: 'CASCADE',
+  })
+  inventoryLogs: InventoryLogs[];
 
   @CreateDateColumn()
   createdAt: Date;
