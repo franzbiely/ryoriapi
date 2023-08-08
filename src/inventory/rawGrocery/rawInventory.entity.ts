@@ -40,7 +40,7 @@ export class RawGrocery {
   @JoinTable()
   rawCategory: RawCategory[];
 
-  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {
+  @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.rawGrocery, {
     onDelete: 'CASCADE',
   })
   inventoryLogs: InventoryLogs[];

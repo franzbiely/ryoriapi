@@ -19,18 +19,35 @@ export class RawGroceryService {
   ) {}
 
   //Get All User
-  findAll(branch_Id: number): Promise<RawGrocery[]> {
-    return this.rawGroceryRepository.find({
+  async findAll(branch_Id: number): Promise<any[]> {
+    const response = await this.rawGroceryRepository.find({
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch'],
+      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user'],
     });
+    const newData = response.map((data) => ({
+      ...data,
+      readyQty: data.inventoryLogs.reduce((prev, cur) => {
+        const newQty = cur.type === 'ready' ? cur.qtyReady : 0;
+        return prev + newQty;
+      }, 0),
+      wasteQty: data.inventoryLogs.reduce((prev, cur) => {
+        const newQty = cur.type === 'waste' ? cur.qtyReady : 0;
+        return prev + newQty;
+      }, 0),
+    }));
+    return newData;
   }
 
-  findOne(id: number): Promise<RawGrocery> {
-    const x = this.rawGroceryRepository.findOneBy({ id });
-    return x;
+  async findOne(id: number): Promise<RawGrocery> {
+    const findId = this.rawGroceryRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user'],
+    });
+    return findId;
   }
 
   async create(_rawInv: CreateRawGroceryDto): Promise<RawGrocery> {
