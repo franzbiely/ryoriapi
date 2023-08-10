@@ -10,7 +10,7 @@ import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { S3Service } from 'src/utils/S3Service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Store, Users, MenuItem])],
+  imports: [TypeOrmModule.forFeature([Store, Users, MenuItem, Branch])],
   controllers: [StoreController],
   providers: [StoreService, S3Service],
 })

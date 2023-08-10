@@ -13,6 +13,8 @@ export class StoreService {
   constructor(
     @InjectRepository(Store)
     private storeRepository: Repository<Store>,
+    @InjectRepository(Branch)
+    private branchRepository: Repository<Branch>,
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
     @InjectRepository(MenuItem)
@@ -34,6 +36,16 @@ export class StoreService {
     return getOneById;
   }
 
+  async findStoreAndBranch(sid: number, bid: number): Promise<Branch> {
+    const branch = await this.branchRepository.findOne({
+      where: {
+        id: bid,
+      },
+      relations: ['store', 'store.user'],
+    });
+    return branch;
+  }
+
   async create(_store: CreateStoreDto): Promise<Store> {
     const store = new Store();
     store.storeName = _store.storeName;
@@ -51,7 +63,7 @@ export class StoreService {
 
   async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
     const stores = await this.findOneId(id);
-    const { storeName, photo, user_Id } = updateStoreDto;
+    const { storeName, photo, user_Id, branch_Id } = updateStoreDto;
     stores.storeName = storeName;
     stores.photo = photo;
 
@@ -61,6 +73,22 @@ export class StoreService {
       });
       stores.user = [user];
     }
+    console.log({updateStoreDto})
+    console.log({stores});
+
+    if (branch_Id) {
+      const branch = await this.branchRepository.findOne({
+        where: { id: branch_Id },
+      });
+      branch.branchName = updateStoreDto.branchName
+      branch.email = updateStoreDto.email
+      branch.contactNumber = updateStoreDto.contactNumber
+      branch.address = updateStoreDto.address
+      console.log({branch})
+      await this.branchRepository.save(branch);
+    }
+
+
     return await this.storeRepository.save(stores);
   }
 

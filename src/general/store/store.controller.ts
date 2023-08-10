@@ -29,6 +29,16 @@ export class StoreController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':sid/:bid')
+  async findStoreAndBranch(@Param('sid') sid: number, @Param('bid') bid: number) {
+    const response = await this.storeService.findStoreAndBranch(+sid, +bid);
+    return {
+      ...response,
+      photo: await this.s3Service.getFile(response.store.photo) || '',
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const response = await this.storeService.findOneId(+id);
@@ -37,6 +47,7 @@ export class StoreController {
       photo: await this.s3Service.getFile(response.photo) || '',
     }
   }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
@@ -59,7 +70,9 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('photo'))
   update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
+    console.log({updateStoreDto})
     return this.storeService.update(+id, updateStoreDto);
   }
 
