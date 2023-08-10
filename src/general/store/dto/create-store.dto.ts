@@ -23,4 +23,16 @@ export class CreateStoreDto {
 
   @IsDate()
   createdAt: Date;
+
+  @IsOptional()
+  branchName:string;
+
+  @IsOptional()
+  email:string;
+
+  @IsOptional()
+  contactNumber:string
+
+  @IsOptional()
+  address:string;
 }

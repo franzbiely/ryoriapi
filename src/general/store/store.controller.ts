@@ -72,7 +72,6 @@ export class StoreController {
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
   update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    console.log({updateStoreDto})
     return this.storeService.update(+id, updateStoreDto);
   }
 

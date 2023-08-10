@@ -57,8 +57,19 @@ export class StoreService {
       });
       store.user = [user];
     }
+    const result = await this.storeRepository.save(store);
 
-    return this.storeRepository.save(store);
+    if (_store.branchName) {
+      const branch = new Branch();
+      branch.branchName = _store.branchName
+      branch.email = _store.email || ''
+      branch.contactNumber = _store.contactNumber || ''
+      branch.address = _store.address || ''
+      branch.store = store;      
+      await this.branchRepository.save(branch);
+    }
+
+    return result
   }
 
   async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
@@ -73,8 +84,6 @@ export class StoreService {
       });
       stores.user = [user];
     }
-    console.log({updateStoreDto})
-    console.log({stores});
 
     if (branch_Id) {
       const branch = await this.branchRepository.findOne({
