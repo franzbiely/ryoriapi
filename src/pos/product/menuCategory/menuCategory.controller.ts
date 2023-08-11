@@ -72,6 +72,7 @@ export class MenuCategoryController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('photo'))
   update(
     @Param('id') id: string,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,

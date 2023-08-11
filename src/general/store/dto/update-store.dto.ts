@@ -8,24 +8,27 @@ export class UpdateStoreDto extends PartialType(CreateStoreDto) {
   @IsInt()
   id: number;
 
+  @IsInt()
+  user_Id: number;
+  
   @IsString()
   storeName: string;
-
-  @IsInt()
-  storeId: number;
 
   @IsString()
   photo: string;
 
   @IsOptional()
-  branch: Branch[];
+  branchName:string;
 
-  @IsInt()
-  menuItem_Id: number;
+  @IsOptional()
+  email:string;
 
-  @IsInt()
-  user_Id: number;
+  @IsOptional()
+  contactNumber:string
 
-  @IsDate()
-  createdAt: Date;
+  @IsOptional()
+  address:string;
+
+  @IsOptional()
+  branch_Id: number;
 }
