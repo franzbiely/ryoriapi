@@ -85,27 +85,27 @@ export class BranchItemService {
     id: number,
     updateQuantityDto: UpdateBranchItemDto,
   ): Promise<BranchItem> {
-    const qty = await this.findOne(id);
+    const branchItem = await this.findOne(id);
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
-    qty.quantity = quantity;
+    branchItem.quantity = quantity;
 
     if (branch_Id) {
       const branch = await this.branchRepository.findOne({
         where: { id: branch_Id },
       });
-      qty.branch = branch;
+      branchItem.branch = branch;
     }
     if (menuItem_Id) {
       const menuItem = await this.menuItemRepository.findOne({
         where: { id: menuItem_Id },
       });
-      qty.menuItem = menuItem;
+      branchItem.menuItem = menuItem;
     }
 
-    return await this.quantityRepository.save(qty);
+    return await this.branchItemRepository.save(branchItem);
   }
 
   async remove(id: number): Promise<void> {
-    await this.quantityRepository.delete(id);
+    await this.branchItemRepository.delete(id);
   }
 }

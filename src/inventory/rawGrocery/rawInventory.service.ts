@@ -24,7 +24,7 @@ export class RawGroceryService {
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user'],
+      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user', 'rawCategory'],
     });
     const newData = response.map((data) => ({
       ...data,
