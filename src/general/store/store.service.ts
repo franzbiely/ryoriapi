@@ -50,6 +50,8 @@ export class StoreService {
     const store = new Store();
     store.storeName = _store.storeName;
     store.photo = _store.photo || '';
+    store.appId = _store.appId;
+    store.appSecret = _store.appSecret;
 
     if (_store.user_Id) {
       const user = await this.usersRepository.findOne({
@@ -61,22 +63,25 @@ export class StoreService {
 
     if (_store.branchName) {
       const branch = new Branch();
-      branch.branchName = _store.branchName
-      branch.email = _store.email || ''
-      branch.contactNumber = _store.contactNumber || ''
-      branch.address = _store.address || ''
-      branch.store = store;      
+      branch.branchName = _store.branchName;
+      branch.email = _store.email || '';
+      branch.contactNumber = _store.contactNumber || '';
+      branch.address = _store.address || '';
+      branch.store = store;
       await this.branchRepository.save(branch);
     }
 
-    return result
+    return result;
   }
 
   async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
     const stores = await this.findOneId(id);
-    const { storeName, photo, user_Id, branch_Id } = updateStoreDto;
+    const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
+      updateStoreDto;
     stores.storeName = storeName;
     stores.photo = photo;
+    stores.appId = appId;
+    stores.appSecret = appSecret;
 
     if (user_Id) {
       const user = await this.usersRepository.findOne({
@@ -89,14 +94,13 @@ export class StoreService {
       const branch = await this.branchRepository.findOne({
         where: { id: branch_Id },
       });
-      branch.branchName = updateStoreDto.branchName
-      branch.email = updateStoreDto.email
-      branch.contactNumber = updateStoreDto.contactNumber
-      branch.address = updateStoreDto.address
-      console.log({branch})
+      branch.branchName = updateStoreDto.branchName;
+      branch.email = updateStoreDto.email;
+      branch.contactNumber = updateStoreDto.contactNumber;
+      branch.address = updateStoreDto.address;
+      console.log({ branch });
       await this.branchRepository.save(branch);
     }
-
 
     return await this.storeRepository.save(stores);
   }

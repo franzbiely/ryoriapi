@@ -9,6 +9,12 @@ export class CreateStoreDto {
   @IsString()
   storeName: string;
 
+  @IsString()
+  appId: string;
+
+  @IsString()
+  appSecret: string;
+
   @IsInt()
   branchId: number;
 
@@ -25,14 +31,14 @@ export class CreateStoreDto {
   createdAt: Date;
 
   @IsOptional()
-  branchName:string;
+  branchName: string;
 
   @IsOptional()
-  email:string;
+  email: string;
 
   @IsOptional()
-  contactNumber:string
+  contactNumber: string;
 
   @IsOptional()
-  address:string;
+  address: string;
 }

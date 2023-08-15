@@ -10,24 +10,30 @@ export class UpdateStoreDto extends PartialType(CreateStoreDto) {
 
   @IsInt()
   user_Id: number;
-  
+
   @IsString()
   storeName: string;
+
+  @IsString()
+  appId: string;
+
+  @IsString()
+  appSecret: string;
 
   @IsString()
   photo: string;
 
   @IsOptional()
-  branchName:string;
+  branchName: string;
 
   @IsOptional()
-  email:string;
+  email: string;
 
   @IsOptional()
-  contactNumber:string
+  contactNumber: string;
 
   @IsOptional()
-  address:string;
+  address: string;
 
   @IsOptional()
   branch_Id: number;

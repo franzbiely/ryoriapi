@@ -20,12 +20,18 @@ export class Store {
   @Column()
   storeName: string;
 
+  @Column()
+  appId: string;
+
+  @Column()
+  appSecret: string;
+
   @OneToMany(() => Branch, (branch) => branch.store)
   branch: Branch[];
 
   @Column()
   photo: string;
-  
+
   @OneToMany(() => Users, (user) => user.store, { onDelete: 'CASCADE' })
   user: Users[];
 
