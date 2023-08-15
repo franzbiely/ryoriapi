@@ -26,9 +26,9 @@ export class RawGroceryService {
       },
       relations: [
         'branch',
-        'rawCategory',
         'inventoryLogs',
         'inventoryLogs.user',
+        'rawCategory',
       ],
     });
     const newData = response.map((data) => ({
