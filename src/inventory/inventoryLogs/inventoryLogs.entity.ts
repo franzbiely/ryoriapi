@@ -19,7 +19,7 @@ export class InventoryLogs {
   type: string;
 
   @Column()
-  quantity: number;
+  quantityLogs: number;
 
   @Column()
   branchId: number;

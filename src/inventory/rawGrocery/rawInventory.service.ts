@@ -24,16 +24,21 @@ export class RawGroceryService {
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user'],
+      relations: [
+        'branch',
+        'rawCategory',
+        'inventoryLogs',
+        'inventoryLogs.user',
+      ],
     });
     const newData = response.map((data) => ({
       ...data,
       readyQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'ready' ? cur.quantity : 0;
+        const newQty = cur.type === 'ready' ? cur.quantityLogs : 0;
         return prev + newQty;
       }, 0),
       wasteQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'waste' ? cur.quantity : 0;
+        const newQty = cur.type === 'waste' ? cur.quantityLogs : 0;
         return prev + newQty;
       }, 0),
     }));
@@ -45,7 +50,12 @@ export class RawGroceryService {
       where: {
         id: id,
       },
-      relations: ['branch', 'inventoryLogs', 'inventoryLogs.user'],
+      relations: [
+        'branch',
+        'rawCategory',
+        'inventoryLogs',
+        'inventoryLogs.user',
+      ],
     });
     return findId;
   }

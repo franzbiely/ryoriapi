@@ -44,7 +44,7 @@ export class InventoryLogsService {
   async create(_inventoryLogs: CreateInventoryLogsDto): Promise<InventoryLogs> {
     const logs = new InventoryLogs();
     logs.type = _inventoryLogs.type;
-    logs.quantity = _inventoryLogs.quantity;
+    logs.quantityLogs = _inventoryLogs.quantityLogs;
 
     if (_inventoryLogs.user_Id) {
       const user = await this.userRepository.findOne({
@@ -73,9 +73,9 @@ export class InventoryLogsService {
   ): Promise<InventoryLogs> {
     const inventoryLog = await this.findOne(id);
 
-    const { type, quantity, user_Id } = updateInvLogsDto;
+    const { type, quantityLogs, user_Id } = updateInvLogsDto;
     inventoryLog.type = type;
-    inventoryLog.quantity = quantity;
+    inventoryLog.quantityLogs = quantityLogs;
 
     if (user_Id) {
       const user = await this.userRepository.findOne({

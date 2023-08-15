@@ -8,7 +8,7 @@ export class CreateInventoryLogsDto {
   type: string;
 
   @IsInt()
-  quantity: number;
+  quantityLogs: number;
 
   @IsInt()
   user_Id: number;

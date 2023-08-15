@@ -22,7 +22,7 @@ export class RawCategoryService {
       where: {
         branchId: branch_Id,
       },
-      relations: ['branch'],
+      relations: ['branch', 'rawGrocery'],
     });
   }
 
@@ -31,7 +31,7 @@ export class RawCategoryService {
       where: {
         id: id,
       },
-      relations: ['branch'],
+      relations: ['branch', 'rawGrocery'],
     });
     return getOneById;
   }
