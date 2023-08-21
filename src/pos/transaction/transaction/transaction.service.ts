@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Between, Not } from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Branch } from 'src/general/branch/branch.entity';
@@ -47,6 +47,52 @@ export class TransactionService {
       relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
     });
     return findId;
+  }
+
+  async getTransactionToday(branch_Id: number): Promise<Transaction[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const response = await this.transactionRepository.find({
+      where: {
+        branchId: branch_Id,
+        createdAt: Between(
+          today,
+          new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1),
+        ),
+      },
+      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
+    });
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItem.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+    return newData;
+  }
+
+  async getTransactionNotToday(branch_Id: number): Promise<Transaction[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const response = await this.transactionRepository.find({
+      where: {
+        branchId: branch_Id,
+        createdAt: Not(
+          Between(today, new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1)),
+        ),
+      },
+      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
+    });
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItem.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+
+    return newData;
   }
 
   async getTransactionStatus(

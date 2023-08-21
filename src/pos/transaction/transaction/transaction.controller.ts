@@ -21,7 +21,7 @@ export class TransactionController {
   constructor(
     private transactionService: TransactionService,
     private readonly s3Service: S3Service,
-    private readonly appGateway: AppGateway
+    private readonly appGateway: AppGateway,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -33,6 +33,18 @@ export class TransactionController {
   @Get('/status/:id')
   async getStatusById(@Param('id') id: number) {
     return this.transactionService.getStatusById(+id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('today')
+  async getTasksCreatedToday(@Query('branch_Id') branch_Id: number) {
+    return this.transactionService.getTransactionToday(branch_Id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('nottoday')
+  async getTasksNotDueToday(@Query('branch_Id') branch_Id: number) {
+    return this.transactionService.getTransactionNotToday(branch_Id);
   }
 
   @Get('/status/')
@@ -65,13 +77,12 @@ export class TransactionController {
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {
-    
     const result = await this.transactionService.create(createTransactionDto);
-    
+
     this.appGateway.handleMessage({
-      title: `New Order: Table ${result.table}` ,
-      message: 'Please confirm the order.'
-    })
+      title: `New Order: Table ${result.table}`,
+      message: 'Please confirm the order.',
+    });
     return result;
   }
 

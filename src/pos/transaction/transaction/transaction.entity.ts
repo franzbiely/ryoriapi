@@ -1,7 +1,6 @@
 import { Branch } from 'src/general/branch/branch.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -27,7 +26,7 @@ export class Transaction {
   amount: number;
 
   @Column({
-    default: ''
+    default: '',
   })
   paymongo_pi_id?: string;
 
@@ -46,6 +45,6 @@ export class Transaction {
   )
   transactionItem: TransactionItem[];
 
-  @CreateDateColumn()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }

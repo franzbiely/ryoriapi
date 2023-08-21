@@ -20,7 +20,10 @@ import { S3Service } from 'src/utils/S3Service';
 
 @Controller('store')
 export class StoreController {
-  constructor(private storeService: StoreService, private readonly s3Service: S3Service) {}
+  constructor(
+    private storeService: StoreService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -30,41 +33,47 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':sid/:bid')
-  async findStoreAndBranch(@Param('sid') sid: number, @Param('bid') bid: number) {
+  async findStoreAndBranch(
+    @Param('sid') sid: number,
+    @Param('bid') bid: number,
+  ) {
     const response = await this.storeService.findStoreAndBranch(+sid, +bid);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.store.photo) || '',
-    }
+      photo: (await this.s3Service.getFile(response.store.photo)) || '',
+    };
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     const response = await this.storeService.findOneId(+id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo) || '',
-    }
+      photo: (await this.s3Service.getFile(response.photo)) || '',
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  async create(@Body() createStoreDto: CreateStoreDto, @Request() req, @UploadedFile() photo) {
+  async create(
+    @Body() createStoreDto: CreateStoreDto,
+    @Request() req,
+    @UploadedFile() photo,
+  ) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
     const user_Id = decodedToken.userPayload.id;
     createStoreDto.user_Id = user_Id;
-    if(photo) {
-      const response = await this.s3Service.uploadFile(photo)
-      if(response) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
         createStoreDto.photo = response.Key;
       }
     }
-    console.log({createStoreDto})
     return this.storeService.create(createStoreDto);
   }
 
