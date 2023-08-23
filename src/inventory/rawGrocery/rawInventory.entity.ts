@@ -34,10 +34,7 @@ export class RawGrocery {
   })
   branch: Branch;
 
-  @ManyToMany(() => RawCategory, (rawCategory) => rawCategory.rawGrocery, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
+  @Column()
   rawCategory: RawCategory[];
 
   @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.rawGrocery, {

@@ -36,10 +36,7 @@ export class MenuItem {
   @Column()
   cookingTime: string;
 
-  @ManyToMany(() => MenuCategory, (menuCategory) => menuCategory.menuItem, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
+  @Column()
   menuCategory: MenuCategory[];
 
   @Column()

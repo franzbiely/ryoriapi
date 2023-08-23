@@ -43,7 +43,7 @@ export class Branch {
   @Column()
   storeId: number;
 
-  @ManyToMany(() => Users, (user) => user.branch, { onDelete: 'CASCADE' })
+  @Column()
   user: Users[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.branch, {

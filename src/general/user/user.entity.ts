@@ -51,8 +51,7 @@ export class Users {
   @ManyToOne(() => Store, (store) => store.user, { onDelete: 'CASCADE' })
   store: Store;
 
-  @ManyToMany(() => Branch, (branch) => branch.user, { onDelete: 'CASCADE' })
-  @JoinTable()
+  @Column()
   branch: Branch[];
 
   @OneToMany(() => InventoryLogs, (inventoryLogs) => inventoryLogs.user, {

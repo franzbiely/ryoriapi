@@ -24,9 +24,7 @@ export class MenuCategory {
   @Column()
   storeId: number;
 
-  @ManyToMany(() => MenuItem, (menuItem) => menuItem.menuCategory, {
-    onDelete: 'CASCADE',
-  })
+  @Column()
   menuItem: MenuItem[];
 
   @ManyToOne(() => Store, (store) => store.menuCategory, {

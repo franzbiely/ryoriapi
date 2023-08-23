@@ -21,9 +21,7 @@ export class RawCategory {
   @Column()
   branchId: number;
 
-  @ManyToMany(() => RawGrocery, (rawGrocery) => rawGrocery.rawCategory, {
-    onDelete: 'CASCADE',
-  })
+  @Column()
   rawGrocery?: RawGrocery[];
 
   @ManyToOne(() => Branch, (branch) => branch.rawCategory, {
