@@ -37,7 +37,7 @@ export class RawCategoryService {
   }
 
   async update(id: ObjectId, category: UpdateRawCategoryDto): Promise<IRawCategory> {
-    const rawCategory = await this.rawCategoryModel.findOne({id});
+    const rawCategory = await this.rawCategoryModel.findOne({_id:id});
     const { title, branch_Id } = category;
 
     rawCategory.title = title;

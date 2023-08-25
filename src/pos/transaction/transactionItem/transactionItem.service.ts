@@ -87,7 +87,7 @@ export class TransactionItemService {
     id: ObjectId,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<ITransactionItem | any> {
-    // const transactionItem = await this.findOne(id);
+    // const transactionItem = await this.findOne({_id:id});
     // const { status, quantity } = updateTransactionItem;
     // transactionItem.status = status;
     // transactionItem.quantity = quantity;

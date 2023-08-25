@@ -74,7 +74,7 @@ export class StoreService {
   }
 
   async update(id: ObjectId, updateStoreDto: UpdateStoreDto): Promise<IStore> {
-    const store = await this.storeModel.findOne({id});
+    const store = await this.storeModel.findOne({_id:id});
     const { storeName, appId, appSecret, photo, user_Id, branch_Id } = updateStoreDto;
     store.storeName = storeName;
     store.photo = photo;

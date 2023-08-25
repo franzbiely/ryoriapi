@@ -162,7 +162,7 @@ export class TransactionService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    // const transaction = await this.findOne(id);
+    // const transaction = await this.findOne({_id:id});
     // const { status } = updateTransactionDto;
     // transaction.status = status;
 

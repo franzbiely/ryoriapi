@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Post, Get, Param, Body, Delete, Patch } from "@nestjs/common";
+import { ObjectId } from "mongoose";
 import { ConsumptionService } from "./consumption.service";
 import { CreateConsumptionDto } from "./dto/create-consumption.dto";
 import { UpdateConsumptionDto } from "./dto/update-consumption.dto";

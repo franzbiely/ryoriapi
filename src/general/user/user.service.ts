@@ -69,8 +69,8 @@ export class UserService {
   }
 
   async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
-    const user = await this.usersModel.findOne({id});
-    console.log({ updateUserDto, user });
+    const user = await this.usersModel.findOne({_id: id});
+    
     const {
       role,
       username,
@@ -85,6 +85,9 @@ export class UserService {
       branch_Id,
     } = updateUserDto;
 
+    console.log({
+      user
+    })
     user.role = role;
     user.username = username;
     user.firstName = firstName;
@@ -94,12 +97,15 @@ export class UserService {
     user.phone = phone;
     user.userPhoto = userPhoto;
 
+    console.log({user})
+
     if (password) {
       user.password = await bcrypt.hash(password, 10);
     }
 
     if (store_Id) {
-      const store = await this.storeModel.findOne({ id: store_Id });
+      const store = await this.storeModel.findOne({ _id: store_Id });
+      console.log({store})
       user.store = store._id;
     }
 

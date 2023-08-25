@@ -2,6 +2,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateConsumptionDto } from './create-consumption.dto';
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateConsumptionDto extends PartialType(CreateConsumptionDto) {
     @IsInt()

@@ -70,7 +70,7 @@ export class MenuItemService {
   }
 
   async update(id: ObjectId, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
-    const menuItem = await this.menuItemModel.findOne({id});
+    const menuItem = await this.menuItemModel.findOne({_id:id});
 
     const { title, photo, price, description, cookingTime, category_Id } =
       updateMenuItemDto;

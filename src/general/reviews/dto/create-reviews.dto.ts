@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { IsString ,IsInt, IsDate, IsNumber } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateReviewsDto {
     @IsInt()

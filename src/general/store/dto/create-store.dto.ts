@@ -1,4 +1,5 @@
 import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateStoreDto {
   @IsInt()

@@ -60,7 +60,7 @@ export class RawGroceryService {
   }
 
   async update(id: ObjectId, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
-    const rawGrocery = await this.rawGroceryModel.findOne({id});
+    const rawGrocery = await this.rawGroceryModel.findOne({_id:id});
     const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
     rawGrocery.item = item;
