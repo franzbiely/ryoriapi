@@ -121,10 +121,12 @@ export class TransactionService {
       }
 
       return {
+        ...transaction,
         status: data.status,
       };
     } else {
       return {
+        ...transaction,
         status: transaction.status,
       };
     }
@@ -140,8 +142,10 @@ export class TransactionService {
         branchId: bid,
         table: tid,
       },
+      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
       order: { id: 'DESC' },
     });
+    console.log({ transaction });
     return this.getTransactionStatus(transaction);
   }
 
@@ -155,24 +159,38 @@ export class TransactionService {
   }
 
   async create(_transaction: CreateTransactionDto): Promise<Transaction> {
-    const transaction = new Transaction();
-    transaction.status = _transaction.status;
-    transaction.table = _transaction.table;
-    transaction.notes = _transaction.notes;
-    transaction.amount = _transaction.amount;
+    const bid = _transaction.branch_Id;
+    const tid = _transaction.table;
+    const lastTransaction = await this.transactionRepository.findOne({
+      where: {
+        branchId: bid,
+        table: tid,
+      },
+      // relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
+      order: { id: 'DESC' },
+    });
+    let currentTransaction;
     let branch;
-    if (_transaction.branch_Id) {
-      branch = await this.branchRepository.findOne({
-        where: { id: _transaction.branch_Id },
-      });
-    }
-    if (_transaction.branch_Id) {
-      transaction.branch = branch;
+    if (lastTransaction.status !== 'closed') {
+      currentTransaction = lastTransaction;
+    } else {
+      const transaction = new Transaction();
+      transaction.status = _transaction.status;
+      transaction.table = _transaction.table;
+      transaction.notes = _transaction.notes;
+      transaction.amount = _transaction.amount;
+
+      if (_transaction.branch_Id) {
+        branch = await this.branchRepository.findOne({
+          where: { id: _transaction.branch_Id },
+        });
+      }
+      if (_transaction.branch_Id) {
+        transaction.branch = branch;
+      }
+      currentTransaction = await this.transactionRepository.save(transaction);
     }
 
-    const currentTransaction = await this.transactionRepository.save(
-      transaction,
-    );
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
