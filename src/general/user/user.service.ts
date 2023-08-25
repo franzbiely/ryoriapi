@@ -56,12 +56,12 @@ export class UserService {
     });
 
     if (_user.store_Id) {
-      const store = await this.storeModel.findOne({ id: _user.store_Id });
+      const store = await this.storeModel.findOne({ _id: _user.store_Id });
       user.store = store._id;
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchModel.findOne({ id: _user.branch_Id });
+      const branch = await this.branchModel.findOne({ _id: _user.branch_Id });
       user.branch = [branch._id];
     }
     await user.save()
@@ -110,7 +110,7 @@ export class UserService {
     }
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({ id: branch_Id });
+      const branch = await this.branchModel.findOne({ _id: branch_Id });
       user.branch = [branch._id];
     }
 

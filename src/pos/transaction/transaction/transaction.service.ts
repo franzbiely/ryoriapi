@@ -95,22 +95,20 @@ export class TransactionService {
     bid: ObjectId,
     tid: ObjectId,
   ): Promise<{ status: string }> {
-    const transaction = await this.transactionModel.findOne({
-      where: {
-        branchId: bid,
-        table: tid,
-      },
-      order: { id: 'DESC' },
-    });
-    return this.getTransactionStatus(transaction);
+    const transaction = await this.transactionModel
+    .findOne({ branchId: bid, table: tid })
+    .sort({ id: -1 })
+    .exec();
+
+    if (transaction) {
+      return this.getTransactionStatus(transaction);
+    }
+  
+    return null; // Return null if no transaction is found
   }
 
   async getStatusById(id: ObjectId): Promise<{ status: string }> {
-    const transaction = await this.transactionModel.findOne({
-      where: {
-        id: id,
-      },
-    });
+    const transaction = await this.transactionModel.findById(id).exec()
     return this.getTransactionStatus(transaction);
   }
 

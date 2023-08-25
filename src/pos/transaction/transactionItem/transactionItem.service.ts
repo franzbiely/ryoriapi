@@ -23,22 +23,19 @@ export class TransactionItemService {
   ) {}
 
   findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
-    return this.transactionItemModel.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'transaction'],
-    });
+    return this.transactionItemModel
+      .find({ branchId: branch_Id })
+      .populate('branch')
+      .populate('transaction')
+      .exec();
   }
 
   findOne(id: ObjectId): Promise<ITransactionItem> {
-    const findId = this.transactionItemModel.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['branch', 'transaction'],
-    });
-    return findId;
+    return this.transactionItemModel
+      .findOne({ _id: id })
+      .populate('branch')
+      .populate('transaction')
+      .exec();
   }
 
   async create(

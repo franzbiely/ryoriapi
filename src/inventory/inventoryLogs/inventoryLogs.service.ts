@@ -54,7 +54,7 @@ export class InventoryLogsService {
   }
 
   async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
-    const inventoryLog = await this.invLogsModel.findOne({ id });
+    const inventoryLog = await this.invLogsModel.findOne({ _id: id });
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
     inventoryLog.type = type;

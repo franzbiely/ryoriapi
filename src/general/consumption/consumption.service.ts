@@ -18,7 +18,7 @@ export class ConsumptionService {
     }
 
     async findOne(id: ObjectId): Promise<IConsumption> {
-        const consumption = await this.consumptionModel.findOne({ id }).exec();
+        const consumption = await this.consumptionModel.findOne({ _id: id }).exec();
         if (!consumption) {
             throw new NotFoundException(`Consumption with id ${id} not found`);
         }

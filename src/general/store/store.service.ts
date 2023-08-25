@@ -27,7 +27,7 @@ export class StoreService {
   }
 
   async findOneId(id: ObjectId): Promise<IStore> {
-    const store = await this.storeModel.findOne({ id }).populate('user').exec();
+    const store = await this.storeModel.findOne({ _id: id }).populate('user').exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
     }
@@ -35,7 +35,7 @@ export class StoreService {
   }
 
   async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IBranch> {
-    const branch = await this.branchModel.findOne({ id: bid })
+    const branch = await this.branchModel.findOne({ _id: bid })
       .populate({ path: 'store', populate: { path: 'user' } })
       .exec();
     if (!branch) {
@@ -52,8 +52,10 @@ export class StoreService {
       appSecret: _store.appSecret,
     });
 
+    console.log({_store})
     if (_store.user_Id) {
-      const user = await this.usersModel.findOne({ id: _store.user_Id });
+      const user = await this.usersModel.findOne({ _id: _store.user_Id });
+      console.log({user})
       store.user = [user.id];
     }
 
@@ -82,12 +84,12 @@ export class StoreService {
     store.appSecret = appSecret;
 
     if (user_Id) {
-      const user = await this.usersModel.findOne({ id: user_Id });
+      const user = await this.usersModel.findOne({ _id: user_Id });
       store.user = [user.id];
     }
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({ id: branch_Id });
+      const branch = await this.branchModel.findOne({ _id: branch_Id });
       branch.branchName = updateStoreDto.branchName;
       branch.email = updateStoreDto.email;
       branch.contactNumber = updateStoreDto.contactNumber;

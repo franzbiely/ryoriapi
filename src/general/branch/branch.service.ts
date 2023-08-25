@@ -23,22 +23,18 @@ export class BranchService {
 
   //Get All User
   findAll(store_Id: ObjectId): Promise<IBranch[]> {
-    return this.branchModel.find({
-      where: {
-        storeId: store_Id,
-      },
-      relations: ['store'],
-    });
+    return this.branchModel
+      .find({ storeId: store_Id })
+      .populate('store')
+      .exec();
   }
 
   async findOneId(id: ObjectId): Promise<IBranch> {
-    const getOneById = this.branchModel.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['store', 'user'],
-    });
-    return getOneById;
+    return this.branchModel
+      .findOne({ _id: id })
+      .populate('store')
+      .populate('user')
+      .exec();
   }
 
   async create(_branch: CreateBranchDto): Promise<IBranch> {

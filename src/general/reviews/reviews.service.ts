@@ -19,7 +19,7 @@ export class ReviewsService {
     }
 
     async findOne(id: ObjectId): Promise<IReviews> {
-        const reviews = await this.reviewsModel.findOne({ id }).exec();
+        const reviews = await this.reviewsModel.findOne({ _id: id }).exec();
         if (!reviews) {
             throw new NotFoundException(`Reviews with id ${id} not found`);
         }
