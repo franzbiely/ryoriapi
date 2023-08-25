@@ -65,7 +65,8 @@ export class MenuItemService {
     //   menuItem.store = store;
     // }
 
-    return menuItem.save();
+    await menuItem.save();
+    return menuItem
   }
 
   async update(id: number, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
@@ -85,7 +86,8 @@ export class MenuItemService {
     //   menuItem.menuCategory = [menuCategory];
     // }
 
-    return menuItem.save();
+    await menuItem.save();
+    return menuItem
   }
 
   async remove(id: number): Promise<void> {

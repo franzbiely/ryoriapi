@@ -30,7 +30,8 @@ export class ConsumptionService {
             title: _consumption.title,
             photo: _consumption.photo,
         });
-        return consumption.save();
+        await consumption.save();
+        return consumption
     }
 
     async update(id: number, _consumption: IConsumption): Promise<void> {

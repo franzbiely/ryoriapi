@@ -95,7 +95,8 @@ export class StoreService {
       await branch.save();
     }
 
-    return await store.save();
+    await store.save();
+    return store
   }
 
   async remove(id: number): Promise<void> {

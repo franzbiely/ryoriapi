@@ -32,7 +32,8 @@ export class ReviewsService {
             rating: _reviews.rating,
             branchId: _reviews.branch_Id
         });
-        return reviews.save();
+        await reviews.save();
+        return reviews
     }
 
     async update(id: number, reviews: UpdateReviewsDto) {

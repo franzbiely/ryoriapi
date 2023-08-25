@@ -30,7 +30,8 @@ export class ReportService {
           photo: _report.photo,
         });
     
-        return report.save();
+        await report.save();
+        return report
       }
     
       async update(id: number, report: IReport): Promise<void> {

@@ -35,7 +35,8 @@ export class MenuCategoryService {
     //   menuCategory.store = store;
     // }
 
-    return menuCategory.save();
+    await menuCategory.save();
+    return menuCategory
   }
 
   async update(id: number, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {
@@ -50,7 +51,8 @@ export class MenuCategoryService {
     //   menuCategory.store = store;
     // }
 
-    return menuCategory.save();
+    await menuCategory.save();
+    return menuCategory
   }
 
   async remove(id: number): Promise<void> {

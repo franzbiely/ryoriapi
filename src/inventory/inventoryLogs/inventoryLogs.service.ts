@@ -49,7 +49,8 @@ export class InventoryLogsService {
       const branch = await this.branchModel.findById(_inventoryLogs.branch_Id);
       logs.branch = branch._id;
     }
-    return logs.save();
+    await logs.save();
+    return logs
   }
 
   async update(id: number, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
@@ -64,7 +65,8 @@ export class InventoryLogsService {
       inventoryLog.user = user._id;
     }
 
-    return inventoryLog.save();
+    await inventoryLog.save();
+    return inventoryLog
   }
 
   async remove(id: number): Promise<void> {

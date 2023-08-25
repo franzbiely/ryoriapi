@@ -32,7 +32,8 @@ export class RawCategoryService {
       const branch = await this.branchModel.findById(_category.branch_Id);
       category.branch = branch._id;
     }
-    return category.save();
+    await category.save();
+    return category
   }
 
   async update(id: number, category: UpdateRawCategoryDto): Promise<IRawCategory> {
@@ -46,7 +47,8 @@ export class RawCategoryService {
       rawCategory.branch = branch._id;
     }
 
-    return rawCategory.save();
+    await rawCategory.save();
+    return rawCategory
   }
 
   async remove(id: number): Promise<void> {

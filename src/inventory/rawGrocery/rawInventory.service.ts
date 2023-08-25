@@ -55,7 +55,8 @@ export class RawGroceryService {
       rawGroc.rawCategory = [rawCategory._id];
     }
 
-    return rawGroc.save();
+    await rawGroc.save();
+    return rawGroc
   }
 
   async update(id: number, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
@@ -71,7 +72,8 @@ export class RawGroceryService {
       rawGrocery.rawCategory = [rawCategory._id];
     }
 
-    return rawGrocery.save();
+    await rawGrocery.save();
+    return rawGrocery
   }
 
   async remove(id: number): Promise<void> {

@@ -26,7 +26,8 @@ export class CustomerService {
             lastName: _customer.lastName,
         });
 
-        return customer.save();
+        await customer.save();
+        return customer
     }
 
     async update(id: number, customer: ICustomer): Promise<ICustomer> {

@@ -62,7 +62,8 @@ export class BranchItemService {
       menuItem: _quantity.menuItem_Id,
     });
 
-    return qty.save();
+    await qty.save();
+    return qty
   }
 
   async update(id: number, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
@@ -77,7 +78,8 @@ export class BranchItemService {
     //   branchItem.menuItem = menuItem_Id;
     // }
 
-    return branchItem.save();
+    await branchItem.save();
+    return branchItem
   }
 
   async remove(id: number): Promise<void> {

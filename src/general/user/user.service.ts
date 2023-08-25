@@ -71,8 +71,8 @@ export class UserService {
       const branch = await this.branchModel.findOne({ id: _user.branch_Id });
       user.branch = [branch._id];
     }
-
-    return user.save();
+    await user.save()
+    return user
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<IUsers> {
@@ -115,7 +115,8 @@ export class UserService {
       user.branch = [branch._id];
     }
 
-    return user.save();
+    await user.save();
+    return user
   }
 
   async remove(id: number): Promise<void> {
