@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { Consumption } from "./consumption.entity";
 import { ConsumptionController } from "./consumption.controller";
 import { ConsumptionService } from "./consumption.service";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ConsumptionSchema } from "./consumption.model";
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Consumption])],
+    imports:[MongooseModule.forFeature([
+        {name: 'Consumption', schema: ConsumptionSchema},
+    ])],
     controllers: [ConsumptionController],
     providers: [ConsumptionService],
 })

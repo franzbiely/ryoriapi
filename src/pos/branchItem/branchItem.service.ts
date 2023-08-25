@@ -1,111 +1,86 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BranchItem } from './branchItem.entity';
+import { IBranchItem } from './branchItem.model';
 import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
-import { Branch } from 'src/general/branch/branch.entity';
-import { MenuItem } from '../product/menuItem/menuItem.entity';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IMenuItem } from '../product/menuItem/menuItem.model';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class BranchItemService {
   constructor(
-    @InjectRepository(BranchItem)
-    private quantityRepository: Repository<BranchItem>,
+    @InjectModel('BranchItem')
+    private readonly quantityModel: Model<IBranchItem>,
 
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(BranchItem)
-    private branchItemRepository: Repository<BranchItem>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('BranchItem')
+    private readonly branchItemModel: Model<IBranchItem>,
   ) {}
 
-  findAll(branch_Id: number, category_Id: number = -1): Promise<BranchItem[]> {
+  async findAll(branch_Id: number, category_Id: number = -1): Promise<any[]> {
     const where = (category_Id < 0) ? {
-      branchId: branch_Id
+      branch: branch_Id,
     } : {
-      branchId: branch_Id,
-      menuItem : {
-        menuCategory: {
-          id: category_Id
-        }
-      }
-    }
-    return this.quantityRepository.find({
-      where,
-      relations: ['branch', 'menuItem', 'menuItem.menuCategory'],
-    });
+      branch: branch_Id,
+      menuItem: {
+        menuCategory: category_Id,
+      },
+    };
+
+    return this.branchItemModel.find(where)
+      .populate({ path: 'branch menuItem', populate: { path: 'menuCategory' } })
+      .exec();
   }
 
-  async findOne(id: number): Promise<BranchItem> {
-    const getOneById = this.quantityRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['branch', 'menuItem'],
-    });
-    return getOneById;
+  async findOne(id: number): Promise<IBranchItem> {
+    return this.branchItemModel.findById(id)
+      .populate({ path: 'branch menuItem' })
+      .exec();
   }
 
-  async save(dto: CreateBranchItemDto) {
-    const branchItem = await this.branchItemRepository.findOne({
-      where: {
-        branchId: dto.branch_Id,
-        menuItemId: dto.menuItem_Id,
-      },
+  async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
+    const branchItem = await this.branchItemModel.findOne({
+      branch: dto.branch_Id,
+      menuItem: dto.menuItem_Id,
     });
+
     if (branchItem) {
-      return await this.update(branchItem.id, dto);
+      // return this.update(branchItem.id, dto);
     } else {
-      return await this.create(dto);
+      return this.create(dto);
     }
   }
 
-  async create(_quantity: CreateBranchItemDto): Promise<BranchItem> {
-    const qty = new BranchItem();
-    qty.quantity = _quantity.quantity;
+  async create(_quantity: CreateBranchItemDto): Promise<IBranchItem> {
+    const qty = new this.branchItemModel({
+      quantity: _quantity.quantity,
+      branch: _quantity.branch_Id,
+      menuItem: _quantity.menuItem_Id,
+    });
 
-    if (_quantity.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _quantity.branch_Id },
-      });
-      qty.branch = branch;
-    }
-    if (_quantity.menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: _quantity.menuItem_Id },
-      });
-      qty.menuItem = menuItem;
-    }
-    return this.quantityRepository.save(qty);
+    return qty.save();
   }
 
-  async update(
-    id: number,
-    updateQuantityDto: UpdateBranchItemDto,
-  ): Promise<BranchItem> {
-    const branchItem = await this.findOne(id);
+  async update(id: number, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
+    const branchItem = await this.branchItemModel.findOne({id});
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = quantity;
 
-    if (branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: branch_Id },
-      });
-      branchItem.branch = branch;
-    }
-    if (menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: menuItem_Id },
-      });
-      branchItem.menuItem = menuItem;
-    }
+    // if (branch_Id) {
+    //   branchItem.branch = branch_Id;
+    // }
+    // if (menuItem_Id) {
+    //   branchItem.menuItem = menuItem_Id;
+    // }
 
-    return await this.branchItemRepository.save(branchItem);
+    return branchItem.save();
   }
 
   async remove(id: number): Promise<void> {
-    await this.branchItemRepository.delete(id);
+    await this.branchItemModel.deleteOne({ _id: id }).exec();
   }
 }

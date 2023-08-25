@@ -1,91 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { RawGrocery } from './rawInventory.entity';
 import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
 import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
-import { RawCategory } from '../rawCategory/rawCategory.entity';
-import { Branch } from 'src/general/branch/branch.entity';
+import { IRawCategory } from '../rawCategory/rawCategory.model';
+import { IBranch } from 'src/general/branch/branch.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IRawGrocery } from './rawInventory.model';
 
 @Injectable()
 export class RawGroceryService {
   constructor(
-    @InjectRepository(RawGrocery)
-    private rawGroceryRepository: Repository<RawGrocery>,
-    @InjectRepository(RawCategory)
-    private rawCategoryRepository: Repository<RawCategory>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
+    @InjectModel('RawGrocery')
+    private readonly rawGroceryModel: Model<IRawGrocery>,
+    @InjectModel('RawCategory')
+    private readonly rawCategoryModel: Model<IRawCategory>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
   ) {}
 
-  //Get All User
   async findAll(branch_Id: number): Promise<any[]> {
-    const response = await this.rawGroceryRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: [
-        'branch',
-        'inventoryLogs',
-        'inventoryLogs.user',
-        'rawCategory',
-      ],
-    });
+    const response = await this.rawGroceryModel.find({ branch: branch_Id })
+      .populate({ path: 'branch inventoryLogs rawCategory', populate: { path: 'user' } })
+      .exec();
+
     const newData = response.map((data) => ({
-      ...data,
-      readyQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'ready' ? cur.quantityLogs : 0;
-        return prev + newQty;
-      }, 0),
-      wasteQty: data.inventoryLogs.reduce((prev, cur) => {
-        const newQty = cur.type === 'waste' ? cur.quantityLogs : 0;
-        return prev + newQty;
-      }, 0),
+      ...data.toJSON(),
+      // readyQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'ready' ? prev + cur.quantityLogs : prev), 0),
+      // wasteQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'waste' ? prev + cur.quantityLogs : prev), 0),
     }));
+
     return newData;
   }
 
-  async findOne(id: number): Promise<RawGrocery> {
-    const findId = this.rawGroceryRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: [
-        'branch',
-        'rawCategory',
-        'inventoryLogs',
-        'inventoryLogs.user',
-      ],
-    });
-    return findId;
+  async findOne(id: number): Promise<IRawGrocery> {
+    return this.rawGroceryModel.findById(id)
+      .populate({ path: 'branch rawCategory inventoryLogs', populate: { path: 'user' } })
+      .exec();
   }
 
-  async create(_rawInv: CreateRawGroceryDto): Promise<RawGrocery> {
-    const rawGroc = new RawGrocery();
-    rawGroc.item = _rawInv.item;
-    rawGroc.weight = _rawInv.weight;
-    rawGroc.quantity = _rawInv.quantity;
+  async create(_rawInv: CreateRawGroceryDto): Promise<IRawGrocery> {
+    const rawGroc = new this.rawGroceryModel({
+      item: _rawInv.item,
+      weight: _rawInv.weight,
+      quantity: _rawInv.quantity,
+    });
 
     if (_rawInv.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _rawInv.branch_Id },
-      });
-      rawGroc.branch = branch;
+      const branch = await this.branchModel.findById(_rawInv.branch_Id);
+      rawGroc.branch = branch._id;
     }
+
     if (_rawInv.rawCategory_Id) {
-      const rawCategory = await this.rawCategoryRepository.findOne({
-        where: { id: _rawInv.rawCategory_Id },
-      });
-      rawGroc.rawCategory = [rawCategory];
+      const rawCategory = await this.rawCategoryModel.findById(_rawInv.rawCategory_Id);
+      rawGroc.rawCategory = [rawCategory._id];
     }
-    return this.rawGroceryRepository.save(rawGroc);
+
+    return rawGroc.save();
   }
 
-  async update(
-    id: number,
-    rawGroceryDto: UpdateRawGroceryDto,
-  ): Promise<RawGrocery> {
-    const rawGrocery = await this.findOne(id);
+  async update(id: number, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
+    const rawGrocery = await this.rawGroceryModel.findOne({id});
     const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
     rawGrocery.item = item;
@@ -93,16 +67,14 @@ export class RawGroceryService {
     rawGrocery.quantity = quantity;
 
     if (rawCategory_Id) {
-      const rawCategory = await this.rawCategoryRepository.findOne({
-        where: { id: rawCategory_Id },
-      });
-      rawGrocery.rawCategory = [rawCategory];
+      const rawCategory = await this.rawCategoryModel.findById(rawCategory_Id);
+      rawGrocery.rawCategory = [rawCategory._id];
     }
 
-    return await this.rawGroceryRepository.save(rawGrocery);
+    return rawGrocery.save();
   }
 
   async remove(id: number): Promise<void> {
-    await this.rawGroceryRepository.delete(id);
+    await this.rawGroceryModel.deleteOne({ _id: id }).exec();
   }
 }

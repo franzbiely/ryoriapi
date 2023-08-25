@@ -28,7 +28,7 @@ export class ConsumptionController {
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateConsumptionDto: UpdateConsumptionDto) {
-         this.consumptionService.update(+id, updateConsumptionDto);
+        //  this.consumptionService.update(+id, updateConsumptionDto);
          return "Updated"
     }
 

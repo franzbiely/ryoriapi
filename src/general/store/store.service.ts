@@ -1,111 +1,104 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Store } from './store.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { IStore } from './store.model';
 import { CreateStoreDto } from './dto/create-store.dto';
-import { Branch } from '../branch/branch.entity';
-import { Users } from '../user/user.entity';
+import { IBranch } from '../branch/branch.model';
+import { IUsers } from '../user/user.model';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
+import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class StoreService {
   constructor(
-    @InjectRepository(Store)
-    private storeRepository: Repository<Store>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
+    @InjectModel('Store')
+    private readonly storeModel: Model<IStore>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
+    @InjectModel('Users')
+    private readonly usersModel: Model<IUsers>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
   ) {}
 
   //Get All food
-  findAll(): Promise<Store[]> {
-    return this.storeRepository.find({});
+  findAll(): Promise<IStore[]> {
+    return this.storeModel.find({});
   }
 
-  async findOneId(id: number): Promise<Store> {
-    const getOneById = this.storeRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['user'],
-    });
-    return getOneById;
+  async findOneId(id: number): Promise<IStore> {
+    const store = await this.storeModel.findOne({ id }).populate('user').exec();
+    if (!store) {
+      throw new NotFoundException(`Store with id ${id} not found`);
+    }
+    return store;
   }
 
-  async findStoreAndBranch(sid: number, bid: number): Promise<Branch> {
-    const branch = await this.branchRepository.findOne({
-      where: {
-        id: bid,
-      },
-      relations: ['store', 'store.user'],
-    });
+  async findStoreAndBranch(sid: number, bid: number): Promise<IBranch> {
+    const branch = await this.branchModel.findOne({ id: bid })
+      .populate({ path: 'store', populate: { path: 'user' } })
+      .exec();
+    if (!branch) {
+      throw new NotFoundException(`Branch with id ${bid} not found`);
+    }
     return branch;
   }
 
-  async create(_store: CreateStoreDto): Promise<Store> {
-    const store = new Store();
-    store.storeName = _store.storeName;
-    store.photo = _store.photo || '';
-    store.appId = _store.appId;
-    store.appSecret = _store.appSecret;
+  async create(_store: CreateStoreDto): Promise<IStore> {
+    const store = new this.storeModel({
+      storeName: _store.storeName,
+      photo: _store.photo || '',
+      appId: _store.appId,
+      appSecret: _store.appSecret,
+    });
 
     if (_store.user_Id) {
-      const user = await this.usersRepository.findOne({
-        where: { id: _store.user_Id },
-      });
-      store.user = [user];
+      const user = await this.usersModel.findOne({ id: _store.user_Id });
+      store.user = [user.id];
     }
-    const result = await this.storeRepository.save(store);
+
+    const result = await store.save();
 
     if (_store.branchName) {
-      const branch = new Branch();
-      branch.branchName = _store.branchName;
-      branch.email = _store.email || '';
-      branch.contactNumber = _store.contactNumber || '';
-      branch.address = _store.address || '';
-      branch.store = store;
-      await this.branchRepository.save(branch);
+      const branch = new this.branchModel({
+        branchName: _store.branchName,
+        email: _store.email || '',
+        contactNumber: _store.contactNumber || '',
+        address: _store.address || '',
+        store: store._id,
+      });
+      await branch.save();
     }
 
     return result;
   }
 
-  async update(id: number, updateStoreDto: UpdateStoreDto): Promise<Store> {
-    const stores = await this.findOneId(id);
-    const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
-      updateStoreDto;
-    stores.storeName = storeName;
-    stores.photo = photo;
-    stores.appId = appId;
-    stores.appSecret = appSecret;
+  async update(id: number, updateStoreDto: UpdateStoreDto): Promise<IStore> {
+    const store = await this.storeModel.findOne({id});
+    const { storeName, appId, appSecret, photo, user_Id, branch_Id } = updateStoreDto;
+    store.storeName = storeName;
+    store.photo = photo;
+    store.appId = appId;
+    store.appSecret = appSecret;
 
     if (user_Id) {
-      const user = await this.usersRepository.findOne({
-        where: { id: user_Id },
-      });
-      stores.user = [user];
+      const user = await this.usersModel.findOne({ id: user_Id });
+      store.user = [user.id];
     }
 
     if (branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: branch_Id },
-      });
+      const branch = await this.branchModel.findOne({ id: branch_Id });
       branch.branchName = updateStoreDto.branchName;
       branch.email = updateStoreDto.email;
       branch.contactNumber = updateStoreDto.contactNumber;
       branch.address = updateStoreDto.address;
-      console.log({ branch });
-      await this.branchRepository.save(branch);
+      await branch.save();
     }
 
-    return await this.storeRepository.save(stores);
+    return await store.save();
   }
 
   async remove(id: number): Promise<void> {
-    await this.storeRepository.delete(id);
+    await this.storeModel.deleteOne({ id }).exec();
   }
 }

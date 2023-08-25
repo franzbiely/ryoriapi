@@ -1,87 +1,93 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { Branch } from 'src/general/branch/branch.entity';
-import { TransactionItem } from '../transactionItem/transactionItem.entity';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import axios, { AxiosRequestConfig } from 'axios';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ITransaction } from './transaction.model';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
+import { ITransactionItem } from '../transactionItem/transactionItem.model';
 @Injectable()
 export class TransactionService {
   constructor(
-    @InjectRepository(Transaction)
-    private transactionRepository: Repository<Transaction>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(TransactionItem)
-    private transactionItemRepository: Repository<TransactionItem>,
+    @InjectModel('Transaction')
+    private readonly transactionModel: Model<ITransaction>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('TransactionItem')
+    private readonly transactionItemModel: Model<ITransactionItem>,
   ) {}
 
   //Get All User
-  async findAll(branch_Id: number): Promise<Transaction[]> {
-    const response = await this.transactionRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
-    });
-    const newData = response.map((data) => ({
-      ...data,
-      total: data.transactionItem.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
-    }));
-    return newData;
+  async findAll(branch_Id: number): Promise<ITransaction[]|any> {
+    // const response = await this.transactionModel.find({
+    //   where: {
+    //     branchId: branch_Id,
+    //   },
+    //   relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
+    // });
+    // const newData = response.map((data) => ({
+    //   ...data,
+    //   total: data.transactionItem.reduce((prev, cur) => {
+    //     return prev + cur.quantity * cur.menuItem.price;
+    //   }, 0),
+    // }));
+    // return newData;
   }
 
-  findOne(id: number): Promise<Transaction> {
-    const findId = this.transactionRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
-    });
-    return findId;
+  async findOne(id: number): Promise<ITransaction> {
+    try {
+      const transaction = await this.transactionModel.findById(id)
+        .populate('branch')
+        .populate({ path: 'transactionItem', populate: 'menuItem' });
+  
+      if (!transaction) {
+        throw new Error('Transaction not found');
+      }
+  
+      return transaction.toObject();
+    } catch (error) {
+      throw new Error('Error while fetching transaction');
+    }
   }
 
   async getTransactionStatus(
-    transaction: Transaction,
-  ): Promise<{ status: string }> {
-    if (transaction.paymongo_pi_id) {
-      const config: AxiosRequestConfig = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'Basic ' +
-            Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64'),
-        },
-      };
-      const response = await axios.get(
-        'https://api.paymongo.com/v1/payment_intents/' +
-          transaction.paymongo_pi_id,
-        config,
-      );
+    transaction: ITransaction,
+  ): Promise<{ status: string } | any> {
+    // if (transaction.paymongo_pi_id) {
+    //   const config: AxiosRequestConfig = {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization:
+    //         'Basic ' +
+    //         Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64'),
+    //     },
+    //   };
+    //   const response = await axios.get(
+    //     'https://api.paymongo.com/v1/payment_intents/' +
+    //       transaction.paymongo_pi_id,
+    //     config,
+    //   );
 
-      const data = response.data.data.attributes;
+    //   const data = response.data.data.attributes;
 
-      if (data.status === 'succeeded') {
-        transaction.status = 'closed';
-        await this.transactionRepository.save(transaction);
-      }
+    //   if (data.status === 'succeeded') {
+    //     transaction.status = 'closed';
+    //     await this.transactionModel.save(transaction);
+    //   }
 
-      return {
-        status: data.status,
-      };
-    } else {
-      return {
-        status: transaction.status,
-      };
-    }
+    //   return {
+    //     status: data.status,
+    //   };
+    // } else {
+    //   return {
+    //     status: transaction.status,
+    //   };
+    // }
   }
 
   async getStatusByBidAndTid(
@@ -89,7 +95,7 @@ export class TransactionService {
     bid: number,
     tid: string,
   ): Promise<{ status: string }> {
-    const transaction = await this.transactionRepository.findOne({
+    const transaction = await this.transactionModel.findOne({
       where: {
         branchId: bid,
         table: tid,
@@ -100,7 +106,7 @@ export class TransactionService {
   }
 
   async getStatusById(id: number): Promise<{ status: string }> {
-    const transaction = await this.transactionRepository.findOne({
+    const transaction = await this.transactionModel.findOne({
       where: {
         id: id,
       },
@@ -108,67 +114,67 @@ export class TransactionService {
     return this.getTransactionStatus(transaction);
   }
 
-  async create(_transaction: CreateTransactionDto): Promise<Transaction> {
-    const transaction = new Transaction();
-    transaction.status = _transaction.status;
-    transaction.table = _transaction.table;
-    transaction.notes = _transaction.notes;
-    transaction.amount = _transaction.amount;
-    let branch;
-    if (_transaction.branch_Id) {
-      branch = await this.branchRepository.findOne({
-        where: { id: _transaction.branch_Id },
-      });
-    }
-    if (_transaction.branch_Id) {
-      transaction.branch = branch;
-    }
+  async create(_transaction: CreateTransactionDto): Promise<ITransaction | any> {
+    // const transaction = new Transaction();
+    // transaction.status = _transaction.status;
+    // transaction.table = _transaction.table;
+    // transaction.notes = _transaction.notes;
+    // transaction.amount = _transaction.amount;
+    // let branch;
+    // if (_transaction.branch_Id) {
+    //   branch = await this.branchModel.findOne({
+    //     where: { id: _transaction.branch_Id },
+    //   });
+    // }
+    // if (_transaction.branch_Id) {
+    //   transaction.branch = branch;
+    // }
 
-    const currentTransaction = await this.transactionRepository.save(
-      transaction,
-    );
-    if (!Array.isArray(_transaction.item)) {
-      _transaction.item = [_transaction.item];
-    }
-    await Promise.all(
-      _transaction.item.map(async (item) => {
-        const _item = JSON.parse(item);
-        const menuItem = await this.menuItemRepository.findOne({
-          where: { id: _item.id },
-        });
+    // const currentTransaction = await this.transactionModel.save(
+    //   transaction,
+    // );
+    // if (!Array.isArray(_transaction.item)) {
+    //   _transaction.item = [_transaction.item];
+    // }
+    // await Promise.all(
+    //   _transaction.item.map(async (item) => {
+    //     const _item = JSON.parse(item);
+    //     const menuItem = await this.menuItemModel.findOne({
+    //       where: { id: _item.id },
+    //     });
 
-        const transactionItem = new TransactionItem();
-        transactionItem.quantity = _item.qty;
-        transactionItem.status = 'new';
-        transactionItem.menuItem = menuItem;
-        transactionItem.transaction = currentTransaction;
-        if (_transaction.branch_Id) {
-          transactionItem.branch = branch;
-        }
-        console.log({ transactionItem });
-        await this.transactionItemRepository.save(transactionItem);
-      }),
-    );
-    return currentTransaction;
+    //     const transactionItem = new TransactionItem();
+    //     transactionItem.quantity = _item.qty;
+    //     transactionItem.status = 'new';
+    //     transactionItem.menuItem = menuItem;
+    //     transactionItem.transaction = currentTransaction;
+    //     if (_transaction.branch_Id) {
+    //       transactionItem.branch = branch;
+    //     }
+    //     console.log({ transactionItem });
+    //     await this.transactionItemModel.save(transactionItem);
+    //   }),
+    // );
+    // return currentTransaction;
   }
 
   async update(
     id: number,
     updateTransactionDto: UpdateTransactionDto,
-  ): Promise<Transaction> {
-    const transaction = await this.findOne(id);
-    const { status } = updateTransactionDto;
-    transaction.status = status;
+  ): Promise<ITransaction | any> {
+    // const transaction = await this.findOne(id);
+    // const { status } = updateTransactionDto;
+    // transaction.status = status;
 
-    if (updateTransactionDto.paymongo_pi_id) {
-      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
-    }
+    // if (updateTransactionDto.paymongo_pi_id) {
+    //   transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
+    // }
 
-    return await this.transactionRepository.save(transaction);
+    // return await this.transactionModel.save(transaction);
   }
 
   async remove(id: number): Promise<void> {
-    await this.transactionRepository.delete(id);
+    // await this.transactionModel.delete(id);
   }
 
   async create_payment_intent(transaction): Promise<any> {
@@ -271,26 +277,26 @@ export class TransactionService {
 
   // @TODO : Add validation, amount should > 2000
   async create_payment(payTransactionDto: PayTransactionDto) {
-    const transaction = await this.findOne(payTransactionDto.id);
-    const payment_intent_data = await this.create_payment_intent(transaction);
+    // const transaction = await this.findOne(payTransactionDto.id);
+    // const payment_intent_data = await this.create_payment_intent(transaction);
 
-    transaction.status = payment_intent_data.attributes.status;
-    transaction.paymongo_pi_id = payment_intent_data.id;
-    transaction.amount = payTransactionDto.amount;
+    // transaction.status = payment_intent_data.attributes.status;
+    // transaction.paymongo_pi_id = payment_intent_data.id;
+    // transaction.amount = payTransactionDto.amount;
 
-    await this.transactionRepository.save(transaction);
+    // await this.transactionModel.save(transaction);
 
-    const payment_method_data = await this.create_payment_method(
-      payTransactionDto,
-    );
-    const payment_intent_attach_data =
-      await this.attach_payment_intent_to_method(
-        payment_intent_data.id,
-        payment_method_data.id,
-      );
+    // const payment_method_data = await this.create_payment_method(
+    //   payTransactionDto,
+    // );
+    // const payment_intent_attach_data =
+    //   await this.attach_payment_intent_to_method(
+    //     payment_intent_data.id,
+    //     payment_method_data.id,
+    //   );
 
-    return {
-      redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
-    };
+    // return {
+    //   redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
+    // };
   }
 }

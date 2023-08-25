@@ -53,7 +53,7 @@ export class TransactionController {
       response.transactionItem.map(async (item) => {
         return {
           ...item,
-          photo: (await this.s3Service.getFile(item.menuItem.photo)) || '',
+          // photo: (await this.s3Service.getFile(item.menuItem.photo)) || '',
         };
       }),
     );

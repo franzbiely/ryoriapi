@@ -1,41 +1,40 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import {Repository } from "typeorm";
-import { Customer } from "./customer.entity";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { ICustomer } from "./customer.model";
 import { CreateCustomerDto } from './dto/create-customers.dto';
 
 @Injectable()
 export class CustomerService {
     constructor(
-        @InjectRepository(Customer)
-        private customertRepository: Repository<Customer>,
-    ) {}
+        @InjectModel('Customer')
+        private readonly customerModel: Model<ICustomer>,
+    ) { }
 
-            //Get All User
-    findAll(): Promise<Customer[]> {
-    return this.customertRepository.find({});
+    findAll(): Promise<ICustomer[]> {
+        return this.customerModel.find().exec();
     }
 
-    findOne(id: number): Promise<Customer>{
-        const x = this.customertRepository.findOneBy({id});
-        return x;
+    findOne(id: number): Promise<ICustomer> {
+        return this.customerModel.findById(id).exec();
     }
 
-    async create(_customer: CreateCustomerDto): Promise<Customer>{
-        const customer = new Customer();
-        customer.name = _customer.name
-        customer.lastName = _customer.lastName
-        console.log("USERRR", customer)
-        return this.customertRepository.save(customer);
+    async create(_customer: CreateCustomerDto): Promise<ICustomer> {
+        const customer = new this.customerModel({
+            name: _customer.name,
+            lastName: _customer.lastName,
+        });
+
+        return customer.save();
     }
 
-    async update(id: number, customer:Customer) {
-        await this.customertRepository.update(id, customer)
+    async update(id: number, customer: ICustomer): Promise<ICustomer> {
+        return this.customerModel.findByIdAndUpdate(id, customer, { new: true }).exec();
     }
 
-    async remove(id: number): Promise<void>{
-        await this.customertRepository.delete(id);
+    async remove(id: number): Promise<void> {
+        await this.customerModel.deleteOne({ _id: id }).exec();
     }
 
 }

@@ -1,16 +1,22 @@
 /* eslint-disable prettier/prettier */
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { BranchItem } from "src/pos/branchItem/branchItem.entity";
+import { MongooseModule } from "@nestjs/mongoose";
+import { BranchItemSchema } from "src/pos/branchItem/branchItem.model";
 import { BranchItemService } from "src/pos/branchItem/branchItem.service";
-import { MenuItem } from "src/pos/product/menuItem/menuItem.entity";
-import { Transaction } from "src/pos/transaction/transaction/transaction.entity";
-import { TransactionItem } from "src/pos/transaction/transactionItem/transactionItem.entity";
-import { Branch } from "../branch/branch.entity";
+import { MenuItemSchema } from "src/pos/product/menuItem/menuItem.model";
+import { TransactionSchema } from "src/pos/transaction/transaction/transaction.model";
+import { TransactionItemSchema } from "src/pos/transaction/transactionItem/transactionItem.model";
+import { BranchSchema } from "../branch/branch.model";
 import { DashboardController } from "./dashboard.controller";
 
 @Module({
-    imports:[TypeOrmModule.forFeature([BranchItem, Branch, MenuItem, TransactionItem, Transaction])],
+    imports:[MongooseModule.forFeature([
+        {name: 'BranchItem', schema: BranchItemSchema},
+        {name: 'Branch', schema: BranchSchema},
+        {name: 'MenuItem', schema: MenuItemSchema},
+        {name: 'TransactionItem', schema: TransactionItemSchema},
+        {name: 'Transaction', schema: TransactionSchema},
+    ])],
     controllers: [DashboardController],
     providers: [BranchItemService],
 })

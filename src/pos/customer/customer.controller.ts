@@ -26,7 +26,7 @@ export class CustomerController {
 
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-         this.customerService.update(+id, updateCustomerDto);
+        //  this.customerService.update(+id, updateCustomerDto);
          return "Updated"
     }
 

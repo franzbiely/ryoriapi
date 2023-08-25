@@ -1,34 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Users } from './user.entity';
+import { IUsers } from './user.model';
 import { CreateUsersDto } from './dto/create-users.dto';
-import { Store } from '../store/store.entity';
+import { IStore } from '../store/store.model';
 import { UpdateUserDto } from './dto/update-users.dto';
-import { Branch } from '../branch/branch.entity';
+import { IBranch } from '../branch/branch.model';
 import * as bcrypt from 'bcrypt';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-    @InjectRepository(Store)
-    private storeRepository: Repository<Store>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
+    @InjectModel('Users')
+    private readonly usersModel: Model<IUsers>,
+    @InjectModel('Store')
+    private readonly storeModel: Model<IStore>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
   ) {}
 
-  userCredential(query: object | any): Promise<Users> {
-    const x = this.usersRepository.findOne({
+  userCredential(query: object | any): Promise<IUsers> {
+    const x = this.usersModel.findOne({
       where: query,
       relations: ['store', 'branch'],
     });
     return x;
   }
 
-  async findAll(store_Id: number): Promise<Users[]> {
-    return this.usersRepository.find({
+  async findAll(store_Id: number): Promise<IUsers[]> {
+    return this.usersModel.find({
       where: {
         store: {
           id: store_Id,
@@ -38,8 +39,8 @@ export class UserService {
     });
   }
 
-  async findOneId(id: number): Promise<Users> {
-    const getOneById = this.usersRepository.findOne({
+  async findOneId(id: number): Promise<IUsers> {
+    const getOneById = this.usersModel.findOne({
       where: {
         id: id,
       },
@@ -48,36 +49,34 @@ export class UserService {
     return getOneById;
   }
 
-  async create(_user: CreateUsersDto): Promise<Users> {
-    const user = new Users();
-    user.role = _user.role || 'admin';
-    user.username = _user.username;
-    user.firstName = _user.firstName;
-    user.lastName = _user.lastName;
-    user.email = _user.email;
-    user.password = _user.password;
-    user.address = _user.address || '';
-    user.phone = _user.phone;
-    user.userPhoto = _user.userPhoto;
+  async create(_user: CreateUsersDto): Promise<IUsers> {
+    const user = new this.usersModel({
+      role: _user.role || 'admin',
+      username: _user.username,
+      firstName: _user.firstName,
+      lastName: _user.lastName,
+      email: _user.email,
+      password: _user.password,
+      address: _user.address || '',
+      phone: _user.phone,
+      userPhoto: _user.userPhoto,
+    });
 
     if (_user.store_Id) {
-      const store = await this.storeRepository.findOne({
-        where: { id: _user.store_Id },
-      });
-      user.store = store;
+      const store = await this.storeModel.findOne({ id: _user.store_Id });
+      user.store = store._id;
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _user.branch_Id },
-      });
-      user.branch = [branch];
+      const branch = await this.branchModel.findOne({ id: _user.branch_Id });
+      user.branch = [branch._id];
     }
-    return this.usersRepository.save(user);
+
+    return user.save();
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<Users> {
-    const user = await this.findOneId(id);
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<IUsers> {
+    const user = await this.usersModel.findOne({id});
     console.log({ updateUserDto, user });
     const {
       role,
@@ -107,22 +106,19 @@ export class UserService {
     }
 
     if (store_Id) {
-      const store = await this.storeRepository.findOne({
-        where: { id: store_Id },
-      });
-      user.store = store;
+      const store = await this.storeModel.findOne({ id: store_Id });
+      user.store = store._id;
     }
 
     if (branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: branch_Id },
-      });
-      user.branch = [branch];
+      const branch = await this.branchModel.findOne({ id: branch_Id });
+      user.branch = [branch._id];
     }
-    return this.usersRepository.save(user);
+
+    return user.save();
   }
 
   async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+    await this.usersModel.deleteOne({ id }).exec();
   }
 }

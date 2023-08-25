@@ -34,7 +34,7 @@ export class StoreController {
     const response = await this.storeService.findStoreAndBranch(+sid, +bid);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.store.photo) || '',
+      // photo: await this.s3Service.getFile(response.store.photo) || '',
     }
   }
 

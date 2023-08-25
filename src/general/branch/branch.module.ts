@@ -1,14 +1,21 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { BranchService } from './branch.service';
-import { Branch } from './branch.entity';
+import { BranchSchema } from './branch.model';
 import { BranchController } from './branch.controller';
-import { Store } from '../store/store.entity';
-import { Users } from '../user/user.entity';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
+import { StoreSchema } from '../store/store.model';
+import { UsersSchema } from '../user/user.model';
+import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Branch, Store, Users, MenuItem])],
+  imports: [MongooseModule.forFeature(
+    [
+      {name: 'Branch', schema: BranchSchema},
+      {name: 'Store', schema: StoreSchema},
+      {name: 'Users', schema: UsersSchema},
+      {name: 'MenuItem', schema: MenuItemSchema},
+    ]
+  )],
   controllers: [BranchController],
   providers: [BranchService],
 })

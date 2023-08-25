@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { RawGrocery } from './rawInventory.entity';
 import { RawGroceryController } from './rawInventory.controller';
 import { RawGroceryService } from './rawInventory.service';
-import { RawCategory } from '../rawCategory/rawCategory.entity';
-import { Branch } from 'src/general/branch/branch.entity';
+import { RawCategorySchema } from '../rawCategory/rawCategory.model';
+import { BranchSchema } from 'src/general/branch/branch.model';
+import { MongooseModule } from '@nestjs/mongoose';
+import { RawGrocerySchema } from './rawInventory.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RawGrocery, RawCategory, Branch])],
+  imports: [MongooseModule.forFeature([
+    { name: 'RawGrocery', schema: RawGrocerySchema },
+    { name: 'RawCategory', schema: RawCategorySchema },
+    { name: 'Branch', schema: BranchSchema }
+  ])],
   controllers: [RawGroceryController],
   providers: [RawGroceryService],
 })

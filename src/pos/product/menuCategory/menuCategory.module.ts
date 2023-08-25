@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenuCategoryService } from './menuCategory.service';
-import { MenuCategory } from './menuCategory.entity';
+import { MenuCategorySchema } from './menuCategory.model';
 import { MenuCategoryController } from './menuCategory.controller';
-import { Store } from 'src/general/store/store.entity';
+import { StoreSchema } from 'src/general/store/store.model';
 import { S3Service } from 'src/utils/S3Service';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MenuCategory, Store])],
+  imports: [MongooseModule.forFeature([
+    { name: 'MenuCategory', schema: MenuCategorySchema },
+    { name: 'Store', schema: StoreSchema }
+    ])],
   controllers: [MenuCategoryController],
   providers: [MenuCategoryService, S3Service],
 })
