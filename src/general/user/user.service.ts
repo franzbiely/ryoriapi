@@ -20,11 +20,11 @@ export class UserService {
     private readonly branchModel: Model<IBranch>,
   ) {}
 
-  userCredential(query: object | any): Promise<IUsers> {
-    const x = this.usersModel.findOne({
-      where: query,
-      relations: ['store', 'branch'],
-    });
+  async userCredential(query: object | any): Promise<IUsers> {
+    const x = await this.usersModel.findOne(query)
+      .populate('store')
+      .populate('branch')
+      .exec();
     return x;
   }
 
