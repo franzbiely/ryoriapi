@@ -2,10 +2,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateReportDto } from './create-report.dto';
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateReportDto extends PartialType(CreateReportDto) {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     title: string;
@@ -17,5 +18,5 @@ export class UpdateReportDto extends PartialType(CreateReportDto) {
     createdAt: Date;
 
     @IsInt()
-    parent_report_id: number;
+    parent_report_id: ObjectId;
 }

@@ -3,7 +3,7 @@ import { IsString ,IsInt, IsDate, IsNumber } from '@nestjs/class-validator';
 
 export class CreateReviewsDto {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     description: string;

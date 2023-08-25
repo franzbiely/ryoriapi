@@ -2,7 +2,7 @@ import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 
 export class CreateStoreDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   storeName: string;

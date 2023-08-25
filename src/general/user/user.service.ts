@@ -6,7 +6,7 @@ import { UpdateUserDto } from './dto/update-users.dto';
 import { IBranch } from '../branch/branch.model';
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 
 @Injectable()
@@ -28,25 +28,18 @@ export class UserService {
     return x;
   }
 
-  async findAll(store_Id: number): Promise<IUsers[]> {
-    return this.usersModel.find({
-      where: {
-        store: {
-          id: store_Id,
-        },
-      },
-      relations: ['store'],
-    });
+  async findAll(store_Id: ObjectId): Promise<IUsers[]> {
+    return this.usersModel
+      .find({ store: store_Id })
+      .populate('store')
+      .exec();
   }
 
-  async findOneId(id: number): Promise<IUsers> {
-    const getOneById = this.usersModel.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['store'],
-    });
-    return getOneById;
+  async findOneId(id: ObjectId): Promise<IUsers> {
+    return this.usersModel
+      .findOne({ _id: id })
+      .populate('store')
+      .exec();
   }
 
   async create(_user: CreateUsersDto): Promise<IUsers> {
@@ -75,7 +68,7 @@ export class UserService {
     return user
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<IUsers> {
+  async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
     const user = await this.usersModel.findOne({id});
     console.log({ updateUserDto, user });
     const {
@@ -119,7 +112,7 @@ export class UserService {
     return user
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.usersModel.deleteOne({ id }).exec();
   }
 }

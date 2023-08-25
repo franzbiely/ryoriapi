@@ -6,7 +6,7 @@ export class UpdateInventoryLogsDto extends PartialType(
   CreateInventoryLogsDto,
 ) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   type: string;

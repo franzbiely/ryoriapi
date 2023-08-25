@@ -5,7 +5,7 @@ import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
 import { IMenuCategory } from '../menuCategory/menuCategory.model';
 import { IStore } from 'src/general/store/store.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class MenuItemService {
@@ -18,7 +18,7 @@ export class MenuItemService {
     private readonly storeModel: Model<IStore>,
   ) {}
 
-  findAll(store_Id: number): Promise<IMenuItem[]> {
+  findAll(store_Id: ObjectId): Promise<IMenuItem[]> {
     return this.menuItemModel.find({ storeId: store_Id }).exec();
   }
 
@@ -26,7 +26,7 @@ export class MenuItemService {
     return this.menuItemModel.find({ id: { $in: ids } }).exec();
   }
 
-  async findAllWithBranchQty(store_Id: number, branch_Id: number): Promise<IMenuItem[] | any> {
+  async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
     const menuItems = await this.menuItemModel.find({ storeId: store_Id }).exec();
 
     // return menuItems.map((item) => {
@@ -42,7 +42,7 @@ export class MenuItemService {
     // });
   }
 
-  findOne(id: number): Promise<IMenuItem> {
+  findOne(id: ObjectId): Promise<IMenuItem> {
     return this.menuItemModel.findById(id).exec();
   }
 
@@ -69,7 +69,7 @@ export class MenuItemService {
     return menuItem
   }
 
-  async update(id: number, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
+  async update(id: ObjectId, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
     const menuItem = await this.menuItemModel.findOne({id});
 
     const { title, photo, price, description, cookingTime, category_Id } =
@@ -90,7 +90,7 @@ export class MenuItemService {
     return menuItem
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.menuItemModel.findByIdAndDelete(id).exec();
   }
 }

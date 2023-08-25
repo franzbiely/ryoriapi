@@ -2,7 +2,7 @@ import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateRawGroceryDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   item: string;

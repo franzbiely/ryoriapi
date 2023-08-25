@@ -6,7 +6,7 @@ import { IsNumber } from 'class-validator';
 
 export class UpdateReviewsDto extends PartialType(CreateReviewsDto) {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     description: string;

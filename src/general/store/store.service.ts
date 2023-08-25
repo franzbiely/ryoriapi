@@ -26,7 +26,7 @@ export class StoreService {
     return this.storeModel.find({});
   }
 
-  async findOneId(id: number): Promise<IStore> {
+  async findOneId(id: ObjectId): Promise<IStore> {
     const store = await this.storeModel.findOne({ id }).populate('user').exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
@@ -34,7 +34,7 @@ export class StoreService {
     return store;
   }
 
-  async findStoreAndBranch(sid: number, bid: number): Promise<IBranch> {
+  async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IBranch> {
     const branch = await this.branchModel.findOne({ id: bid })
       .populate({ path: 'store', populate: { path: 'user' } })
       .exec();
@@ -73,7 +73,7 @@ export class StoreService {
     return result;
   }
 
-  async update(id: number, updateStoreDto: UpdateStoreDto): Promise<IStore> {
+  async update(id: ObjectId, updateStoreDto: UpdateStoreDto): Promise<IStore> {
     const store = await this.storeModel.findOne({id});
     const { storeName, appId, appSecret, photo, user_Id, branch_Id } = updateStoreDto;
     store.storeName = storeName;
@@ -99,7 +99,7 @@ export class StoreService {
     return store
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.storeModel.deleteOne({ id }).exec();
   }
 }

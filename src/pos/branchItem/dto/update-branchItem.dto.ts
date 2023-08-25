@@ -5,7 +5,7 @@ import { ObjectId } from 'mongoose';
 
 export class UpdateBranchItemDto extends PartialType(CreateBranchItemDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsInt()
   quantity: number;

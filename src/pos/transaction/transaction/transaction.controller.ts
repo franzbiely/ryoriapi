@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import { S3Service } from 'src/utils/S3Service';
 import { AppGateway } from 'src/app.gateway';
+import { ObjectId } from 'mongoose';
 @Controller('pos/transaction')
 export class TransactionController {
   constructor(
@@ -26,29 +27,29 @@ export class TransactionController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number) {
+  async fillAll(@Query('branch_Id') branch_Id: ObjectId) {
     return this.transactionService.findAll(branch_Id);
   }
 
   @Get('/status/:id')
-  async getStatusById(@Param('id') id: number) {
-    return this.transactionService.getStatusById(+id);
+  async getStatusById(@Param('id') id: ObjectId) {
+    return this.transactionService.getStatusById(id);
   }
 
   @Get('/status/')
   async getStatus(
-    @Query('sid') sid: number,
-    @Query('bid') bid: number,
-    @Query('tid') tid: string,
+    @Query('sid') sid: ObjectId,
+    @Query('bid') bid: ObjectId,
+    @Query('tid') tid: ObjectId,
   ) {
-    return this.transactionService.getStatusByBidAndTid(+sid, +bid, tid);
+    return this.transactionService.getStatusByBidAndTid(sid, bid, tid);
   }
 
   // @TODO: Add security instead of guards..
   // @Note: No Guard because used in FE to get the transaction details...
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.transactionService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.transactionService.findOne(id);
     const transactionItem = await Promise.all(
       response.transactionItem.map(async (item) => {
         return {
@@ -82,17 +83,17 @@ export class TransactionController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    this.transactionService.update(+id, updateTransactionDto);
+    this.transactionService.update(id, updateTransactionDto);
     return 'Updated';
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.transactionService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    this.transactionService.remove(id);
     return 'Deleted!';
   }
 }

@@ -2,7 +2,7 @@ import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateBranchItemDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsInt()
   quantity: number;

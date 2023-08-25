@@ -2,7 +2,7 @@ import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateUsersDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   role?: string;

@@ -18,7 +18,7 @@ export class ReviewsService {
         return this.reviewsModel.find({});
     }
 
-    async findOne(id: number): Promise<IReviews> {
+    async findOne(id: ObjectId): Promise<IReviews> {
         const reviews = await this.reviewsModel.findOne({ id }).exec();
         if (!reviews) {
             throw new NotFoundException(`Reviews with id ${id} not found`);
@@ -36,11 +36,11 @@ export class ReviewsService {
         return reviews
     }
 
-    async update(id: number, reviews: UpdateReviewsDto) {
+    async update(id: ObjectId, reviews: UpdateReviewsDto) {
         await this.reviewsModel.updateOne({ id }, reviews).exec();
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: ObjectId): Promise<void> {
         await this.reviewsModel.deleteOne({ id }).exec();
     }
 

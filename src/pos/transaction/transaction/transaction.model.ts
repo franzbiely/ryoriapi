@@ -1,11 +1,11 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, ObjectId } from 'mongoose';
 
 export interface ITransaction extends Document {
   status: string;
   table: string;
   notes: string;
   amount: number;
-  paymongo_pi_id: string;
+  paymongo_pi_id: ObjectId;
   branchId: number;
   branch: Types.ObjectId;
   transactionItem: Types.ObjectId[];

@@ -6,7 +6,7 @@ import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { UpdateTransactionItemDto } from './dto/update-transactionItem.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class TransactionItemService {
@@ -22,7 +22,7 @@ export class TransactionItemService {
     private readonly branchModel: Model<IBranch>,
   ) {}
 
-  findAll(branch_Id: number): Promise<ITransactionItem[]> {
+  findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
     return this.transactionItemModel.find({
       where: {
         branchId: branch_Id,
@@ -31,7 +31,7 @@ export class TransactionItemService {
     });
   }
 
-  findOne(id: number): Promise<ITransactionItem> {
+  findOne(id: ObjectId): Promise<ITransactionItem> {
     const findId = this.transactionItemModel.findOne({
       where: {
         id: id,
@@ -84,7 +84,7 @@ export class TransactionItemService {
   }
 
   async update(
-    id: number,
+    id: ObjectId,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<ITransactionItem | any> {
     // const transactionItem = await this.findOne(id);
@@ -117,7 +117,7 @@ export class TransactionItemService {
     // return result;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     // await this.transactionItemModel.delete(id);
   }
 }

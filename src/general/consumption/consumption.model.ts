@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 export interface IConsumption extends Document {
   title: string;
   photo: string;
-  parent_consumption_id: number;
+  parent_consumption_id: ObjectId;
   createdAt: Date;
 }
 

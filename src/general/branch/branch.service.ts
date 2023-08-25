@@ -6,7 +6,7 @@ import { UpdateBranchDto } from './dto/update-branch.dto';
 import { IUsers } from '../user/user.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class BranchService {
@@ -22,7 +22,7 @@ export class BranchService {
   ) { }
 
   //Get All User
-  findAll(store_Id: number): Promise<IBranch[]> {
+  findAll(store_Id: ObjectId): Promise<IBranch[]> {
     return this.branchModel.find({
       where: {
         storeId: store_Id,
@@ -31,7 +31,7 @@ export class BranchService {
     });
   }
 
-  async findOneId(id: number): Promise<IBranch> {
+  async findOneId(id: ObjectId): Promise<IBranch> {
     const getOneById = this.branchModel.findOne({
       where: {
         id: id,
@@ -61,7 +61,7 @@ export class BranchService {
     return branch
   }
 
-  async update(id: number, updateBranchDto: UpdateBranchDto): Promise<IBranch> {
+  async update(id: ObjectId, updateBranchDto: UpdateBranchDto): Promise<IBranch> {
     const branch = await this.branchModel.findById(id);
 
     if (!branch) {
@@ -89,7 +89,7 @@ export class BranchService {
     return branch
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.branchModel.findByIdAndDelete(id).exec();
   }
 }

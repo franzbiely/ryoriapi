@@ -6,7 +6,7 @@ import { IsOptional } from 'class-validator';
 
 export class UpdateRawCategoryDto extends PartialType(CreateRawCategoryDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   title: string;

@@ -18,6 +18,7 @@ import { CreateMenuItemDto } from './dto/create-menuItem.dto';
 import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
+import { ObjectId } from 'mongoose';
 @Controller('menuItem')
 export class MenuItemController {
   constructor(
@@ -27,7 +28,7 @@ export class MenuItemController {
 
   // @UseGuards(JwtAuthGuard)
   // @Get()
-  // async fillAll(@Query('store_Id') store_Id: number) {
+  // async fillAll(@Query('store_Id') store_Id: ObjectId) {
   //   return this.menuItemService.findAll(store_Id);
   // }
 
@@ -48,8 +49,8 @@ export class MenuItemController {
 
   @Get()
   async findAllWithBranchQty(
-    @Query('store_Id') store_Id: number,
-    @Query('branch_Id') branch_Id: number,
+    @Query('store_Id') store_Id: ObjectId,
+    @Query('branch_Id') branch_Id: ObjectId,
   ) {
     const response = await this.menuItemService.findAllWithBranchQty(
       store_Id,
@@ -66,8 +67,8 @@ export class MenuItemController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.menuItemService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.menuItemService.findOne(id);
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo) || '',
@@ -100,15 +101,15 @@ export class MenuItemController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
   ) {
-    return this.menuItemService.update(+id, updateMenuItemDto);
+    return this.menuItemService.update(id, updateMenuItemDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.menuItemService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.menuItemService.remove(id);
   }
 }

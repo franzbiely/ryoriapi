@@ -14,8 +14,8 @@ export class CustomerController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-      return this.customerService.findOne(+id);
+    async findOne(@Param('id') id: ObjectId) {
+      return this.customerService.findOne(id);
     }
 
     @Post()
@@ -25,14 +25,14 @@ export class CustomerController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-        //  this.customerService.update(+id, updateCustomerDto);
+    update(@Param('id') id: ObjectId, @Body() updateCustomerDto: UpdateCustomerDto) {
+        //  this.customerService.update(id, updateCustomerDto);
          return "Updated"
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        this.customerService.remove(+id);
+    remove(@Param('id') id: ObjectId) {
+        this.customerService.remove(id);
       return "Deleted!";
     }
 }

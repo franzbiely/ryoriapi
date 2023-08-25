@@ -38,8 +38,8 @@ export class QuantityController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.branchItemService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.branchItemService.findOne(id);
     return {
       ...response,
       // photo: await this.s3Service.getFile(response.menuItem.photo) || '',
@@ -64,15 +64,15 @@ export class QuantityController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateQuantityDto: UpdateBranchItemDto,
   ) {
-    return this.branchItemService.update(+id, updateQuantityDto);
+    return this.branchItemService.update(id, updateQuantityDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.branchItemService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.branchItemService.remove(id);
   }
 }

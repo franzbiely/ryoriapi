@@ -18,7 +18,7 @@ export class RawGroceryService {
     private readonly branchModel: Model<IBranch>,
   ) {}
 
-  async findAll(branch_Id: number): Promise<any[]> {
+  async findAll(branch_Id: ObjectId): Promise<any[]> {
     const response = await this.rawGroceryModel.find({ branch: branch_Id })
       .populate({ path: 'branch inventoryLogs rawCategory', populate: { path: 'user' } })
       .exec();
@@ -32,7 +32,7 @@ export class RawGroceryService {
     return newData;
   }
 
-  async findOne(id: number): Promise<IRawGrocery> {
+  async findOne(id: ObjectId): Promise<IRawGrocery> {
     return this.rawGroceryModel.findById(id)
       .populate({ path: 'branch rawCategory inventoryLogs', populate: { path: 'user' } })
       .exec();
@@ -59,7 +59,7 @@ export class RawGroceryService {
     return rawGroc
   }
 
-  async update(id: number, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
+  async update(id: ObjectId, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
     const rawGrocery = await this.rawGroceryModel.findOne({id});
     const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
@@ -76,7 +76,7 @@ export class RawGroceryService {
     return rawGrocery
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.rawGroceryModel.deleteOne({ _id: id }).exec();
   }
 }

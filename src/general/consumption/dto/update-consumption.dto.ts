@@ -5,7 +5,7 @@ import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
 
 export class UpdateConsumptionDto extends PartialType(CreateConsumptionDto) {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     title: string;
@@ -17,5 +17,5 @@ export class UpdateConsumptionDto extends PartialType(CreateConsumptionDto) {
     createdAt: Date;
 
     @IsInt()
-    parent_consumption_id: number;
+    parent_consumption_id: ObjectId;
 }

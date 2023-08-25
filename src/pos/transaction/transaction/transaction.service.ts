@@ -4,7 +4,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import axios, { AxiosRequestConfig } from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ITransaction } from './transaction.model';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
@@ -23,7 +23,7 @@ export class TransactionService {
   ) {}
 
   //Get All User
-  async findAll(branch_Id: number): Promise<ITransaction[]|any> {
+  async findAll(branch_Id: ObjectId): Promise<ITransaction[]|any> {
     // const response = await this.transactionModel.find({
     //   where: {
     //     branchId: branch_Id,
@@ -39,7 +39,7 @@ export class TransactionService {
     // return newData;
   }
 
-  async findOne(id: number): Promise<ITransaction> {
+  async findOne(id: ObjectId): Promise<ITransaction> {
     try {
       const transaction = await this.transactionModel.findById(id)
         .populate('branch')
@@ -91,9 +91,9 @@ export class TransactionService {
   }
 
   async getStatusByBidAndTid(
-    sid: number,
-    bid: number,
-    tid: string,
+    sid: ObjectId,
+    bid: ObjectId,
+    tid: ObjectId,
   ): Promise<{ status: string }> {
     const transaction = await this.transactionModel.findOne({
       where: {
@@ -105,7 +105,7 @@ export class TransactionService {
     return this.getTransactionStatus(transaction);
   }
 
-  async getStatusById(id: number): Promise<{ status: string }> {
+  async getStatusById(id: ObjectId): Promise<{ status: string }> {
     const transaction = await this.transactionModel.findOne({
       where: {
         id: id,
@@ -159,7 +159,7 @@ export class TransactionService {
   }
 
   async update(
-    id: number,
+    id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
     // const transaction = await this.findOne(id);
@@ -173,7 +173,7 @@ export class TransactionService {
     // return await this.transactionModel.save(transaction);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     // await this.transactionModel.delete(id);
   }
 

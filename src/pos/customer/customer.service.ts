@@ -16,7 +16,7 @@ export class CustomerService {
         return this.customerModel.find().exec();
     }
 
-    findOne(id: number): Promise<ICustomer> {
+    findOne(id: ObjectId): Promise<ICustomer> {
         return this.customerModel.findById(id).exec();
     }
 
@@ -30,11 +30,11 @@ export class CustomerService {
         return customer
     }
 
-    async update(id: number, customer: ICustomer): Promise<ICustomer> {
+    async update(id: ObjectId, customer: ICustomer): Promise<ICustomer> {
         return this.customerModel.findByIdAndUpdate(id, customer, { new: true }).exec();
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: ObjectId): Promise<void> {
         await this.customerModel.deleteOne({ _id: id }).exec();
     }
 

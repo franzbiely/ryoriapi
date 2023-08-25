@@ -17,7 +17,7 @@ export class ConsumptionService {
         return this.consumptionModel.find({});
     }
 
-    async findOne(id: number): Promise<IConsumption> {
+    async findOne(id: ObjectId): Promise<IConsumption> {
         const consumption = await this.consumptionModel.findOne({ id }).exec();
         if (!consumption) {
             throw new NotFoundException(`Consumption with id ${id} not found`);
@@ -34,11 +34,11 @@ export class ConsumptionService {
         return consumption
     }
 
-    async update(id: number, _consumption: IConsumption): Promise<void> {
+    async update(id: ObjectId, _consumption: IConsumption): Promise<void> {
         await this.consumptionModel.updateOne({ id }, _consumption).exec();
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: ObjectId): Promise<void> {
         await this.consumptionModel.deleteOne({ id }).exec();
     }
 

@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import {Repository } from "typeorm";
 // import { Report } from "./report.entity";
 import { CreateReportDto } from './dto/create-report.dto';
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 import { IReport } from "./report.model";
 import { InjectModel } from "@nestjs/mongoose";
 
@@ -20,7 +20,7 @@ export class ReportService {
         return this.reportModel.find().exec();
       }
     
-      findOne(id: number): Promise<IReport> {
+      findOne(id: ObjectId): Promise<IReport> {
         return this.reportModel.findById(id).exec();
       }
     
@@ -34,11 +34,11 @@ export class ReportService {
         return report
       }
     
-      async update(id: number, report: IReport): Promise<void> {
+      async update(id: ObjectId, report: IReport): Promise<void> {
         await this.reportModel.findByIdAndUpdate(id, report).exec();
       }
     
-      async remove(id: number): Promise<void> {
+      async remove(id: ObjectId): Promise<void> {
         await this.reportModel.findByIdAndDelete(id).exec();
       }
 }

@@ -5,7 +5,7 @@ import { IStore } from 'src/general/store/store.model';
 import { UpdateMenuCategoryDto } from './dto/update-menuCategory.dto';
 import { S3Service } from 'src/utils/S3Service';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 @Injectable()
 export class MenuCategoryService {
   constructor(
@@ -16,11 +16,11 @@ export class MenuCategoryService {
     // private readonly s3Service: Model<S3Service>,
   ) {}
 
-  findAll(store_Id: number): Promise<IMenuCategory[]> {
+  findAll(store_Id: ObjectId): Promise<IMenuCategory[]> {
     return this.menuCategoryModel.find({ storeId: store_Id }).exec();
   }
 
-  findOneId(id: number): Promise<IMenuCategory> {
+  findOneId(id: ObjectId): Promise<IMenuCategory> {
     return this.menuCategoryModel.findById(id).exec();
   }
 
@@ -39,7 +39,7 @@ export class MenuCategoryService {
     return menuCategory
   }
 
-  async update(id: number, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {
+  async update(id: ObjectId, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {
     const menuCategory = await this.menuCategoryModel.findOne({id});
 
     const { title, photo, store_Id } = menuCategoryDto;
@@ -55,7 +55,7 @@ export class MenuCategoryService {
     return menuCategory
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.menuCategoryModel.findByIdAndDelete(id).exec();
   }
 }

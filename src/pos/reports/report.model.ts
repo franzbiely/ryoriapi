@@ -1,9 +1,9 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, ObjectId } from 'mongoose';
 
 export interface IReport extends Document {
   title: string;
   photo: string;
-  parent_report_id: number;
+  parent_report_id: ObjectId;
   createdAt: Date;
 }
 

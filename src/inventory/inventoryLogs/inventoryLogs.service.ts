@@ -21,13 +21,13 @@ export class InventoryLogsService {
     private readonly branchModel: Model<IBranch>,
   ) { }
 
-  findAll(branch_Id: number): Promise<IInventoryLogs[]> {
+  findAll(branch_Id: ObjectId): Promise<IInventoryLogs[]> {
     return this.invLogsModel.find({
       branchId: branch_Id,
     }).populate('branch rawGrocery').exec();
   }
 
-  async findOne(id: number): Promise<IInventoryLogs> {
+  async findOne(id: ObjectId): Promise<IInventoryLogs> {
     return this.invLogsModel.findById(id).populate('rawGrocery user').exec();
   }
 
@@ -53,7 +53,7 @@ export class InventoryLogsService {
     return logs
   }
 
-  async update(id: number, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
+  async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
     const inventoryLog = await this.invLogsModel.findOne({ id });
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
@@ -69,7 +69,7 @@ export class InventoryLogsService {
     return inventoryLog
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.invLogsModel.deleteOne({ _id: id }).exec();
   }
 }

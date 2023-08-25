@@ -5,7 +5,7 @@ import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
 
 export class UpdateCustomerDto extends PartialType(CreateCustomerDto) {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     name: string;

@@ -30,7 +30,7 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':sid/:bid')
-  async findStoreAndBranch(@Param('sid') sid: number, @Param('bid') bid: number) {
+  async findStoreAndBranch(@Param('sid') sid: ObjectId, @Param('bid') bid: ObjectId) {
     const response = await this.storeService.findStoreAndBranch(+sid, +bid);
     return {
       ...response,
@@ -40,8 +40,8 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.storeService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.storeService.findOneId(id);
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo) || '',
@@ -71,13 +71,13 @@ export class StoreController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
-  update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.storeService.update(+id, updateStoreDto);
+  update(@Param('id') id: ObjectId, @Body() updateStoreDto: UpdateStoreDto) {
+    return this.storeService.update(id, updateStoreDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storeService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.storeService.remove(id);
   }
 }

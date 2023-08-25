@@ -21,14 +21,14 @@ export class RawCategoryController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number) {
+  async fillAll(@Query('branch_Id') branch_Id: ObjectId) {
     return this.rawCategoryService.findAll(branch_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.rawCategoryService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    return this.rawCategoryService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -40,15 +40,15 @@ export class RawCategoryController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateRawCategoryDto: UpdateRawCategoryDto,
   ) {
-    return this.rawCategoryService.update(+id, updateRawCategoryDto);
+    return this.rawCategoryService.update(id, updateRawCategoryDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rawCategoryService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.rawCategoryService.remove(id);
   }
 }

@@ -29,7 +29,7 @@ export class MenuCategoryController {
   ) {}
 
   @Get()
-  async fillAll(@Query('store_Id') store_Id: number) {
+  async fillAll(@Query('store_Id') store_Id: ObjectId) {
     console.log("HERE I AM")
     const response = await this.menuCategoryService.findAll(store_Id);
     return await Promise.all(
@@ -43,8 +43,8 @@ export class MenuCategoryController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.menuCategoryService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.menuCategoryService.findOneId(id);
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo) || '',
@@ -74,17 +74,17 @@ export class MenuCategoryController {
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    this.menuCategoryService.update(+id, updateMenuCategoryDto);
+    this.menuCategoryService.update(id, updateMenuCategoryDto);
     return 'Updated';
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.menuCategoryService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    this.menuCategoryService.remove(id);
     return 'Deleted!';
   }
 }

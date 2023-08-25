@@ -36,7 +36,7 @@ export class BranchItemService {
       .exec();
   }
 
-  async findOne(id: number): Promise<IBranchItem> {
+  async findOne(id: ObjectId): Promise<IBranchItem> {
     return this.branchItemModel.findById(id)
       .populate({ path: 'branch menuItem' })
       .exec();
@@ -66,7 +66,7 @@ export class BranchItemService {
     return qty
   }
 
-  async update(id: number, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
+  async update(id: ObjectId, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({id});
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = quantity;
@@ -82,7 +82,7 @@ export class BranchItemService {
     return branchItem
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.branchItemModel.deleteOne({ _id: id }).exec();
   }
 }

@@ -5,7 +5,7 @@ import { IsOptional } from 'class-validator';
 
 export class UpdateStoreDto extends PartialType(CreateStoreDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsInt()
   user_Id: number;

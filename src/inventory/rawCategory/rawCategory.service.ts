@@ -17,11 +17,11 @@ export class RawCategoryService {
   ) {}
 
   //Get All User
-  findAll(branch_Id: number): Promise<IRawCategory[]> {
+  findAll(branch_Id: ObjectId): Promise<IRawCategory[]> {
     return this.rawCategoryModel.find({ branch: branch_Id }).populate('branch rawGrocery').exec();
   }
 
-  async findOne(id: number): Promise<IRawCategory> {
+  async findOne(id: ObjectId): Promise<IRawCategory> {
     return this.rawCategoryModel.findById(id).populate('branch rawGrocery').exec();
   }
 
@@ -36,7 +36,7 @@ export class RawCategoryService {
     return category
   }
 
-  async update(id: number, category: UpdateRawCategoryDto): Promise<IRawCategory> {
+  async update(id: ObjectId, category: UpdateRawCategoryDto): Promise<IRawCategory> {
     const rawCategory = await this.rawCategoryModel.findOne({id});
     const { title, branch_Id } = category;
 
@@ -51,7 +51,7 @@ export class RawCategoryService {
     return rawCategory
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: ObjectId): Promise<void> {
     await this.rawCategoryModel.deleteOne({ _id: id }).exec();
   }
 }

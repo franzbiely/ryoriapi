@@ -2,7 +2,7 @@ import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 
 export class CreateRawCategoryDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   title: string;

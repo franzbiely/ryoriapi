@@ -16,8 +16,8 @@ export class ConsumptionController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-      return this.consumptionService.findOne(+id);
+    async findOne(@Param('id') id: ObjectId) {
+      return this.consumptionService.findOne(id);
     }
 
     @Post()
@@ -27,14 +27,14 @@ export class ConsumptionController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateConsumptionDto: UpdateConsumptionDto) {
-        //  this.consumptionService.update(+id, updateConsumptionDto);
+    update(@Param('id') id: ObjectId, @Body() updateConsumptionDto: UpdateConsumptionDto) {
+        //  this.consumptionService.update(id, updateConsumptionDto);
          return "Updated"
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        this.consumptionService.remove(+id);
+    remove(@Param('id') id: ObjectId) {
+        this.consumptionService.remove(id);
       return "Deleted!";
     }
 }
