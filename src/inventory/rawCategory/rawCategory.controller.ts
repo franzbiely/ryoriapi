@@ -14,6 +14,7 @@ import { RawCategoryService } from './rawCategory.service';
 import { CreateRawCategoryDto } from './dto/create-rawCategory.dto';
 import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { ObjectId } from 'mongoose';
 
 @Controller('inventory/rawcategory')
 export class RawCategoryController {

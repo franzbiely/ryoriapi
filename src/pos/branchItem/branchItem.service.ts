@@ -4,7 +4,7 @@ import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from '../product/menuItem/menuItem.model';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()

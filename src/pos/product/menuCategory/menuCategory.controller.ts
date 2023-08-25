@@ -20,6 +20,7 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
 import { exit } from 'process';
+import { ObjectId } from 'mongoose';
 
 @Controller('menuCategory')
 export class MenuCategoryController {

@@ -31,7 +31,7 @@ export class StoreController {
   @UseGuards(JwtAuthGuard)
   @Get(':sid/:bid')
   async findStoreAndBranch(@Param('sid') sid: ObjectId, @Param('bid') bid: ObjectId) {
-    const response = await this.storeService.findStoreAndBranch(+sid, +bid);
+    const response = await this.storeService.findStoreAndBranch(sid, +bid);
     return {
       ...response,
       // photo: await this.s3Service.getFile(response.store.photo) || '',

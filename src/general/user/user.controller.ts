@@ -14,7 +14,7 @@ import { UserService } from './user.service';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
-import { ObjectId } from 'typeorm';
+import { ObjectId } from 'mongoose';
 
 @Controller('user')
 export class UserController {
@@ -35,7 +35,7 @@ export class UserController {
     );
     const user_Id = decodedToken.userPayload.id;
 
-    return this.usersService.findOneId(+user_Id);
+    return this.usersService.findOneId(user_Id);
   }
 
   @UseGuards(JwtAuthGuard)

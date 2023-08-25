@@ -5,7 +5,7 @@ import { CreateRawCategoryDto } from './dto/create-rawCategory.dto';
 import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class RawCategoryService {

@@ -6,7 +6,7 @@ import { IUsers } from '../user/user.model';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class StoreService {

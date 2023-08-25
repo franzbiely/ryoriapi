@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Post, Get, Param, Body, Delete, Patch, Res } from "@nestjs/common";
+import { ObjectId } from "mongoose";
 import { CustomerService } from "./customer.service";
 import { CreateCustomerDto } from './dto/create-customers.dto';
 import { UpdateCustomerDto } from "./dto/update-customers.dto";

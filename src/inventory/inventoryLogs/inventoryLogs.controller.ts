@@ -13,6 +13,7 @@ import { InventoryLogsService } from './inventoryLogs.service';
 import { CreateInventoryLogsDto } from './dto/create-inventoryLogs.dto';
 import { UpdateInventoryLogsDto } from './dto/update-inventoryLogs.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { ObjectId } from 'mongoose';
 
 @Controller('inventory/logs')
 export class InvLogsController {

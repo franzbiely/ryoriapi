@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateReviewsDto } from './dto/create-reviews.dto';
 import { UpdateReviewsDto } from "./dto/update-reviews.dto";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 import { IReviews } from "./reviews.model";
 
 @Injectable()

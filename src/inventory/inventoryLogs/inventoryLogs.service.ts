@@ -6,7 +6,7 @@ import { IUsers } from 'src/general/user/user.model';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IRawGrocery } from '../rawGrocery/rawInventory.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class InventoryLogsService {

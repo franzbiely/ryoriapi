@@ -4,7 +4,7 @@ import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
 import { IRawCategory } from '../rawCategory/rawCategory.model';
 import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { IRawGrocery } from './rawInventory.model';
 
 @Injectable()
