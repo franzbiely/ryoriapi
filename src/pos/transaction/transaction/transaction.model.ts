@@ -8,7 +8,7 @@ export interface ITransaction extends Document {
   paymongo_pi_id: ObjectId;
   branchId: number;
   branch: Types.ObjectId;
-  transactionItem: Types.ObjectId[];
+  transactionItem?: Types.ObjectId[];
   createdAt: Date;
 }
 

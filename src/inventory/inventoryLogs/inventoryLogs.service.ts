@@ -28,7 +28,7 @@ export class InventoryLogsService {
   }
 
   async findOne(id: ObjectId): Promise<IInventoryLogs> {
-    return this.invLogsModel.findById(id).populate('rawGrocery user').exec();
+    return this.invLogsModel.findOne({_id:id}).populate('rawGrocery user').lean();
   }
 
   async create(_inventoryLogs: CreateInventoryLogsDto): Promise<IInventoryLogs> {
@@ -38,15 +38,15 @@ export class InventoryLogsService {
     });
 
     if (_inventoryLogs.user_Id) {
-      const user = await this.userModel.findById(_inventoryLogs.user_Id);
+      const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id});
       logs.user = user._id;
     }
     if (_inventoryLogs.rawGrocery_Id) {
-      const rawGrocery = await this.rawGroceryModel.findById(_inventoryLogs.rawGrocery_Id);
+      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id});
       logs.rawGrocery = rawGrocery._id;
     }
     if (_inventoryLogs.branch_Id) {
-      const branch = await this.branchModel.findById(_inventoryLogs.branch_Id);
+      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id});
       logs.branch = branch._id;
     }
     await logs.save();
@@ -61,7 +61,7 @@ export class InventoryLogsService {
     inventoryLog.quantityLogs = quantityLogs;
 
     if (user_Id) {
-      const user = await this.userModel.findById(user_Id);
+      const user = await this.userModel.findOne({_id:user_Id});
       inventoryLog.user = user._id;
     }
 
@@ -69,7 +69,8 @@ export class InventoryLogsService {
     return inventoryLog
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.invLogsModel.deleteOne({ _id: id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.invLogsModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

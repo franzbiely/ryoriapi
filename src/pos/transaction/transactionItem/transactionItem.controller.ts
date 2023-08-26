@@ -50,7 +50,6 @@ export class TransactionItemController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: ObjectId) {
-    this.transactionItemService.remove(id);
-    return 'Deleted!';
+    return this.transactionItemService.remove(id);
   }
 }

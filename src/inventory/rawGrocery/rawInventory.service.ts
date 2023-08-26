@@ -33,9 +33,9 @@ export class RawGroceryService {
   }
 
   async findOne(id: ObjectId): Promise<IRawGrocery> {
-    return this.rawGroceryModel.findById(id)
+    return this.rawGroceryModel.findOne({_id:id})
       .populate({ path: 'branch rawCategory inventoryLogs', populate: { path: 'user' } })
-      .exec();
+      .lean();
   }
 
   async create(_rawInv: CreateRawGroceryDto): Promise<IRawGrocery> {
@@ -46,12 +46,12 @@ export class RawGroceryService {
     });
 
     if (_rawInv.branch_Id) {
-      const branch = await this.branchModel.findById(_rawInv.branch_Id);
+      const branch = await this.branchModel.findOne({_id:_rawInv.branch_Id});
       rawGroc.branch = branch._id;
     }
 
     if (_rawInv.rawCategory_Id) {
-      const rawCategory = await this.rawCategoryModel.findById(_rawInv.rawCategory_Id);
+      const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id});
       rawGroc.rawCategory = [rawCategory._id];
     }
 
@@ -68,7 +68,7 @@ export class RawGroceryService {
     rawGrocery.quantity = quantity;
 
     if (rawCategory_Id) {
-      const rawCategory = await this.rawCategoryModel.findById(rawCategory_Id);
+      const rawCategory = await this.rawCategoryModel.findOne({_id:rawCategory_Id});
       rawGrocery.rawCategory = [rawCategory._id];
     }
 
@@ -76,7 +76,8 @@ export class RawGroceryService {
     return rawGrocery
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.rawGroceryModel.deleteOne({ _id: id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.rawGroceryModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

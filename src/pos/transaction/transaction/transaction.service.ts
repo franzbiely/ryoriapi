@@ -24,12 +24,17 @@ export class TransactionService {
 
   //Get All User
   async findAll(branch_Id: ObjectId): Promise<ITransaction[]|any> {
-    // const response = await this.transactionModel.find({
-    //   where: {
-    //     branchId: branch_Id,
-    //   },
-    //   relations: ['branch', 'transactionItem', 'transactionItem.menuItem'],
-    // });
+    const response = await this.transactionModel
+      .find({ branchId: branch_Id })
+      .populate('branch')
+      .populate({
+        path: 'transactionItem',
+        populate: {
+          path: 'menuItem'
+        }
+      })
+      .exec();
+    console.log({response})
     // const newData = response.map((data) => ({
     //   ...data,
     //   total: data.transactionItem.reduce((prev, cur) => {
@@ -41,7 +46,7 @@ export class TransactionService {
 
   async findOne(id: ObjectId): Promise<ITransaction> {
     try {
-      const transaction = await this.transactionModel.findById(id)
+      const transaction = await this.transactionModel.findOne({_id:id})
         .populate('branch')
         .populate({ path: 'transactionItem', populate: 'menuItem' });
   
@@ -56,38 +61,38 @@ export class TransactionService {
   }
 
   async getTransactionStatus(
-    transaction: ITransaction,
+    transaction: ITransaction | any,
   ): Promise<{ status: string } | any> {
-    // if (transaction.paymongo_pi_id) {
-    //   const config: AxiosRequestConfig = {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization:
-    //         'Basic ' +
-    //         Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64'),
-    //     },
-    //   };
-    //   const response = await axios.get(
-    //     'https://api.paymongo.com/v1/payment_intents/' +
-    //       transaction.paymongo_pi_id,
-    //     config,
-    //   );
+    if (transaction.paymongo_pi_id) {
+      const config: AxiosRequestConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:
+            'Basic ' +
+            Buffer.from(process.env.PAYMONGO_API_SCRT_KEY).toString('base64'),
+        },
+      };
+      const response = await axios.get(
+        'https://api.paymongo.com/v1/payment_intents/' +
+          transaction.paymongo_pi_id,
+        config,
+      );
 
-    //   const data = response.data.data.attributes;
+      const data = response.data.data.attributes;
 
-    //   if (data.status === 'succeeded') {
-    //     transaction.status = 'closed';
-    //     await this.transactionModel.save(transaction);
-    //   }
+      if (data.status === 'succeeded') {
+        transaction.status = 'closed';
+        await transaction.save();
+      }
 
-    //   return {
-    //     status: data.status,
-    //   };
-    // } else {
-    //   return {
-    //     status: transaction.status,
-    //   };
-    // }
+      return {
+        status: data.status,
+      };
+    } else {
+      return {
+        status: transaction.status,
+      };
+    }
   }
 
   async getStatusByBidAndTid(
@@ -108,71 +113,76 @@ export class TransactionService {
   }
 
   async getStatusById(id: ObjectId): Promise<{ status: string }> {
-    const transaction = await this.transactionModel.findById(id).exec()
+    const transaction = await this.transactionModel.findOne({_id:id}).exec()
     return this.getTransactionStatus(transaction);
   }
 
   async create(_transaction: CreateTransactionDto): Promise<ITransaction | any> {
-    // const transaction = new Transaction();
-    // transaction.status = _transaction.status;
-    // transaction.table = _transaction.table;
-    // transaction.notes = _transaction.notes;
-    // transaction.amount = _transaction.amount;
-    // let branch;
-    // if (_transaction.branch_Id) {
-    //   branch = await this.branchModel.findOne({
-    //     where: { id: _transaction.branch_Id },
-    //   });
-    // }
-    // if (_transaction.branch_Id) {
-    //   transaction.branch = branch;
-    // }
+    const transaction = new this.transactionModel({
+      status: _transaction.status,
+      table: _transaction.table,
+      notes: _transaction.notes,
+      amount: _transaction.amount,
+    });
 
-    // const currentTransaction = await this.transactionModel.save(
-    //   transaction,
-    // );
-    // if (!Array.isArray(_transaction.item)) {
-    //   _transaction.item = [_transaction.item];
-    // }
-    // await Promise.all(
-    //   _transaction.item.map(async (item) => {
-    //     const _item = JSON.parse(item);
-    //     const menuItem = await this.menuItemModel.findOne({
-    //       where: { id: _item.id },
-    //     });
+    let branch;
+    if (_transaction.branch_Id) {
+      branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
+    }
+    
+    if (_transaction.branch_Id) {
+      transaction.branch = branch;
+    }
 
-    //     const transactionItem = new TransactionItem();
-    //     transactionItem.quantity = _item.qty;
-    //     transactionItem.status = 'new';
-    //     transactionItem.menuItem = menuItem;
-    //     transactionItem.transaction = currentTransaction;
-    //     if (_transaction.branch_Id) {
-    //       transactionItem.branch = branch;
-    //     }
-    //     console.log({ transactionItem });
-    //     await this.transactionItemModel.save(transactionItem);
-    //   }),
-    // );
-    // return currentTransaction;
+    
+    if (!Array.isArray(_transaction.item)) {
+      _transaction.item = [_transaction.item];
+    }
+    await Promise.all(
+      _transaction.item.map(async (item) => {
+        const _item = JSON.parse(item);
+        const menuItem = await this.menuItemModel.findOne({ _id: _item.id });
+
+        const transactionItem = new this.transactionItemModel({
+          quantity : _item.qty,
+          status : 'new',
+          menuItem : menuItem,
+          transaction : transaction._id,
+        });
+        
+        if (_transaction.branch_Id) {
+          transactionItem.branch = branch;
+        }
+        await transactionItem.save();
+        transaction.transactionItem.push(transactionItem._id)
+      }),
+    );
+    const currentTransaction = await transaction.save();
+    return currentTransaction;
   }
 
   async update(
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    // const transaction = await this.findOne({_id:id});
-    // const { status } = updateTransactionDto;
-    // transaction.status = status;
+    const transaction = await this.transactionModel.findOne({_id:id});
+    const { status } = updateTransactionDto;
+    transaction.status = status;
 
-    // if (updateTransactionDto.paymongo_pi_id) {
-    //   transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
-    // }
+    if (updateTransactionDto.paymongo_pi_id) {
+      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
+    }
 
-    // return await this.transactionModel.save(transaction);
+    return await transaction.save();
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    // await this.transactionModel.delete(id);
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.transactionModel.deleteOne({ _id : id }).exec();
+    // Cascade delete.
+    const resultItem = await this.transactionItemModel.deleteMany({transaction: id}).exec();
+
+    return `Deleted ${result.deletedCount} record in transaction.
+    Deleted ${resultItem.deletedCount} record in items.`;
   }
 
   async create_payment_intent(transaction): Promise<any> {

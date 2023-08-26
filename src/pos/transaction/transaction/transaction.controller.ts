@@ -54,7 +54,7 @@ export class TransactionController {
       response.transactionItem.map(async (item) => {
         return {
           ...item,
-          // photo: (await this.s3Service.getFile(item.menuItem.photo)) || '',
+          photo: (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
         };
       }),
     );
@@ -66,7 +66,6 @@ export class TransactionController {
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {
-    
     const result = await this.transactionService.create(createTransactionDto);
     
     this.appGateway.handleMessage({
@@ -86,14 +85,12 @@ export class TransactionController {
     @Param('id') id: ObjectId,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    this.transactionService.update(id, updateTransactionDto);
-    return 'Updated';
+    return this.transactionService.update(id, updateTransactionDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: ObjectId) {
-    this.transactionService.remove(id);
-    return 'Deleted!';
+    return this.transactionService.remove(id);
   }
 }

@@ -21,7 +21,7 @@ export class ReportService {
       }
     
       findOne(id: ObjectId): Promise<IReport> {
-        return this.reportModel.findById(id).exec();
+        return this.reportModel.findOne({_id:id}).exec();
       }
     
       async create(_report: CreateReportDto): Promise<IReport> {
@@ -38,7 +38,8 @@ export class ReportService {
         await this.reportModel.findByIdAndUpdate(id, report).exec();
       }
     
-      async remove(id: ObjectId): Promise<void> {
-        await this.reportModel.findByIdAndDelete(id).exec();
+      async remove(id: ObjectId): Promise<string | void> {
+        const result = await this.reportModel.deleteOne({ _id : id }).exec();
+        return `Deleted ${result.deletedCount} record`;
       }
 }

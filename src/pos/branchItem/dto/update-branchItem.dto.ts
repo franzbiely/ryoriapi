@@ -14,7 +14,7 @@ export class UpdateBranchItemDto extends PartialType(CreateBranchItemDto) {
   branch_Id: any //ObjectId;
 
   @IsInt()
-  menuItem_Id: number;
+  menuItem_Id: any;
 
   @IsDate()
   createdAt: Date;

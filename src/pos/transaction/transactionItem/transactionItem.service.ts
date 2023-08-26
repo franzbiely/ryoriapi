@@ -35,7 +35,7 @@ export class TransactionItemService {
       .findOne({ _id: id })
       .populate('branch')
       .populate('transaction')
-      .exec();
+      .lean();
   }
 
   async create(
@@ -114,7 +114,8 @@ export class TransactionItemService {
     // return result;
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    // await this.transactionItemModel.delete(id);
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.transactionItemModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

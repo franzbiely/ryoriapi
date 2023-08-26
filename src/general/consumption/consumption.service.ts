@@ -38,8 +38,9 @@ export class ConsumptionService {
         await this.consumptionModel.updateOne({ id }, _consumption).exec();
     }
 
-    async remove(id: ObjectId): Promise<void> {
-        await this.consumptionModel.deleteOne({ id }).exec();
+    async remove(id: ObjectId): Promise<string> {
+        const result = await this.consumptionModel.deleteOne({ _id : id }).exec();
+        return `Deleted ${result.deletedCount} record`;
     }
 
 }

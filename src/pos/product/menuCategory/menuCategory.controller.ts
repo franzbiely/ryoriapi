@@ -78,14 +78,12 @@ export class MenuCategoryController {
     @Param('id') id: ObjectId,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    this.menuCategoryService.update(id, updateMenuCategoryDto);
-    return 'Updated';
+    return this.menuCategoryService.update(id, updateMenuCategoryDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: ObjectId) {
-    this.menuCategoryService.remove(id);
-    return 'Deleted!';
+    return this.menuCategoryService.remove(id);
   }
 }

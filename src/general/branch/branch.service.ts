@@ -58,7 +58,7 @@ export class BranchService {
   }
 
   async update(id: ObjectId, updateBranchDto: UpdateBranchDto): Promise<IBranch> {
-    const branch = await this.branchModel.findById(id);
+    const branch = await this.branchModel.findOne({_id:id});
 
     if (!branch) {
       throw new NotFoundException(`Branch with id ${id} not found`);
@@ -85,7 +85,8 @@ export class BranchService {
     return branch
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.branchModel.findByIdAndDelete(id).exec();
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.branchModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

@@ -44,22 +44,18 @@ export class StoreService {
     return branch;
   }
 
-  async create(_store: CreateStoreDto): Promise<IStore> {
+  async create(_store: CreateStoreDto): Promise<IStore | void> {
     const store = new this.storeModel({
       storeName: _store.storeName,
       photo: _store.photo || '',
       appId: _store.appId,
-      appSecret: _store.appSecret,
+      appSecret: _store.appSecret
     });
-
-    console.log({_store})
+        
     if (_store.user_Id) {
       const user = await this.usersModel.findOne({ _id: _store.user_Id });
-      console.log({user})
       store.user = [user.id];
     }
-
-    const result = await store.save();
 
     if (_store.branchName) {
       const branch = new this.branchModel({
@@ -69,8 +65,11 @@ export class StoreService {
         address: _store.address || '',
         store: store._id,
       });
+      store.branch.push(branch._id)
       await branch.save();
     }
+
+    const result = await store.save();
 
     return result;
   }
@@ -101,7 +100,8 @@ export class StoreService {
     return store
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.storeModel.deleteOne({ id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.storeModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

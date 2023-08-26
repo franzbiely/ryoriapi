@@ -10,9 +10,6 @@ import { InjectModel } from '@nestjs/mongoose';
 @Injectable()
 export class BranchItemService {
   constructor(
-    @InjectModel('BranchItem')
-    private readonly quantityModel: Model<IBranchItem>,
-
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
     @InjectModel('MenuItem')
@@ -37,9 +34,9 @@ export class BranchItemService {
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
-    return this.branchItemModel.findById(id)
+    return this.branchItemModel.findOne({_id:id})
       .populate({ path: 'branch menuItem' })
-      .exec();
+      .lean();
   }
 
   async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
@@ -68,21 +65,23 @@ export class BranchItemService {
 
   async update(id: ObjectId, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({_id:id});
+    console.log({branchItem})
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = quantity;
 
-    // if (branch_Id) {
-    //   branchItem.branch = branch_Id;
-    // }
-    // if (menuItem_Id) {
-    //   branchItem.menuItem = menuItem_Id;
-    // }
+    if (branch_Id) {
+      branchItem.branch = branch_Id;
+    }
+    if (menuItem_Id) {
+      branchItem.menuItem = menuItem_Id;
+    }
 
     await branchItem.save();
     return branchItem
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.branchItemModel.deleteOne({ _id: id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.branchItemModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

@@ -29,7 +29,37 @@ export class BranchController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
-    return this.branchService.findOneId(id);
+    const response = await this.branchService.findOneId(id);
+    return {
+      id: response['_id'],
+      branchName: response.branchName,
+      email: response.email,
+      contactNumber: response.contactNumber,
+      address: response.address,
+      storeId: response.store['_id'],
+      createdAt: response.createdAt,
+      store : {
+        id: response.store["_id"],
+        storeName: response.store["storeName"],
+        appId: response.store["appId"],
+        appSecret: response.store["appSecret"],
+        photo: response.store["photo"],
+        createdAt: response.store["createdAt"],
+      },
+      user: response.user.map(user => ({
+        id: user["_id"],
+        role: user["role"],
+        username: user["username"],
+        firstName: user["firstName"],
+        lastName: user["lastName"],
+        email: user["email"],
+        phone: user["phone"],
+        password: user["password"],
+        userPhoto: user["userPhoto"],
+        createdAt: user["createdAt"],
+      })),
+      
+    }
   }
 
   @UseGuards(JwtAuthGuard)

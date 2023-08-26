@@ -50,7 +50,6 @@ export class InvLogsController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: ObjectId) {
-    this.invLogsService.remove(id);
-    return 'Deleted!';
+    return this.invLogsService.remove(id);
   }
 }

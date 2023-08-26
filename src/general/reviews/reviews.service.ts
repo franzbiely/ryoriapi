@@ -40,8 +40,9 @@ export class ReviewsService {
         await this.reviewsModel.updateOne({ id }, reviews).exec();
     }
 
-    async remove(id: ObjectId): Promise<void> {
-        await this.reviewsModel.deleteOne({ id }).exec();
+    async remove(id: ObjectId): Promise<string> {
+        const result = await this.reviewsModel.deleteOne({ _id : id }).exec();
+        return `Deleted ${result.deletedCount} record`;
     }
 
 }

@@ -22,14 +22,14 @@ export class RawCategoryService {
   }
 
   async findOne(id: ObjectId): Promise<IRawCategory> {
-    return this.rawCategoryModel.findById(id).populate('branch rawGrocery').exec();
+    return this.rawCategoryModel.findOne({_id:id}).populate('branch rawGrocery').lean();
   }
 
   async create(_category: CreateRawCategoryDto): Promise<IRawCategory> {
     const category = new this.rawCategoryModel({ title: _category.title });
 
     if (_category.branch_Id) {
-      const branch = await this.branchModel.findById(_category.branch_Id);
+      const branch = await this.branchModel.findOne({_id:_category.branch_Id});
       category.branch = branch._id;
     }
     await category.save();
@@ -43,7 +43,7 @@ export class RawCategoryService {
     rawCategory.title = title;
 
     if (branch_Id) {
-      const branch = await this.branchModel.findById(branch_Id);
+      const branch = await this.branchModel.findOne({_id:branch_Id});
       rawCategory.branch = branch._id;
     }
 
@@ -51,7 +51,8 @@ export class RawCategoryService {
     return rawCategory
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.rawCategoryModel.deleteOne({ _id: id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.rawCategoryModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

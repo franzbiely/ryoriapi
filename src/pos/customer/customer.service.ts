@@ -17,7 +17,7 @@ export class CustomerService {
     }
 
     findOne(id: ObjectId): Promise<ICustomer> {
-        return this.customerModel.findById(id).exec();
+        return this.customerModel.findOne({_id:id}).exec();
     }
 
     async create(_customer: CreateCustomerDto): Promise<ICustomer> {
@@ -34,8 +34,9 @@ export class CustomerService {
         return this.customerModel.findByIdAndUpdate(id, customer, { new: true }).exec();
     }
 
-    async remove(id: ObjectId): Promise<void> {
-        await this.customerModel.deleteOne({ _id: id }).exec();
+    async remove(id: ObjectId): Promise<string> {
+        const result = await this.customerModel.deleteOne({ _id: id }).exec();
+        return `Deleted ${result.deletedCount} record`;
     }
 
 }

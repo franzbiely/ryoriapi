@@ -118,7 +118,8 @@ export class UserService {
     return user
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.usersModel.deleteOne({ id }).exec();
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.usersModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

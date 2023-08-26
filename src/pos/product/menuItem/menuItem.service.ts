@@ -23,11 +23,12 @@ export class MenuItemService {
   }
 
   async findByBatch(ids: string[]): Promise<IMenuItem[]> {
-    return this.menuItemModel.find({ id: { $in: ids } }).exec();
+    return this.menuItemModel.find({ _id: { $in: ids } }).lean();
   }
 
   async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
     const menuItems = await this.menuItemModel.find({ storeId: store_Id }).exec();
+    console.log({menuItems})
 
     // return menuItems.map((item) => {
     //   const newBranch = item.branchItem.filter(
@@ -43,10 +44,11 @@ export class MenuItemService {
   }
 
   findOne(id: ObjectId): Promise<IMenuItem> {
-    return this.menuItemModel.findById(id).exec();
+    return this.menuItemModel.findOne({_id:id}).lean();
   }
 
   async create(_menuItem: CreateMenuItemDto): Promise<IMenuItem> {
+    console.log({_menuItem})
     const menuItem = new this.menuItemModel({
       title: _menuItem.title,
       photo: _menuItem.photo || '',
@@ -55,16 +57,17 @@ export class MenuItemService {
       cookingTime: _menuItem.cookingTime,
     });
 
-    // if (_menuItem.category_Id) {
-    //   const menuCategory = await this.menuCategoryModel.findById(_menuItem.category_Id).exec();
-    //   menuItem.menuCategory = [menuCategory];
-    // }
+    if (_menuItem.category_Id) {
+      const menuCategory = await this.menuCategoryModel.findOne({_id:_menuItem.category_Id}).exec();
+      menuItem.menuCategory = [menuCategory._id];
+    }
 
-    // if (_menuItem.store_Id) {
-    //   const store = await this.storeModel.findById(_menuItem.store_Id).exec();
-    //   menuItem.store = store;
-    // }
-
+    if (_menuItem.store_Id) {
+      const store = await this.storeModel.findOne({_id: _menuItem.store_Id}).exec();
+      console.log({store})
+      menuItem.store = store._id;
+    }
+    
     await menuItem.save();
     return menuItem
   }
@@ -81,16 +84,17 @@ export class MenuItemService {
     menuItem.description = description;
     menuItem.cookingTime = cookingTime;
 
-    // if (category_Id) {
-    //   const menuCategory = await this.menuCategoryModel.findById(category_Id).exec();
-    //   menuItem.menuCategory = [menuCategory];
-    // }
+    if (category_Id) {
+      const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();
+      menuItem.menuCategory = [menuCategory._id];
+    }
 
     await menuItem.save();
     return menuItem
   }
 
-  async remove(id: ObjectId): Promise<void> {
-    await this.menuItemModel.findByIdAndDelete(id).exec();
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.menuItemModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }
