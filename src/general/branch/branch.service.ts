@@ -28,7 +28,7 @@ export class BranchService {
         store: store_Id,
       })
       .populate('store')
-      .exec();
+      .lean();
   }
 
   async findOneId(id: ObjectId): Promise<IBranch> {
@@ -36,7 +36,7 @@ export class BranchService {
       .findOne({ _id: id })
       .populate('store')
       .populate('user')
-      .exec();
+      .lean();
   }
 
   async create(_branch: CreateBranchDto): Promise<IBranch> {
