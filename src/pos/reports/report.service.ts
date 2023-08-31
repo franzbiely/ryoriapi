@@ -2,39 +2,44 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {Repository } from "typeorm";
-import { Report } from "./report.entity";
+// import { Report } from "./report.entity";
 import { CreateReportDto } from './dto/create-report.dto';
+import { Model, ObjectId } from "mongoose";
+import { IReport } from "./report.model";
+import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class ReportService {
     constructor(
-        @InjectRepository(Report)
-        private reportRepository: Repository<Report>,
+        @InjectModel('Report')
+        private reportModel: Model<IReport>,
     ) {}
 
     //Get All User
-    findAll(): Promise<Report[]> {
-        return this.reportRepository.find({});
-    }
-
-    findOne(id: number): Promise<Report>{
-        const x = this.reportRepository.findOneBy({id});
-        return x;
-    }
-
-    async create(_report: CreateReportDto): Promise<Report>{
-        const report = new Report();
-        report.title = _report.title
-        report.photo = _report.photo
-        return this.reportRepository.save(report);
-    }
-
-    async update(id: number, report:Report) {
-        await this.reportRepository.update(id, report)
-    }
-
-    async remove(id: number): Promise<void>{
-        await this.reportRepository.delete(id);
-    }
-
+    findAll(): Promise<IReport[]> {
+        return this.reportModel.find().exec();
+      }
+    
+      findOne(id: ObjectId): Promise<IReport> {
+        return this.reportModel.findOne({_id:id}).exec();
+      }
+    
+      async create(_report: CreateReportDto): Promise<IReport> {
+        const report = new this.reportModel({
+          title: _report.title,
+          photo: _report.photo,
+        });
+    
+        await report.save();
+        return report
+      }
+    
+      async update(id: ObjectId, report: IReport): Promise<void> {
+        await this.reportModel.findByIdAndUpdate(id, report).exec();
+      }
+    
+      async remove(id: ObjectId): Promise<string | void> {
+        const result = await this.reportModel.deleteOne({ _id : id }).exec();
+        return `Deleted ${result.deletedCount} record`;
+      }
 }

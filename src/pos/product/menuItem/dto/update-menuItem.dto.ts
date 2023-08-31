@@ -1,10 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateMenuItemDto } from './create-menuItem.dto';
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   title: string;

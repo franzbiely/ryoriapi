@@ -3,10 +3,11 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateReviewsDto } from './create-reviews.dto';
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
 import { IsNumber } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateReviewsDto extends PartialType(CreateReviewsDto) {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     description: string;

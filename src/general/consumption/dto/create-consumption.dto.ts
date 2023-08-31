@@ -1,8 +1,9 @@
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateConsumptionDto {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     title: string;
@@ -14,5 +15,5 @@ export class CreateConsumptionDto {
     createdAt: Date;
     
     @IsInt()
-    parent_consumption_id: number;
+    parent_consumption_id: ObjectId;
 }

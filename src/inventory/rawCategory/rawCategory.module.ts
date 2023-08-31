@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { RawCategory } from './rawCategory.entity';
+import { RawCategorySchema } from './rawCategory.model';
 import { RawCategoryController } from './rawCategory.controller';
 import { RawCategoryService } from './rawCategory.service';
-import { Branch } from 'src/general/branch/branch.entity';
+import { BranchSchema } from 'src/general/branch/branch.model';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RawCategory, Branch])],
+  imports: [MongooseModule.forFeature([
+    { name: 'RawCategory', schema: RawCategorySchema },
+    { name: 'Branch', schema: BranchSchema },
+  ])],
   controllers: [RawCategoryController],
   providers: [RawCategoryService],
 })

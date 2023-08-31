@@ -5,78 +5,83 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Users } from './general/user/user.entity';
+import { UsersSchema } from './general/user/user.model';
 import { UserModule } from './general/user/user.module';
-import { Store } from './general/store/store.entity';
+import { StoreSchema } from './general/store/store.model';
 import { StoreModule } from './general/store/store.module';
-import { Reviews } from './general/reviews/reviews.entity';
+import { ReviewsSchema } from './general/reviews/reviews.model';
 import { ReviewsModule } from './general/reviews/reviews.module';
-import { Branch } from './general/branch/branch.entity';
+import { BranchSchema } from './general/branch/branch.model';
 import { BranchModule } from './general/branch/branch.module';
 
 import { CustomerModule } from './pos/customer/customer.module';
 
-import { Transaction } from './pos/transaction/transaction/transaction.entity';
+import { TransactionSchema } from './pos/transaction/transaction/transaction.model';
 import { TransactionModule } from './pos/transaction/transaction/transaction.module';
-import { Report } from './pos/reports/report.entity';
-import { MenuItem } from './pos/product/menuItem/menuItem.entity';
+import { ReportSchema } from './pos/reports/report.model';
+import { MenuItemSchema } from './pos/product/menuItem/menuItem.model';
 import { MenuItemModule } from './pos/product/menuItem/menuItem.module';
-import { MenuCategory } from './pos/product/menuCategory/menuCategory.entity';
+import { MenuCategorySchema } from './pos/product/menuCategory/menuCategory.model';
 import { MenuCategoryModule } from './pos/product/menuCategory/menuCategory.module';
-import { TransactionItem } from './pos/transaction/transactionItem/transactionItem.entity';
+import { TransactionItemSchema } from './pos/transaction/transactionItem/transactionItem.model';
 import { TransactionItemModule } from './pos/transaction/transactionItem/transactionItem.module';
-import { BranchItem } from './pos/branchItem/branchItem.entity';
+import { BranchItemSchema } from './pos/branchItem/branchItem.model';
 
-import { RawCategory as InventoryCategory } from './inventory/rawCategory/rawCategory.entity';
+import { RawCategorySchema as InventoryCategory } from './inventory/rawCategory/rawCategory.model';
 import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCategory/rawCategory.module';
 import { ReportModule } from './pos/reports/report.module';
-import { Consumption } from './general/consumption/consumption.entity';
+import { ConsumptionSchema } from './general/consumption/consumption.model';
 import { ConsumptionModule } from './general/consumption/consumption.module';
-import { RawGrocery } from './inventory/rawGrocery/rawInventory.entity';
-import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
+import { RawGrocerySchema } from './inventory/rawGrocery/rawGrocery.model';
+import { RawGroceryModule } from './inventory/rawGrocery/rawGrocery.module';
 import { BranchItemModule } from './pos/branchItem/branchItem.module';
 import { SocketModule } from './utils/socket/socket.module';
 
 import { InventoryLogsModule } from './inventory/inventoryLogs/inventoryLogs.module';
-import { InventoryLogs } from './inventory/inventoryLogs/inventoryLogs.entity';
+import { InventoryLogsSchema } from './inventory/inventoryLogs/inventoryLogs.model';
 import { DashboardModule } from './general/dashboard/dashboard.module';
-
+import { MongooseModule } from '@nestjs/mongoose';
+import { Encryptor } from './utils/encryptor';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DATABASE_HOST,
-      port: 3306,
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: [
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   url: process.env.DATABASE_CONNECTION_STRING,
+      // host: process.env.DATABASE_HOST,
+      // port: 3306,
+      // username: process.env.DATABASE_USER,
+      // password: process.env.DATABASE_PASSWORD,
+      // database: process.env.DATABASE_NAME,
+      // entities: [
         // general
-        Consumption,
-        Users,
-        Store,
-        Reviews,
-        Branch,
+        // Consumption,
+        // Users,
+        // Store,
+        // Reviews,
+        // Branch,
 
         // inventory
-        InventoryCategory,
-        RawGrocery,
-        InventoryLogs,
+        // InventoryCategory,
+        // RawGrocery,
+        // InventoryLogs,
 
         // pos
-        MenuItem,
-        MenuCategory,
-        Transaction,
-        Report,
-        TransactionItem,
-        BranchItem,
-      ],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
+        // MenuItem,
+        // MenuCategory,
+        // Transaction,
+        // Report,
+        // TransactionItem,
+        // BranchItem,
+      // ],
+    //   synchronize: true,
+    //   autoLoadEntities: true,
+    // }),
+    MongooseModule.forRoot(process.env.DATABASE_CONNECTION_STRING),
+    
+
     // general
     AuthModule,
     ConsumptionModule,
@@ -89,6 +94,7 @@ import { DashboardModule } from './general/dashboard/dashboard.module';
     // inventory
     InventoryCategoryModule,
     RawGroceryModule,
+
     InventoryLogsModule,
 
     // pos
@@ -100,9 +106,9 @@ import { DashboardModule } from './general/dashboard/dashboard.module';
     MenuCategoryModule,
     TransactionItemModule,
     BranchItemModule,
-    SocketModule
+    SocketModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Encryptor],
 })
 export class AppModule {}

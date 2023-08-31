@@ -1,8 +1,9 @@
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateBranchItemDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsInt()
   quantity: number;

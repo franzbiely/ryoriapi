@@ -11,6 +11,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
+    console.log('in validate')
     const user = await this.userService.userCredential({ email: email });
     if (!user) return null;
     const passwordValid = await bcrypt.compare(password, user.password);
@@ -54,20 +55,43 @@ export class AuthService {
     data.password = await bcrypt.hash(data.password, 10);
     const response = await this.userService.create(data);
     if (response) {
-      const { password, ...result } = response;
+      const { 
+        role,
+        username,
+        firstName,
+        lastName,
+        email,
+        phone,
+        userPhoto,
+        address,
+        branch,
+        inventoryLogs,
+        createdAt 
+      } = response;
       const payload = {
         userPayload: {
-          id: result.id,
-          role: result.role,
-          username: result.username,
-          email: result.email,
-          firstName: result.firstName,
-          lastName: result.lastName,
-          address: result.address,
+          id: response['_id'],
+          role,
+          username,
+          email,
+          firstName,
+          lastName,
+          address,
         },
       };
       return {
-        ...result,
+        role,
+        username,
+        firstName,
+        lastName,
+        email,
+        phone,
+        userPhoto,
+        address,
+        branch,
+        inventoryLogs,
+        id: response['_id'],
+        createdAt,
         access_token: this.jwtService.sign(payload),
       };
     }

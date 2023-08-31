@@ -1,92 +1,76 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { InventoryLogs } from './inventoryLogs.entity';
+import { IInventoryLogs } from './inventoryLogs.model';
 import { CreateInventoryLogsDto } from './dto/create-inventoryLogs.dto';
 import { UpdateInventoryLogsDto } from './dto/update-inventoryLogs.dto';
-import { Users } from 'src/general/user/user.entity';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
-import { Branch } from 'src/general/branch/branch.entity';
-import { RawGrocery } from '../rawGrocery/rawInventory.entity';
+import { IUsers } from 'src/general/user/user.model';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class InventoryLogsService {
   constructor(
-    @InjectRepository(InventoryLogs)
-    private invLogsRepository: Repository<InventoryLogs>,
-    @InjectRepository(Users)
-    private userRepository: Repository<Users>,
-    @InjectRepository(RawGrocery)
-    private rawGroceryRepository: Repository<RawGrocery>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
-  ) {}
+    @InjectModel('InventoryLogs')
+    private readonly invLogsModel: Model<IInventoryLogs>,
+    @InjectModel('Users')
+    private readonly userModel: Model<IUsers>,
+    @InjectModel('RawGrocery')
+    private readonly rawGroceryModel: Model<IRawGrocery>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
+  ) { }
 
-  findAll(branch_Id: number): Promise<InventoryLogs[]> {
-    return this.invLogsRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'rawGrocery'],
-    });
+  findAll(branch_Id: ObjectId): Promise<IInventoryLogs[]> {
+    return this.invLogsModel.find({
+      branch: branch_Id,
+    }).populate('branch rawGrocery').exec();
   }
 
-  findOne(id: number): Promise<InventoryLogs> {
-    const getOneById = this.invLogsRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['rawGrocery', 'user'],
-    });
-    return getOneById;
+  async findOne(id: ObjectId): Promise<IInventoryLogs> {
+    return this.invLogsModel.findOne({_id:id}).populate('rawGrocery user').lean();
   }
 
-  async create(_inventoryLogs: CreateInventoryLogsDto): Promise<InventoryLogs> {
-    const logs = new InventoryLogs();
-    logs.type = _inventoryLogs.type;
-    logs.quantityLogs = _inventoryLogs.quantityLogs;
+  async create(_inventoryLogs: CreateInventoryLogsDto): Promise<IInventoryLogs> {
+    const logs = new this.invLogsModel({
+      type: _inventoryLogs.type,
+      quantityLogs: _inventoryLogs.quantityLogs,
+    });
 
     if (_inventoryLogs.user_Id) {
-      const user = await this.userRepository.findOne({
-        where: { id: _inventoryLogs.user_Id },
-      });
+      const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id});
       logs.user = user;
     }
     if (_inventoryLogs.rawGrocery_Id) {
-      const rawGrocery = await this.rawGroceryRepository.findOne({
-        where: { id: _inventoryLogs.rawGrocery_Id },
-      });
+      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id});
       logs.rawGrocery = rawGrocery;
     }
     if (_inventoryLogs.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _inventoryLogs.branch_Id },
-      });
+      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id});
       logs.branch = branch;
     }
-    return this.invLogsRepository.save(logs);
+    await logs.save();
+    return logs
   }
 
-  async update(
-    id: number,
-    updateInvLogsDto: UpdateInventoryLogsDto,
-  ): Promise<InventoryLogs> {
-    const inventoryLog = await this.findOne(id);
+  async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
+    const inventoryLog = await this.invLogsModel.findOne({ _id: id });
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
     inventoryLog.type = type;
     inventoryLog.quantityLogs = quantityLogs;
 
     if (user_Id) {
-      const user = await this.userRepository.findOne({
-        where: { id: user_Id },
-      });
+      const user = await this.userModel.findOne({_id:user_Id});
       inventoryLog.user = user;
     }
-    return this.invLogsRepository.save(inventoryLog);
+
+    await inventoryLog.save();
+    return inventoryLog
   }
 
-  async remove(id: number): Promise<void> {
-    await this.invLogsRepository.delete(id);
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.invLogsModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

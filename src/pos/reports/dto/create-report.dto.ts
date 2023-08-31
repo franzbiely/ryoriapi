@@ -1,8 +1,9 @@
 import { IsString ,IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateReportDto {
     @IsInt()
-    id: number;
+    id: ObjectId;
 
     @IsString()
     title: string;
@@ -14,5 +15,5 @@ export class CreateReportDto {
     createdAt: Date;
     
     @IsInt()
-    parent_report_id: number;
+    parent_report_id: ObjectId;
 }

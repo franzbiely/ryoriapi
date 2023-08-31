@@ -3,6 +3,7 @@ import { Controller, Post, Get, Param, Body, Delete, Patch, Res } from "@nestjs/
 import { ReviewsService } from "./reviews.service";
 import { CreateReviewsDto } from './dto/create-reviews.dto';
 import { UpdateReviewsDto } from "./dto/update-reviews.dto";
+import { ObjectId } from "mongoose";
 
 @Controller('reviews')
 export class ReviewsController {
@@ -14,8 +15,8 @@ export class ReviewsController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-      return this.reviewsService.findOne(+id);
+    async findOne(@Param('id') id: ObjectId) {
+      return this.reviewsService.findOne(id);
     }
 
     @Post()
@@ -25,14 +26,14 @@ export class ReviewsController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateReviewsDto: UpdateReviewsDto) {
-         this.reviewsService.update(+id, updateReviewsDto);
+    update(@Param('id') id: ObjectId, @Body() updateReviewsDto: UpdateReviewsDto) {
+         this.reviewsService.update(id, updateReviewsDto);
          return "Updated"
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        this.reviewsService.remove(+id);
+    remove(@Param('id') id: ObjectId) {
+        this.reviewsService.remove(id);
       return "Deleted!";
     }
 }

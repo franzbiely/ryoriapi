@@ -1,10 +1,9 @@
 import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
-import { Branch } from 'src/general/branch/branch.entity';
-import { Users } from 'src/general/user/user.entity';
+import { ObjectId } from 'mongoose';
 
 export class CreateStoreDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   storeName: string;

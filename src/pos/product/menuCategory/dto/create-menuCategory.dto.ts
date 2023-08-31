@@ -1,8 +1,9 @@
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateMenuCategoryDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   title: string;

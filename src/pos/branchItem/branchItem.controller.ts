@@ -15,6 +15,7 @@ import { BranchItemService } from './branchItem.service';
 import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { S3Service } from 'src/utils/S3Service';
+import { ObjectId } from 'mongoose';
 
 @Controller('branchItem')
 export class QuantityController {
@@ -38,14 +39,14 @@ export class QuantityController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.branchItemService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.branchItemService.findOne(id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.menuItem.photo) || '',
-      title: response.menuItem.title,
-      description: response.menuItem.description,
-      price: response.menuItem.price,
+      // photo: await this.s3Service.getFile(response.menuItem.photo) || '',
+      // title: response.menuItem.title,
+      // description: response.menuItem.description,
+      // price: response.menuItem.price,
       
     }
   }
@@ -64,15 +65,15 @@ export class QuantityController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateQuantityDto: UpdateBranchItemDto,
   ) {
-    return this.branchItemService.update(+id, updateQuantityDto);
+    return this.branchItemService.update(id, updateQuantityDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.branchItemService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.branchItemService.remove(id);
   }
 }

@@ -17,6 +17,7 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
+import { ObjectId } from 'mongoose';
 
 @Controller('store')
 export class StoreController {
@@ -30,20 +31,63 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':sid/:bid')
-  async findStoreAndBranch(@Param('sid') sid: number, @Param('bid') bid: number) {
-    const response = await this.storeService.findStoreAndBranch(+sid, +bid);
+  async findStoreAndBranch(@Param('sid') sid: ObjectId, @Param('bid') bid: ObjectId) {
+    const response = await this.storeService.findStoreAndBranch(sid, bid);
+
+    console.log({response})
     return {
-      ...response,
-      photo: await this.s3Service.getFile(response.store.photo) || '',
+      _id: response['_id'],
+      branchName: response.branchName,
+      email: response.email,
+      contactNumber: response.contactNumber,
+      address: response.address,
+      store: {
+        storeName: response.store['storeName'],
+        photo: response.store['photo'],
+        user: response.store['user'].map(user => ({
+          id: user['_id'],
+          role: user.role,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          password: user.password,
+          userPhoto: user.userPhoto,
+          createdAt: user.createdAt,
+        })),
+      },      
+      transaction: response.transaction,
+      rawGrocery: response.rawGrocery,
+      branchItem: response.branchItem,
+      rawCategory: response.rawCategory,
+      transactionItem: response.transactionItem,
+      inventoryLogs: response.inventoryLogs,
+      createdAt: response.createdAt,
+      // photo: await this.s3Service.getFile(response.store.photo) || '',
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.storeService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.storeService.findOneId(id);
+    const {
+      storeName,
+      branch,
+      user,
+      menuItem,
+      menuCategory,
+      createdAt,
+    } = response
     return {
-      ...response,
+      _id: response['_id'],
+      storeName,
+      branch,
+      user,
+      menuItem,
+      menuCategory,
+      createdAt,
       photo: await this.s3Service.getFile(response.photo) || '',
     }
   }
@@ -64,20 +108,19 @@ export class StoreController {
         createStoreDto.photo = response.Key;
       }
     }
-    console.log({createStoreDto})
     return this.storeService.create(createStoreDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
-  update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.storeService.update(+id, updateStoreDto);
+  update(@Param('id') id: ObjectId, @Body() updateStoreDto: UpdateStoreDto) {
+    return this.storeService.update(id, updateStoreDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storeService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.storeService.remove(id);
   }
 }

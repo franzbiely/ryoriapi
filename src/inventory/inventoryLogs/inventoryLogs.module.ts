@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { InventoryLogs } from './inventoryLogs.entity';
+import { InventoryLogsSchema } from './inventoryLogs.model';
 import { InvLogsController } from './inventoryLogs.controller';
 import { InventoryLogsService } from './inventoryLogs.service';
-import { Users } from 'src/general/user/user.entity';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
-import { Branch } from 'src/general/branch/branch.entity';
-import { RawGrocery } from '../rawGrocery/rawInventory.entity';
+import { UsersSchema } from 'src/general/user/user.model';
+import { BranchSchema } from 'src/general/branch/branch.model';
+import { RawGrocerySchema } from '../rawGrocery/rawGrocery.model';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([InventoryLogs, Users, RawGrocery, Branch]),
+    MongooseModule.forFeature([
+      { name: 'InventoryLogs', schema: InventoryLogsSchema },
+      { name: 'Users', schema: UsersSchema },
+      { name: 'RawGrocery', schema: RawGrocerySchema },
+      { name: 'Branch', schema: BranchSchema },
+      ]),
   ],
   controllers: [InvLogsController],
   providers: [InventoryLogsService],

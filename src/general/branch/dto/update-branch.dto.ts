@@ -1,10 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBranchDto } from './create-branch.dto';
-import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateBranchDto extends PartialType(CreateBranchDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   branchName: string;

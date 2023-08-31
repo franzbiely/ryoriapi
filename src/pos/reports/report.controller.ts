@@ -3,6 +3,7 @@ import { Controller, Post, Get, Param, Body, Delete, Patch } from "@nestjs/commo
 import { ReportService } from "./report.service";
 import { CreateReportDto } from "./dto/create-report.dto";
 import { UpdateReportDto } from "./dto/update-report.dto";
+import { ObjectId } from "mongoose";
 
 
 
@@ -16,8 +17,8 @@ export class ReportController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-      return this.reportService.findOne(+id);
+    async findOne(@Param('id') id: ObjectId) {
+      return this.reportService.findOne(id);
     }
 
     @Post()
@@ -27,14 +28,14 @@ export class ReportController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-         this.reportService.update(+id, updateReportDto);
+    update(@Param('id') id: ObjectId, @Body() updateReportDto: UpdateReportDto) {
+        //  this.reportService.update(id, updateReportDto);
          return "Updated"
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        this.reportService.remove(+id);
+    remove(@Param('id') id: ObjectId) {
+        this.reportService.remove(id);
       return "Deleted!";
     }
 }

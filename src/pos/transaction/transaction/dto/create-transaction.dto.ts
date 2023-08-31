@@ -1,8 +1,9 @@
 import { IsString, IsInt, IsDate, IsArray } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateTransactionDto {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   status: string;

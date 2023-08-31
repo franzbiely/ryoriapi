@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Post, Get, Param, Body, Delete, Patch, Res } from "@nestjs/common";
+import { ObjectId } from "mongoose";
 import { CustomerService } from "./customer.service";
 import { CreateCustomerDto } from './dto/create-customers.dto';
 import { UpdateCustomerDto } from "./dto/update-customers.dto";
@@ -14,8 +15,8 @@ export class CustomerController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number) {
-      return this.customerService.findOne(+id);
+    async findOne(@Param('id') id: ObjectId) {
+      return this.customerService.findOne(id);
     }
 
     @Post()
@@ -25,14 +26,14 @@ export class CustomerController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-         this.customerService.update(+id, updateCustomerDto);
+    update(@Param('id') id: ObjectId, @Body() updateCustomerDto: UpdateCustomerDto) {
+        //  this.customerService.update(id, updateCustomerDto);
          return "Updated"
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        this.customerService.remove(+id);
+    remove(@Param('id') id: ObjectId) {
+        this.customerService.remove(id);
       return "Deleted!";
     }
 }

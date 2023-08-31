@@ -1,74 +1,58 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { RawCategory as Category, RawCategory } from './rawCategory.entity';
+import { IRawCategory } from './rawCategory.model';
 import { CreateRawCategoryDto } from './dto/create-rawCategory.dto';
 import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
-import { Branch } from 'src/general/branch/branch.entity';
+import { IBranch } from 'src/general/branch/branch.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class RawCategoryService {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
+    @InjectModel('RawCategory')
+    private readonly rawCategoryModel: Model<IRawCategory>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
   ) {}
 
   //Get All User
-  findAll(branch_Id: number): Promise<Category[]> {
-    return this.categoryRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'rawGrocery'],
-    });
+  findAll(branch_Id: ObjectId): Promise<IRawCategory[]> {
+    return this.rawCategoryModel.find({ branch: branch_Id }).populate('branch rawGrocery').exec();
   }
 
-  async findOne(id: number): Promise<Category> {
-    const getOneById = this.categoryRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['branch', 'rawGrocery'],
-    });
-    return getOneById;
+  async findOne(id: ObjectId): Promise<IRawCategory> {
+    return this.rawCategoryModel.findOne({_id:id}).populate('branch rawGrocery').lean();
   }
 
-  async create(_category: CreateRawCategoryDto): Promise<Category> {
-    const category = new Category();
-    category.title = _category.title;
+  async create(_category: CreateRawCategoryDto): Promise<IRawCategory> {
+    const category = new this.rawCategoryModel({ title: _category.title });
 
     if (_category.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _category.branch_Id },
-      });
+      const branch = await this.branchModel.findOne({_id:_category.branch_Id});
       category.branch = branch;
     }
-    return this.categoryRepository.save(category);
+    await category.save();
+    return category
   }
 
-  async update(
-    id: number,
-    category: UpdateRawCategoryDto,
-  ): Promise<RawCategory> {
-    const rawCategory = await this.findOne(id);
+  async update(id: ObjectId, category: UpdateRawCategoryDto): Promise<IRawCategory> {
+    const rawCategory = await this.rawCategoryModel.findOne({_id:id});
     const { title, branch_Id } = category;
 
     rawCategory.title = title;
 
     if (branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: branch_Id },
-      });
+      const branch = await this.branchModel.findOne({_id:branch_Id});
       rawCategory.branch = branch;
     }
 
-    return await this.categoryRepository.save(rawCategory);
+    await rawCategory.save();
+    return rawCategory
   }
 
-  async remove(id: number): Promise<void> {
-    await this.categoryRepository.delete(id);
+  async remove(id: ObjectId): Promise<string> {
+    const result = await this.rawCategoryModel.deleteOne({ _id: id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

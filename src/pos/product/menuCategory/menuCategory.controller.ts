@@ -20,6 +20,7 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/utils/S3Service';
 import { exit } from 'process';
+import { ObjectId } from 'mongoose';
 
 @Controller('menuCategory')
 export class MenuCategoryController {
@@ -29,8 +30,7 @@ export class MenuCategoryController {
   ) {}
 
   @Get()
-  async fillAll(@Query('store_Id') store_Id: number) {
-    console.log("HERE I AM")
+  async fillAll(@Query('store_Id') store_Id: ObjectId) {
     const response = await this.menuCategoryService.findAll(store_Id);
     return await Promise.all(
       response.map(async (item) => {
@@ -43,8 +43,8 @@ export class MenuCategoryController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const response = await this.menuCategoryService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.menuCategoryService.findOneId(id);
     return {
       ...response,
       photo: await this.s3Service.getFile(response.photo) || '',
@@ -74,17 +74,15 @@ export class MenuCategoryController {
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
   ) {
-    this.menuCategoryService.update(+id, updateMenuCategoryDto);
-    return 'Updated';
+    return this.menuCategoryService.update(id, updateMenuCategoryDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    this.menuCategoryService.remove(+id);
-    return 'Deleted!';
+  remove(@Param('id') id: ObjectId) {
+    return this.menuCategoryService.remove(id);
   }
 }

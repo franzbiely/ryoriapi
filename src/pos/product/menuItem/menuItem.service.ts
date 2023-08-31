@@ -1,106 +1,83 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindOperator, Repository, In } from 'typeorm';
-import { MenuItem } from './menuItem.entity';
+import { IMenuItem } from './menuItem.model';
 import { CreateMenuItemDto } from './dto/create-menuItem.dto';
-import { Branch } from 'src/general/branch/branch.entity';
 import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
-import { MenuCategory } from '../menuCategory/menuCategory.entity';
-import { Store } from 'src/general/store/store.entity';
+import { IMenuCategory } from '../menuCategory/menuCategory.model';
+import { IStore } from 'src/general/store/store.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class MenuItemService {
   constructor(
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(MenuCategory)
-    private menuCategoryRepository: Repository<MenuCategory>,
-    @InjectRepository(Store)
-    private storeRepository: Repository<Store>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('MenuCategory')
+    private readonly menuCategoryModel: Model<IMenuCategory>,
+    @InjectModel('Store')
+    private readonly storeModel: Model<IStore>,
   ) {}
 
-  async findAll(store_Id: number): Promise<MenuItem[]> {
-    return this.menuItemRepository.find({
-      where: {
-        storeId: store_Id,
-      },
-      relations: ['store', 'branchItem'],
-    });
-  }
-  
-  async findByBatch(ids: string[]): Promise<MenuItem[]> {
-    return this.menuItemRepository.find(
-    {
-      where: {
-        id: In(ids)
-      },
-      relations: ['store', 'branchItem'],
-    });
+  findAll(store_Id: ObjectId): Promise<IMenuItem[]> {
+    return this.menuItemModel.find({ storeId: store_Id }).exec();
   }
 
-  async findAllWithBranchQty(store_Id: number, branch_Id: number) {
-    const menuItem = this.menuItemRepository.find({
-      where: {
-        storeId: store_Id,
-      },
-      relations: ['store', 'branchItem', 'menuCategory'],
-    });
-    const data = await menuItem;
-    return data.map((item) => {
-      console.log({ branch_Id });
-      const newBranch = item.branchItem.filter(
-        (subItem) => subItem.branchId == branch_Id,
-      );
-      console.log({ newBranch });
-
-      return {
-        ...item,
-        branchItem: null,
-        quantity: newBranch[0]?.quantity || 0,
-      };
-    });
+  async findByBatch(ids: string[]): Promise<IMenuItem[]> {
+    return this.menuItemModel.find({ _id: { $in: ids } }).lean();
   }
 
-  async findOne(id: number): Promise<MenuItem> {
-    const getOneById = this.menuItemRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['menuCategory', 'branchItem'],
-    });
-    return getOneById;
+  async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
+    const menuItems = await this.menuItemModel.find({ store: store_Id }).exec();
+    console.log({menuItems})
+
+    if(menuItems.length > 0) {
+      return menuItems.map((item) => {
+        const newBranch = item.branchItem.filter(
+          (subItem) => subItem['_id'] === branch_Id,
+        );
+
+        return {
+          ...item.toObject(),
+          branchItem: undefined,
+          quantity: newBranch[0]?.quantity || 0,
+        };
+      });
+    }
+    return []
   }
 
-  async create(_menuItem: CreateMenuItemDto): Promise<MenuItem> {
-    const menuItem = new MenuItem();
-    menuItem.title = _menuItem.title;
-    menuItem.photo = _menuItem.photo || '';
-    menuItem.price = _menuItem.price;
-    menuItem.description = _menuItem.description;
-    menuItem.cookingTime = _menuItem.cookingTime;
+  findOne(id: ObjectId): Promise<IMenuItem> {
+    return this.menuItemModel.findOne({_id:id}).lean();
+  }
+
+  async create(_menuItem: CreateMenuItemDto): Promise<IMenuItem> {
+    console.log({_menuItem})
+    const menuItem = new this.menuItemModel({
+      title: _menuItem.title,
+      photo: _menuItem.photo || '',
+      price: _menuItem.price,
+      description: _menuItem.description,
+      cookingTime: _menuItem.cookingTime,
+    });
 
     if (_menuItem.category_Id) {
-      const menuCategory = await this.menuCategoryRepository.findOne({
-        where: { id: _menuItem.category_Id },
-      });
+      const menuCategory = await this.menuCategoryModel.findOne({_id:_menuItem.category_Id}).exec();
       menuItem.menuCategory = [menuCategory];
     }
 
     if (_menuItem.store_Id) {
-      const store = await this.storeRepository.findOne({
-        where: { id: _menuItem.store_Id },
-      });
+      const store = await this.storeModel.findOne({_id: _menuItem.store_Id}).exec();
+      console.log({store})
       menuItem.store = store;
     }
-
-    return this.menuItemRepository.save(menuItem);
+    
+    await menuItem.save();
+    return menuItem
   }
 
-  async update(
-    id: number,
-    updateMenuItemDto: UpdateMenuItemDto,
-  ): Promise<MenuItem> {
-    const menuItem = await this.findOne(id);
+  async update(id: ObjectId, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
+    const menuItem = await this.menuItemModel.findOne({_id:id});
+
     const { title, photo, price, description, cookingTime, category_Id } =
       updateMenuItemDto;
 
@@ -111,22 +88,16 @@ export class MenuItemService {
     menuItem.cookingTime = cookingTime;
 
     if (category_Id) {
-      const menuCategory = await this.menuCategoryRepository.findOne({
-        where: { id: category_Id },
-      });
-      menuItem.menuCategory = [menuCategory];
-    }
-    if (category_Id) {
-      const menuCategory = await this.menuCategoryRepository.findOne({
-        where: { id: category_Id },
-      });
+      const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();
       menuItem.menuCategory = [menuCategory];
     }
 
-    return this.menuItemRepository.save(menuItem);
+    await menuItem.save();
+    return menuItem
   }
 
-  async remove(id: number): Promise<void> {
-    await this.menuItemRepository.delete(id);
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.menuItemModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

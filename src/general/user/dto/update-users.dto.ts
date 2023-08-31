@@ -1,10 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUsersDto } from './create-users.dto';
 import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { ObjectId } from 'mongoose';
 
 export class UpdateUserDto extends PartialType(CreateUsersDto) {
   @IsInt()
-  id: number;
+  id: ObjectId;
 
   @IsString()
   role: string;

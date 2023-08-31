@@ -1,72 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TransactionItem } from './transactionItem.entity';
+import { ITransactionItem } from './transactionItem.model';
 import { CreateTransactionItemDto } from './dto/create-transactionItem.dto';
-import { Transaction } from '../transaction/transaction.entity';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
+import { ITransaction } from '../transaction/transaction.model';
+import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { UpdateTransactionItemDto } from './dto/update-transactionItem.dto';
-import { Branch } from 'src/general/branch/branch.entity';
+import { IBranch } from 'src/general/branch/branch.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class TransactionItemService {
   constructor(
-    @InjectRepository(TransactionItem)
-    private transactionItemRepository: Repository<TransactionItem>,
-    @InjectRepository(Transaction)
-    private transactionRepository: Repository<Transaction>,
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(Branch)
-    private branchRepository: Repository<Branch>,
+    @InjectModel('TransactionItem')
+    // private readonly catModel: Model<Cat>
+    private readonly transactionItemModel: Model<ITransactionItem>,
+    @InjectModel('Transaction')
+    private readonly transactionModel: Model<ITransaction>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
   ) {}
 
-  findAll(branch_Id: number): Promise<TransactionItem[]> {
-    return this.transactionItemRepository.find({
-      where: {
-        branchId: branch_Id,
-      },
-      relations: ['branch', 'transaction'],
-    });
+  findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
+    return this.transactionItemModel
+      .find({ branch: branch_Id })
+      .populate('branch')
+      .populate('transaction')
+      .exec();
   }
 
-  findOne(id: number): Promise<TransactionItem> {
-    const findId = this.transactionItemRepository.findOne({
-      where: {
-        id: id,
-      },
-      relations: ['branch', 'transaction'],
-    });
-    return findId;
+  findOne(id: ObjectId): Promise<ITransactionItem> {
+    return this.transactionItemModel
+      .findOne({ _id: id })
+      .populate('branch')
+      .populate('transaction')
+      .lean();
   }
 
   async create(
     _transaction: CreateTransactionItemDto,
-  ): Promise<TransactionItem> {
-    const transactionItem = new TransactionItem();
-    transactionItem.status = _transaction.status;
-    transactionItem.quantity = _transaction.quantity;
+  ): Promise<ITransactionItem | any> {
+    // const transactionItem = new TransactionItem();
+    // transactionItem.status = _transaction.status;
+    // transactionItem.quantity = _transaction.quantity;
 
-    if (_transaction.transaction_Id) {
-      const transaction = await this.transactionRepository.findOne({
-        where: { id: _transaction.transaction_Id },
-      });
-      transactionItem.transaction = transaction;
-    }
-    if (_transaction.menuItem_Id) {
-      const menuItem = await this.menuItemRepository.findOne({
-        where: { id: _transaction.menuItem_Id },
-      });
-      transactionItem.menuItem = menuItem;
-    }
+    // if (_transaction.transaction_Id) {
+    //   const transaction = await this.transactionModel.findOne({
+    //     where: { id: _transaction.transaction_Id },
+    //   });
+    //   transactionItem.transaction = transaction;
+    // }
+    // if (_transaction.menuItem_Id) {
+    //   const menuItem = await this.menuItemModel.findOne({
+    //     where: { id: _transaction.menuItem_Id },
+    //   });
+    //   transactionItem.menuItem = menuItem;
+    // }
 
-    if (_transaction.branch_Id) {
-      const branch = await this.branchRepository.findOne({
-        where: { id: _transaction.branch_Id },
-      });
-      transactionItem.branch = branch;
-    }
-    return this.transactionItemRepository.save(transactionItem);
+    // if (_transaction.branch_Id) {
+    //   const branch = await this.branchModel.findOne({
+    //     where: { id: _transaction.branch_Id },
+    //   });
+    //   transactionItem.branch = branch;
+    // }
+    // return this.transactionItemModel.save(transactionItem);
   }
   checkSameStatus(data) {
     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -83,40 +81,41 @@ export class TransactionItemService {
   }
 
   async update(
-    id: number,
+    id: ObjectId,
     updateTransactionItem: UpdateTransactionItemDto,
-  ): Promise<TransactionItem> {
-    const transactionItem = await this.findOne(id);
-    const { status, quantity } = updateTransactionItem;
-    transactionItem.status = status;
-    transactionItem.quantity = quantity;
+  ): Promise<ITransactionItem | any> {
+    // const transactionItem = await this.findOne({_id:id});
+    // const { status, quantity } = updateTransactionItem;
+    // transactionItem.status = status;
+    // transactionItem.quantity = quantity;
 
-    const _transaction = await this.transactionRepository.findOne({
-      where: { id: transactionItem.transaction.id },
-    });
-    transactionItem.transaction = _transaction;
-    const result = await this.transactionItemRepository.save(transactionItem);
+    // const _transaction = await this.transactionModel.findOne({
+    //   where: { id: transactionItem.transaction.id },
+    // });
+    // transactionItem.transaction = _transaction;
+    // const result = await this.transactionItemModel.save(transactionItem);
 
-    const itemStatus = await this.transactionItemRepository.find({
-      where: {
-        transaction: {
-          id: transactionItem.transaction.id,
-        },
-      },
-    });
+    // const itemStatus = await this.transactionItemModel.find({
+    //   where: {
+    //     transaction: {
+    //       id: transactionItem.transaction.id,
+    //     },
+    //   },
+    // });
 
-    const data = this.checkSameStatus(itemStatus);
-    if (data) {
-      _transaction.status = data;
-      await this.transactionRepository.save(_transaction);
-    }
+    // const data = this.checkSameStatus(itemStatus);
+    // if (data) {
+    //   _transaction.status = data;
+    //   await this.transactionModel.save(_transaction);
+    // }
 
-    console.log({ transactionItem });
+    // console.log({ transactionItem });
 
-    return result;
+    // return result;
   }
 
-  async remove(id: number): Promise<void> {
-    await this.transactionItemRepository.delete(id);
+  async remove(id: ObjectId): Promise<string | void> {
+    const result = await this.transactionItemModel.deleteOne({ _id : id }).exec();
+    return `Deleted ${result.deletedCount} record`;
   }
 }

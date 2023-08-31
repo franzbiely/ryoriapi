@@ -14,6 +14,7 @@ import { BranchService } from './branch.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { ObjectId } from 'mongoose';
 
 @Controller('branch')
 export class BranchController {
@@ -21,14 +22,14 @@ export class BranchController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('store_Id') store_Id: number) {
+  async fillAll(@Query('store_Id') store_Id: ObjectId) {
     return this.branchService.findAll(store_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.branchService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    return await this.branchService.findOneId(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,13 +46,13 @@ export class BranchController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBranchDto: UpdateBranchDto) {
-    return this.branchService.update(+id, updateBranchDto);
+  update(@Param('id') id: ObjectId, @Body() updateBranchDto: UpdateBranchDto) {
+    return this.branchService.update(id, updateBranchDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.branchService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.branchService.remove(id);
   }
 }

@@ -1,12 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import {  CustomerService } from "./customer.service";
-import { Customer } from "./customer.entity";
 import { CustomerController } from "./customer.controller";
+import { MongooseModule } from "@nestjs/mongoose";
+import { CustomerSchema } from "./customer.model";
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Customer])],
+    imports:[MongooseModule.forFeature([
+        { name: 'Customer', schema: CustomerSchema }
+        
+    ])],
     controllers: [CustomerController],
     providers: [CustomerService],
 })

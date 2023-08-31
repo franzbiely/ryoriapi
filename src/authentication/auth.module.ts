@@ -9,15 +9,18 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { jwtConstants } from './constants';
 import { UserService } from 'src/general/user/user.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from 'src/general/user/user.entity';
-import { Store } from 'src/general/store/store.entity';
-import { Branch } from 'src/general/branch/branch.entity';
+import { UsersSchema } from 'src/general/user/user.model';
+import { MongooseModule } from '@nestjs/mongoose';
+import { BranchSchema } from 'src/general/branch/branch.model';
+import { StoreSchema } from 'src/general/store/store.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Users, Store, Branch]),
-    Users,
+    MongooseModule.forFeature([
+      {name: 'Users', schema: UsersSchema},
+      {name: 'Store', schema: StoreSchema},
+      {name: 'Branch', schema: BranchSchema}
+    ]),
     UserModule,
     PassportModule,
     JwtModule.register({

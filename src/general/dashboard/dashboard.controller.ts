@@ -1,22 +1,21 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BranchItem } from 'src/pos/branchItem/branchItem.entity';
-import { BranchItemService } from 'src/pos/branchItem/branchItem.service';
-import { MenuItem } from 'src/pos/product/menuItem/menuItem.entity';
-import { Transaction } from 'src/pos/transaction/transaction/transaction.entity';
-import { TransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.entity';
-import { Repository, Between } from 'typeorm';
+import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
+import { ITransaction } from 'src/pos/transaction/transaction/transaction.model';
+import { ITransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.model';
+import { Between } from 'typeorm';
 import * as moment from 'moment';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Controller('dashboard')
 export class DashboardController {
   constructor(
-    @InjectRepository(MenuItem)
-    private menuItemRepository: Repository<MenuItem>,
-    @InjectRepository(TransactionItem)
-    private transactionItemRepository: Repository<TransactionItem>,
-    @InjectRepository(Transaction)
-    private transactionRepository: Repository<Transaction>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('TransactionItem')
+    private readonly transactionItemModel: Model<ITransactionItem>,
+    @InjectModel('Transaction')
+    private readonly transactionModel: Model<ITransaction>,
   ) {}
 
   async getTransactionByStatusAndMoment(
@@ -29,11 +28,12 @@ export class DashboardController {
       const endMonthly = moment().endOf(momentType).toDate();
 
       resolve(
-        await this.transactionRepository.count({
-          where: {
-            status: status,
-            branchId,
-            createdAt: Between(startMonthly, endMonthly),
+        await this.transactionModel.countDocuments({
+          status: status,
+          branch: branchId,
+          createdAt: {
+            $gte: startMonthly,
+            $lte: endMonthly,
           },
         }),
       );
@@ -45,37 +45,25 @@ export class DashboardController {
     @Query('sid') store_Id,
     @Query('bid') branch_Id,
   ): Promise<any> {
-    const menuItem = await this.menuItemRepository.find({
-      where: { storeId: store_Id },
-    });
-    const transactionItems = await this.transactionItemRepository.find({
-      where: { branchId: branch_Id },
-    });
-    const transactions = await this.transactionRepository.find({
-      where: { branchId: branch_Id },
-    });
+    const menuItem = await this.menuItemModel.find({ store: store_Id });
+    const transactionItems = await this.transactionItemModel.find({ branch: branch_Id });
+    const transactions = await this.transactionModel.find({ branch: branch_Id });
     const totalRevenues = transactions.reduce(
       (prev, cur) => prev + cur.amount,
       0,
     );
 
-    const transactionNew = await this.transactionRepository.count({
-      where: {
-        status: 'new',
-        branchId: branch_Id,
-      },
+    const transactionNew = await this.transactionModel.countDocuments({
+      status: 'new',
+      branch: branch_Id,
     });
-    const transactionPreparing = await this.transactionRepository.count({
-      where: {
-        status: 'preparing',
-        branchId: branch_Id,
-      },
+    const transactionPreparing = await this.transactionModel.countDocuments({
+      status: 'preparing',
+      branch: branch_Id,
     });
-    const transactionDone = await this.transactionRepository.count({
-      where: {
-        status: 'done',
-        branchId: branch_Id,
-      },
+    const transactionDone = await this.transactionModel.countDocuments({
+      status: 'done',
+      branch: branch_Id,
     });
 
     const transactionsMonthlyServed =

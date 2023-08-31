@@ -11,9 +11,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
-import { RawGroceryService } from './rawInventory.service';
+import { RawGroceryService } from './rawGrocery.service';
 import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
 import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
+import { ObjectId } from 'mongoose';
 
 @Controller('inventory/rawgrocery')
 export class RawGroceryController {
@@ -21,14 +22,14 @@ export class RawGroceryController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number) {
+  async fillAll(@Query('branch_Id') branch_Id: ObjectId) {
     return this.rawGroceryService.findAll(branch_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.rawGroceryService.findOne(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    return this.rawGroceryService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,15 +46,15 @@ export class RawGroceryController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ObjectId,
     @Body() updateRawGroceryDto: UpdateRawGroceryDto,
   ) {
-    return this.rawGroceryService.update(+id, updateRawGroceryDto);
+    return this.rawGroceryService.update(id, updateRawGroceryDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rawGroceryService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.rawGroceryService.remove(id);
   }
 }

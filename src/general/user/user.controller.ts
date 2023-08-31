@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { ObjectId } from 'mongoose';
 
 @Controller('user')
 export class UserController {
@@ -21,7 +22,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllUsers(@Query('store_Id') store_Id: number) {
+  async getAllUsers(@Query('store_Id') store_Id: ObjectId) {
     return this.usersService.findAll(store_Id);
   }
 
@@ -34,13 +35,13 @@ export class UserController {
     );
     const user_Id = decodedToken.userPayload.id;
 
-    return this.usersService.findOneId(+user_Id);
+    return this.usersService.findOneId(user_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.usersService.findOneId(+id);
+  async findOne(@Param('id') id: ObjectId) {
+    return this.usersService.findOneId(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -51,13 +52,13 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: ObjectId, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id') id: ObjectId) {
+    return this.usersService.remove(id);
   }
 }
