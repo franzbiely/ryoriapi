@@ -31,7 +31,6 @@ export class MenuCategoryController {
 
   @Get()
   async fillAll(@Query('store_Id') store_Id: ObjectId) {
-    console.log("HERE I AM")
     const response = await this.menuCategoryService.findAll(store_Id);
     return await Promise.all(
       response.map(async (item) => {

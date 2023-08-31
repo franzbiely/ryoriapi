@@ -1,9 +1,9 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, ObjectId } from 'mongoose';
 
 export interface IMenuCategory extends Document {
   title: string;
   photo: string;
-  storeId: number;
+  storeId: Types.ObjectId;
   menuItem: Types.ObjectId[];
   store: Types.ObjectId;
   createdAt: Date;
@@ -12,7 +12,7 @@ export interface IMenuCategory extends Document {
 export const MenuCategorySchema = new Schema<IMenuCategory>({
   title: String,
   photo: String,
-  storeId: Number,
+  storeId: String,
   menuItem: [{ type: Schema.Types.ObjectId, ref: 'MenuItem' }],
   store: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
   createdAt: { type: Date, default: Date.now },

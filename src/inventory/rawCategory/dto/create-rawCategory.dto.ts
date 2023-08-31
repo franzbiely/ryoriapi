@@ -9,7 +9,7 @@ export class CreateRawCategoryDto {
   title: string;
 
   @IsInt()
-  branch_Id: number;
+  branch_Id: ObjectId;
 
   @IsDate()
   createdAt: Date;

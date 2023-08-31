@@ -17,7 +17,7 @@ export class MenuCategoryService {
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuCategory[]> {
-    return this.menuCategoryModel.find({ storeId: store_Id }).lean();
+    return this.menuCategoryModel.find({ store: store_Id }).lean();
   }
 
   findOneId(id: ObjectId): Promise<IMenuCategory> {
