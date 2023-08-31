@@ -36,6 +36,18 @@ export class TransactionController {
     return this.transactionService.getStatusById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('today')
+  async getTasksCreatedToday(@Query('branch_Id') branch_Id: ObjectId) {
+    return this.transactionService.getTransactionToday(branch_Id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('nottoday')
+  async getTasksNotDueToday(@Query('branch_Id') branch_Id: ObjectId) {
+    return this.transactionService.getTransactionNotToday(branch_Id);
+  }
+
   @Get('/status/')
   async getStatus(
     @Query('sid') sid: ObjectId,

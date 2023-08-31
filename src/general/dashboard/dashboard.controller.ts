@@ -48,10 +48,10 @@ export class DashboardController {
       where: { storeId: store_Id },
     });
     const transactionItems = await this.transactionItemModel.find({
-      where: { branchId: branch_Id },
+      where: { branch: branch_Id },
     });
     const transactions = await this.transactionModel.find({
-      where: { branchId: branch_Id },
+      where: { branch: branch_Id },
     });
     const totalRevenues = transactions.reduce(
       (prev, cur) => prev + cur.amount,
@@ -61,19 +61,19 @@ export class DashboardController {
     const transactionNew = await this.transactionModel.count({
       where: {
         status: 'new',
-        branchId: branch_Id,
+        branch: branch_Id,
       },
     });
     const transactionPreparing = await this.transactionModel.count({
       where: {
         status: 'preparing',
-        branchId: branch_Id,
+        branch: branch_Id,
       },
     });
     const transactionDone = await this.transactionModel.count({
       where: {
         status: 'done',
-        branchId: branch_Id,
+        branch: branch_Id,
       },
     });
 

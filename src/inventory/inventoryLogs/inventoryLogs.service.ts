@@ -23,7 +23,7 @@ export class InventoryLogsService {
 
   findAll(branch_Id: ObjectId): Promise<IInventoryLogs[]> {
     return this.invLogsModel.find({
-      branchId: branch_Id,
+      branch: branch_Id,
     }).populate('branch rawGrocery').exec();
   }
 

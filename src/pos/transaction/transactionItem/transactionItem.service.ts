@@ -24,7 +24,7 @@ export class TransactionItemService {
 
   findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
     return this.transactionItemModel
-      .find({ branchId: branch_Id })
+      .find({ branch: branch_Id })
       .populate('branch')
       .populate('transaction')
       .exec();

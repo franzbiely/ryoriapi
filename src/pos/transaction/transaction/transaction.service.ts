@@ -100,7 +100,7 @@ export class TransactionService {
     tid: ObjectId,
   ): Promise<{ status: string }> {
     const transaction = await this.transactionModel
-    .findOne({ branchId: bid, table: tid })
+    .findOne({ branch: bid, table: tid })
     .sort({ id: -1 })
     .exec();
 
@@ -305,5 +305,58 @@ export class TransactionService {
     // return {
     //   redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
     // };
+  }
+
+  async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setUTCDate(today.getUTCDate() + 1); // Add one day
+
+    const response = await this.transactionModel.find({
+        branch: branch_Id,
+        createdAt: { $gte: today, $lt: tomorrow }
+      })
+      .populate('branch')
+      .populate({
+        path: 'transactionItem',
+        populate: {
+          path: 'menuItem'
+        }
+    });
+
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItem.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+    return newData;
+  }
+
+  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const response = await this.transactionModel.find({
+      branch: branch_Id,
+      createdAt: { $lt: today}
+    })
+    .populate('branch')
+    .populate({
+      path: 'transactionItem',
+      populate: {
+        path: 'menuItem'
+      }
+  });
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItem.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+
+    return newData;
   }
 }
