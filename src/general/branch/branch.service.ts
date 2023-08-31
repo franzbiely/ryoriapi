@@ -25,7 +25,7 @@ export class BranchService {
   findAll(store_Id: ObjectId): Promise<IBranch[]> {
     return this.branchModel
       .find({
-        'store._id': store_Id,
+        store: store_Id,
       })
       .populate('store')
       .exec();
