@@ -41,6 +41,7 @@ import { InventoryLogsModule } from './inventory/inventoryLogs/inventoryLogs.mod
 import { InventoryLogsSchema } from './inventory/inventoryLogs/inventoryLogs.model';
 import { DashboardModule } from './general/dashboard/dashboard.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Encryptor } from './utils/encryptor';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -105,9 +106,9 @@ import { MongooseModule } from '@nestjs/mongoose';
     MenuCategoryModule,
     TransactionItemModule,
     BranchItemModule,
-    SocketModule
+    SocketModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Encryptor],
 })
 export class AppModule {}
