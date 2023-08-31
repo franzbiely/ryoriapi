@@ -27,20 +27,23 @@ export class MenuItemService {
   }
 
   async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
-    const menuItems = await this.menuItemModel.find({ storeId: store_Id }).exec();
+    const menuItems = await this.menuItemModel.find({ store: store_Id }).exec();
     console.log({menuItems})
 
-    // return menuItems.map((item) => {
-    //   const newBranch = item.branchItem.filter(
-    //     (subItem) => subItem.branchId === branch_Id,
-    //   );
+    if(menuItems.length > 0) {
+      return menuItems.map((item) => {
+        const newBranch = item.branchItem.filter(
+          (subItem) => subItem['_id'] === branch_Id,
+        );
 
-    //   return {
-    //     ...item.toObject(),
-    //     branchItem: undefined,
-    //     quantity: newBranch[0]?.quantity || 0,
-    //   };
-    // });
+        return {
+          ...item.toObject(),
+          branchItem: undefined,
+          quantity: newBranch[0]?.quantity || 0,
+        };
+      });
+    }
+    return []
   }
 
   findOne(id: ObjectId): Promise<IMenuItem> {

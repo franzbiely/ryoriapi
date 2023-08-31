@@ -56,14 +56,17 @@ export class MenuItemController {
       store_Id,
       branch_Id,
     );
-    return await Promise.all(
-      response.map(async (item) => {
-        return {
-          ...item,
-          photo: await this.s3Service.getFile(item.photo) || '',
-        };
-      }),
-    );
+    if(response.length > 0) {
+      return await Promise.all(
+        response.map(async (item) => {
+          return {
+            ...item,
+            photo: await this.s3Service.getFile(item.photo) || '',
+          };
+        }),
+        );
+    }
+    return []
   }
 
   @Get(':id')

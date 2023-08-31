@@ -1,4 +1,5 @@
 import { Schema, model, Types } from 'mongoose';
+import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 
 export interface IMenuItem extends Document {
   title: string;
@@ -9,7 +10,7 @@ export interface IMenuItem extends Document {
   menuCategory: Types.ObjectId[];
   storeId: number;
   store: Types.ObjectId;
-  branchItem: Types.ObjectId[];
+  branchItem: IBranchItem[];
   transactionItem: Types.ObjectId[];
   createdAt: Date;
 }
