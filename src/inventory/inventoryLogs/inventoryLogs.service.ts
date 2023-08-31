@@ -4,7 +4,7 @@ import { CreateInventoryLogsDto } from './dto/create-inventoryLogs.dto';
 import { UpdateInventoryLogsDto } from './dto/update-inventoryLogs.dto';
 import { IUsers } from 'src/general/user/user.model';
 import { IBranch } from 'src/general/branch/branch.model';
-import { IRawGrocery } from '../rawGrocery/rawInventory.model';
+import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 
@@ -39,15 +39,15 @@ export class InventoryLogsService {
 
     if (_inventoryLogs.user_Id) {
       const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id});
-      logs.user = user._id;
+      logs.user = user;
     }
     if (_inventoryLogs.rawGrocery_Id) {
       const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id});
-      logs.rawGrocery = rawGrocery._id;
+      logs.rawGrocery = rawGrocery;
     }
     if (_inventoryLogs.branch_Id) {
       const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id});
-      logs.branch = branch._id;
+      logs.branch = branch;
     }
     await logs.save();
     return logs
@@ -62,7 +62,7 @@ export class InventoryLogsService {
 
     if (user_Id) {
       const user = await this.userModel.findOne({_id:user_Id});
-      inventoryLog.user = user._id;
+      inventoryLog.user = user;
     }
 
     await inventoryLog.save();

@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
-import { RawGroceryService } from './rawInventory.service';
+import { RawGroceryService } from './rawGrocery.service';
 import { CreateRawGroceryDto } from './dto/create-rawInventory.dto';
 import { UpdateRawGroceryDto } from './dto/update-rawInventory.dto';
 import { ObjectId } from 'mongoose';

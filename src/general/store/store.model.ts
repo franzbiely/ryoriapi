@@ -1,14 +1,18 @@
 import { Schema, model, Types } from 'mongoose';
+import { IMenuCategory } from 'src/pos/product/menuCategory/menuCategory.model';
+import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
+import { IBranch } from '../branch/branch.model';
+import { IUsers } from '../user/user.model';
 
 export interface IStore extends Document {
   storeName: string;
   appId: string;
   appSecret: string;
-  branch: Types.ObjectId[];
+  branch: IBranch[];
   photo: string;
-  user: Types.ObjectId[];
-  menuItem: Types.ObjectId[];
-  menuCategory: Types.ObjectId[];
+  user: IUsers[];
+  menuItem: IMenuItem[];
+  menuCategory: IMenuCategory[];
   createdAt: Date;
 }
 

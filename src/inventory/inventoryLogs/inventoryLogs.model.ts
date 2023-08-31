@@ -1,12 +1,15 @@
 import { Schema, model, Types } from 'mongoose';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IUsers } from 'src/general/user/user.model';
+import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
 
 export interface IInventoryLogs extends Document {
   type: string;
   quantityLogs: number;
   branchId: number;
-  user: Types.ObjectId;
-  rawGrocery: Types.ObjectId;
-  branch: Types.ObjectId;
+  user: IUsers;
+  rawGrocery: IRawGrocery;
+  branch: IBranch;
   createdAt: Date;
 }
 

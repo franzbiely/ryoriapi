@@ -4,7 +4,7 @@ import { InvLogsController } from './inventoryLogs.controller';
 import { InventoryLogsService } from './inventoryLogs.service';
 import { UsersSchema } from 'src/general/user/user.model';
 import { BranchSchema } from 'src/general/branch/branch.model';
-import { RawGrocerySchema } from '../rawGrocery/rawInventory.model';
+import { RawGrocerySchema } from '../rawGrocery/rawGrocery.model';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({

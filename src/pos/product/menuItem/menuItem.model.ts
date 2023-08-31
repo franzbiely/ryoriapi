@@ -1,5 +1,8 @@
 import { Schema, model, Types } from 'mongoose';
+import { IStore } from 'src/general/store/store.model';
 import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
+import { ITransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.model';
+import { IMenuCategory } from '../menuCategory/menuCategory.model';
 
 export interface IMenuItem extends Document {
   title: string;
@@ -7,11 +10,11 @@ export interface IMenuItem extends Document {
   price: number;
   description: string;
   cookingTime: string;
-  menuCategory: Types.ObjectId[];
+  menuCategory: IMenuCategory[];
   storeId: number;
-  store: Types.ObjectId;
+  store: IStore;
   branchItem: IBranchItem[];
-  transactionItem: Types.ObjectId[];
+  transactionItem: ITransactionItem[];
   createdAt: Date;
 }
 

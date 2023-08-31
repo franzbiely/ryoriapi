@@ -1,11 +1,13 @@
 import { Schema, model, Types, ObjectId } from 'mongoose';
+import { IStore } from 'src/general/store/store.model';
+import { IMenuItem } from '../menuItem/menuItem.model';
 
 export interface IMenuCategory extends Document {
   title: string;
   photo: string;
   storeId: Types.ObjectId;
-  menuItem: Types.ObjectId[];
-  store: Types.ObjectId;
+  menuItem: IMenuItem[];
+  store: IStore;
   createdAt: Date;
 }
 

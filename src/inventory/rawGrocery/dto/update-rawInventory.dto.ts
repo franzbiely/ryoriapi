@@ -17,7 +17,7 @@ export class UpdateRawGroceryDto extends PartialType(CreateRawGroceryDto) {
   quantity: number;
 
   @IsOptional()
-  rawCategory_Id: number;
+  rawCategory_Id: ObjectId;
 
   @IsDate()
   createdAt: Date;

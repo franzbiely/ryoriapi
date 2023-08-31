@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { RawGroceryController } from './rawInventory.controller';
-import { RawGroceryService } from './rawInventory.service';
+import { RawGroceryController } from './rawGrocery.controller';
+import { RawGroceryService } from './rawGrocery.service';
 import { RawCategorySchema } from '../rawCategory/rawCategory.model';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RawGrocerySchema } from './rawInventory.model';
+import { RawGrocerySchema } from './rawGrocery.model';
 
 @Module({
   imports: [MongooseModule.forFeature([

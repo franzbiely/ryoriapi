@@ -30,7 +30,7 @@ export class RawCategoryService {
 
     if (_category.branch_Id) {
       const branch = await this.branchModel.findOne({_id:_category.branch_Id});
-      category.branch = branch._id;
+      category.branch = branch;
     }
     await category.save();
     return category
@@ -44,7 +44,7 @@ export class RawCategoryService {
 
     if (branch_Id) {
       const branch = await this.branchModel.findOne({_id:branch_Id});
-      rawCategory.branch = branch._id;
+      rawCategory.branch = branch;
     }
 
     await rawCategory.save();

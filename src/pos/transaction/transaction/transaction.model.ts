@@ -1,4 +1,5 @@
 import { Schema, model, Types, ObjectId } from 'mongoose';
+import { IBranch } from 'src/general/branch/branch.model';
 import { ITransactionItem } from '../transactionItem/transactionItem.model';
 
 export interface ITransaction extends Document {
@@ -8,7 +9,7 @@ export interface ITransaction extends Document {
   amount: number;
   paymongo_pi_id: ObjectId;
   branchId: number;
-  branch: Types.ObjectId;
+  branch: IBranch;
   transactionItem?: ITransactionItem[];
   createdAt: Date;
 }

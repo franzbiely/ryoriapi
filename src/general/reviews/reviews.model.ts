@@ -1,10 +1,11 @@
 import { Schema, model, Types } from 'mongoose';
+import { IBranch } from '../branch/branch.model';
 
 export interface IReviews extends Document {
   description: string;
   rating: number;
   branchId: number;
-  branch: Types.ObjectId;
+  branch: IBranch;
   createdAt: Date;
 }
 

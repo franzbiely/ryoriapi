@@ -32,8 +32,8 @@ import { RawCategoryModule as InventoryCategoryModule } from './inventory/rawCat
 import { ReportModule } from './pos/reports/report.module';
 import { ConsumptionSchema } from './general/consumption/consumption.model';
 import { ConsumptionModule } from './general/consumption/consumption.module';
-import { RawGrocerySchema } from './inventory/rawGrocery/rawInventory.model';
-import { RawGroceryModule } from './inventory/rawGrocery/rawInventory.module';
+import { RawGrocerySchema } from './inventory/rawGrocery/rawGrocery.model';
+import { RawGroceryModule } from './inventory/rawGrocery/rawGrocery.module';
 import { BranchItemModule } from './pos/branchItem/branchItem.module';
 import { SocketModule } from './utils/socket/socket.module';
 
@@ -93,6 +93,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     // inventory
     InventoryCategoryModule,
     RawGroceryModule,
+
     InventoryLogsModule,
 
     // pos

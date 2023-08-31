@@ -31,8 +31,8 @@ export class MenuCategoryService {
     });
 
     if (_menuCategory.store_Id) {
-      const store = await this.storeModel.findOne({_id:_menuCategory.store_Id}).lean();
-      menuCategory.store = store._id;
+      const store = await this.storeModel.findOne({_id: _menuCategory.store_Id}).exec();
+      menuCategory.store = store;
     }
 
     await menuCategory.save();
@@ -49,7 +49,7 @@ export class MenuCategoryService {
 
     if (store_Id) {
       const store = await this.storeModel.findOne({_id:store_Id}).exec();
-      menuCategory.store = store._id;
+      menuCategory.store = store;
     }
 
     await menuCategory.save();

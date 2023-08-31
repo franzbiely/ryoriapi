@@ -48,13 +48,13 @@ export class BranchService {
 
     if (_branch.store_Id) {
       const store = await this.storeModel.findOne({ _id: _branch.store_Id });
-      branch.store = store._id;
+      branch.store = store;
     }
 
     if (_branch.user_Id) {
       const user = await this.userModel.findOne({ _id: _branch.user_Id });
-      branch.user = [user._id];
-      user.branch = [branch._id];
+      branch.user = [user];
+      user.branch = [branch];
       await user.save();
     }
     await branch.save();
@@ -80,12 +80,12 @@ export class BranchService {
 
     if (store_Id) {
       const store = await this.storeModel.findOne({ _id: store_Id });
-      branch.store = store._id;
+      branch.store = store;
     }
 
     if (user_Id) {
       const user = await this.userModel.findOne({ _id: user_Id });
-      branch.user = [user._id];
+      branch.user = [user];
     }
 
     await branch.save();

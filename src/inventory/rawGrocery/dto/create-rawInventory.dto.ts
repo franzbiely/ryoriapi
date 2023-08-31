@@ -15,10 +15,10 @@ export class CreateRawGroceryDto {
   quantity: number;
 
   @IsInt()
-  branch_Id: number;
+  branch_Id: ObjectId;
 
   @IsInt()
-  rawCategory_Id: number;
+  rawCategory_Id: ObjectId;
 
   @IsDate()
   createdAt: Date;

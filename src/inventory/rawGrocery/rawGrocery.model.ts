@@ -1,13 +1,16 @@
 import { Schema, model, Types } from 'mongoose';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IInventoryLogs } from '../inventoryLogs/inventoryLogs.model';
+import { IRawCategory } from '../rawCategory/rawCategory.model';
 
 export interface IRawGrocery extends Document {
   item: string;
   weight: string;
   quantity: number;
   branchId: number;
-  branch: Types.ObjectId;
-  rawCategory: Types.ObjectId[];
-  inventoryLogs: Types.ObjectId[];
+  branch: IBranch;
+  rawCategory: IRawCategory[];
+  inventoryLogs: IInventoryLogs[];
   createdAt: Date;
 }
 

@@ -1,4 +1,7 @@
 import { Schema, model, Types, ObjectId } from 'mongoose';
+import { IInventoryLogs } from 'src/inventory/inventoryLogs/inventoryLogs.model';
+import { IBranch } from '../branch/branch.model';
+import { IStore } from '../store/store.model';
 
 export interface IUsers extends Document {
   role: string;
@@ -11,9 +14,9 @@ export interface IUsers extends Document {
   userPhoto: string;
   address: string;
   storeId: number;
-  store?: Types.ObjectId;
-  branch: Types.ObjectId[];
-  inventoryLogs: Types.ObjectId[];
+  store?: IStore;
+  branch: IBranch[];
+  inventoryLogs: IInventoryLogs[];
   createdAt: Date;
 }
 

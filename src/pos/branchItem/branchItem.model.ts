@@ -1,11 +1,13 @@
 import { Schema, model, Types } from 'mongoose';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IMenuItem } from '../product/menuItem/menuItem.model';
 
 export interface IBranchItem extends Document {
   quantity: number;
   branchId: number;
   menuItemId: number;
-  branch: Types.ObjectId;
-  menuItem: Types.ObjectId;
+  branch: IBranch;
+  menuItem: IMenuItem;
   createdAt: Date;
 }
 
