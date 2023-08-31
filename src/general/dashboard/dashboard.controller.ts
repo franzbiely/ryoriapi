@@ -30,8 +30,11 @@ export class DashboardController {
       resolve(
         await this.transactionModel.countDocuments({
           status: status,
-          branchId,
-          createdAt: Between(startMonthly, endMonthly),
+          branch: branchId,
+          createdAt: {
+            $gte: startMonthly,
+            $lte: endMonthly,
+          },
         }),
       );
     });
@@ -42,7 +45,7 @@ export class DashboardController {
     @Query('sid') store_Id,
     @Query('bid') branch_Id,
   ): Promise<any> {
-    const menuItem = await this.menuItemModel.find({ storeId: store_Id });
+    const menuItem = await this.menuItemModel.find({ store: store_Id });
     const transactionItems = await this.transactionItemModel.find({ branch: branch_Id });
     const transactions = await this.transactionModel.find({ branch: branch_Id });
     const totalRevenues = transactions.reduce(
