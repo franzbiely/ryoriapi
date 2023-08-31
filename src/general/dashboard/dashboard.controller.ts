@@ -28,12 +28,10 @@ export class DashboardController {
       const endMonthly = moment().endOf(momentType).toDate();
 
       resolve(
-        await this.transactionModel.count({
-          where: {
-            status: status,
-            branchId,
-            createdAt: Between(startMonthly, endMonthly),
-          },
+        await this.transactionModel.countDocuments({
+          status: status,
+          branchId,
+          createdAt: Between(startMonthly, endMonthly),
         }),
       );
     });
@@ -44,37 +42,25 @@ export class DashboardController {
     @Query('sid') store_Id,
     @Query('bid') branch_Id,
   ): Promise<any> {
-    const menuItem = await this.menuItemModel.find({
-      where: { storeId: store_Id },
-    });
-    const transactionItems = await this.transactionItemModel.find({
-      where: { branch: branch_Id },
-    });
-    const transactions = await this.transactionModel.find({
-      where: { branch: branch_Id },
-    });
+    const menuItem = await this.menuItemModel.find({ storeId: store_Id });
+    const transactionItems = await this.transactionItemModel.find({ branch: branch_Id });
+    const transactions = await this.transactionModel.find({ branch: branch_Id });
     const totalRevenues = transactions.reduce(
       (prev, cur) => prev + cur.amount,
       0,
     );
 
-    const transactionNew = await this.transactionModel.count({
-      where: {
-        status: 'new',
-        branch: branch_Id,
-      },
+    const transactionNew = await this.transactionModel.countDocuments({
+      status: 'new',
+      branch: branch_Id,
     });
-    const transactionPreparing = await this.transactionModel.count({
-      where: {
-        status: 'preparing',
-        branch: branch_Id,
-      },
+    const transactionPreparing = await this.transactionModel.countDocuments({
+      status: 'preparing',
+      branch: branch_Id,
     });
-    const transactionDone = await this.transactionModel.count({
-      where: {
-        status: 'done',
-        branch: branch_Id,
-      },
+    const transactionDone = await this.transactionModel.countDocuments({
+      status: 'done',
+      branch: branch_Id,
     });
 
     const transactionsMonthlyServed =
