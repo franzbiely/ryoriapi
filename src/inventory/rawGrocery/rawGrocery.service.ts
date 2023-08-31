@@ -20,9 +20,14 @@ export class RawGroceryService {
 
   async findAll(branch_Id: ObjectId): Promise<any[]> {
     const response = await this.rawGroceryModel.find({ branch: branch_Id })
-      .populate({ path: 'branch inventoryLogs rawCategory', populate: { path: 'user' } })
+      .populate('branch')
+      .populate('inventoryLogs')
+      .populate({
+        path: 'inventoryLogs',
+        populate: {path :'user'}
+      })
+      .populate('rawCategory')
       .exec();
-
 
 
     const newData = response.map((data) => ({
