@@ -25,7 +25,7 @@ export class TransactionService {
   //Get All User
   async findAll(branch_Id: ObjectId): Promise<ITransaction[]|any> {
     const response = await this.transactionModel
-      .find({ branchId: branch_Id })
+      .find({ branch: branch_Id })
       .populate('branch')
       .populate({
         path: 'transactionItem',
@@ -34,14 +34,13 @@ export class TransactionService {
         }
       })
       .exec();
-    console.log({response})
-    // const newData = response.map((data) => ({
-    //   ...data,
-    //   total: data.transactionItem.reduce((prev, cur) => {
-    //     return prev + cur.quantity * cur.menuItem.price;
-    //   }, 0),
-    // }));
-    // return newData;
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItem.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+    return newData;
   }
 
   async findOne(id: ObjectId): Promise<ITransaction> {
@@ -154,7 +153,7 @@ export class TransactionService {
           transactionItem.branch = branch;
         }
         await transactionItem.save();
-        transaction.transactionItem.push(transactionItem._id)
+        transaction.transactionItem.push(transactionItem)
       }),
     );
     const currentTransaction = await transaction.save();
