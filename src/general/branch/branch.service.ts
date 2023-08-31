@@ -19,12 +19,14 @@ export class BranchService {
     private readonly userModel: Model<IUsers>,
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
-  ) { }
+  ) {}
 
   //Get All User
   findAll(store_Id: ObjectId): Promise<IBranch[]> {
     return this.branchModel
-      .find({ storeId: store_Id })
+      .find({
+        'store._id': store_Id,
+      })
       .populate('store')
       .exec();
   }
@@ -52,13 +54,18 @@ export class BranchService {
     if (_branch.user_Id) {
       const user = await this.userModel.findOne({ _id: _branch.user_Id });
       branch.user = [user._id];
+      user.branch = [branch._id];
+      await user.save();
     }
     await branch.save();
-    return branch
+    return branch;
   }
 
-  async update(id: ObjectId, updateBranchDto: UpdateBranchDto): Promise<IBranch> {
-    const branch = await this.branchModel.findOne({_id:id});
+  async update(
+    id: ObjectId,
+    updateBranchDto: UpdateBranchDto,
+  ): Promise<IBranch> {
+    const branch = await this.branchModel.findOne({ _id: id });
 
     if (!branch) {
       throw new NotFoundException(`Branch with id ${id} not found`);
@@ -82,11 +89,11 @@ export class BranchService {
     }
 
     await branch.save();
-    return branch
+    return branch;
   }
 
   async remove(id: ObjectId): Promise<string | void> {
-    const result = await this.branchModel.deleteOne({ _id : id }).exec();
+    const result = await this.branchModel.deleteOne({ _id: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }

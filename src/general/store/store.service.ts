@@ -27,7 +27,10 @@ export class StoreService {
   }
 
   async findOneId(id: ObjectId): Promise<IStore> {
-    const store = await this.storeModel.findOne({ _id: id }).populate('user').exec();
+    const store = await this.storeModel
+      .findOne({ _id: id })
+      .populate('user')
+      .exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
     }
@@ -35,7 +38,8 @@ export class StoreService {
   }
 
   async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IBranch> {
-    const branch = await this.branchModel.findOne({ _id: bid })
+    const branch = await this.branchModel
+      .findOne({ _id: bid })
       .populate({ path: 'store', populate: { path: 'user' } })
       .exec();
     if (!branch) {
@@ -49,12 +53,14 @@ export class StoreService {
       storeName: _store.storeName,
       photo: _store.photo || '',
       appId: _store.appId,
-      appSecret: _store.appSecret
+      appSecret: _store.appSecret,
     });
-        
+
     if (_store.user_Id) {
       const user = await this.usersModel.findOne({ _id: _store.user_Id });
       store.user = [user.id];
+      user.store = store._id;
+      await user.save();
     }
 
     if (_store.branchName) {
@@ -65,7 +71,7 @@ export class StoreService {
         address: _store.address || '',
         store: store._id,
       });
-      store.branch.push(branch._id)
+      store.branch.push(branch._id);
       await branch.save();
     }
 
@@ -75,8 +81,9 @@ export class StoreService {
   }
 
   async update(id: ObjectId, updateStoreDto: UpdateStoreDto): Promise<IStore> {
-    const store = await this.storeModel.findOne({_id:id});
-    const { storeName, appId, appSecret, photo, user_Id, branch_Id } = updateStoreDto;
+    const store = await this.storeModel.findOne({ _id: id });
+    const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
+      updateStoreDto;
     store.storeName = storeName;
     store.photo = photo;
     store.appId = appId;
@@ -97,11 +104,11 @@ export class StoreService {
     }
 
     await store.save();
-    return store
+    return store;
   }
 
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.storeModel.deleteOne({ _id : id }).exec();
+    const result = await this.storeModel.deleteOne({ _id: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }
