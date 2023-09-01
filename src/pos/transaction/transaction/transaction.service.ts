@@ -98,17 +98,16 @@ export class TransactionService {
     sid: ObjectId,
     bid: ObjectId,
     tid: ObjectId,
-  ): Promise<{ status: string }> {
+  ): Promise<{ status: string } | []> {
     const transaction = await this.transactionModel
     .findOne({ branch: bid, table: tid })
     .sort({ id: -1 })
     .exec();
-
     if (transaction) {
       return this.getTransactionStatus(transaction);
     }
   
-    return null; // Return null if no transaction is found
+    return []; // Return null if no transaction is found
   }
 
   async getStatusById(id: ObjectId): Promise<{ status: string }> {

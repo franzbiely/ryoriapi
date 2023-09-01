@@ -29,7 +29,6 @@ export class StoreController {
     return this.storeService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':sid/:bid')
   async findStoreAndBranch(@Param('sid') sid: ObjectId, @Param('bid') bid: ObjectId) {
     const response = await this.storeService.findStoreAndBranch(sid, bid);
