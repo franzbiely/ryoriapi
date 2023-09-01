@@ -47,7 +47,7 @@ export class TransactionService {
     try {
       const transaction = await this.transactionModel.findOne({_id:id})
         .populate('branch')
-        .populate({ path: 'transactionItem', populate: 'menuItem' });
+        .populate({ path: 'transactionItem', populate: 'menuItem' }).exec();
   
       if (!transaction) {
         throw new Error('Transaction not found');
@@ -136,10 +136,11 @@ export class TransactionService {
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
+    console.log({_transaction})
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);
-        const menuItem = await this.menuItemModel.findOne({ _id: _item.id });
+        const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
 
         const transactionItem = new this.transactionItemModel({
           quantity : _item.qty,
@@ -163,7 +164,7 @@ export class TransactionService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    const transaction = await this.transactionModel.findOne({_id:id});
+    const transaction = await this.transactionModel.findOne({_id:id}).exec();
     const { status, notes } = updateTransactionDto;
     transaction.status = status;
     transaction.notes = notes;

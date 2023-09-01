@@ -29,7 +29,7 @@ export class RawCategoryService {
     const category = new this.rawCategoryModel({ title: _category.title });
 
     if (_category.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_category.branch_Id});
+      const branch = await this.branchModel.findOne({_id:_category.branch_Id}).exec();
       category.branch = branch;
     }
     await category.save();
@@ -37,13 +37,13 @@ export class RawCategoryService {
   }
 
   async update(id: ObjectId, category: UpdateRawCategoryDto): Promise<IRawCategory> {
-    const rawCategory = await this.rawCategoryModel.findOne({_id:id});
+    const rawCategory = await this.rawCategoryModel.findOne({_id:id}).exec();
     const { title, branch_Id } = category;
 
     rawCategory.title = title;
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({_id:branch_Id});
+      const branch = await this.branchModel.findOne({_id:branch_Id}).exec();
       rawCategory.branch = branch;
     }
 

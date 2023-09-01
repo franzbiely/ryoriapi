@@ -38,15 +38,15 @@ export class InventoryLogsService {
     });
 
     if (_inventoryLogs.user_Id) {
-      const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id});
+      const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id}).exec();
       logs.user = user;
     }
     if (_inventoryLogs.rawGrocery_Id) {
-      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id});
+      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id}).exec();
       logs.rawGrocery = rawGrocery;
     }
     if (_inventoryLogs.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id});
+      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id}).exec();
       logs.branch = branch;
     }
     await logs.save();
@@ -54,14 +54,14 @@ export class InventoryLogsService {
   }
 
   async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
-    const inventoryLog = await this.invLogsModel.findOne({ _id: id });
+    const inventoryLog = await this.invLogsModel.findOne({ _id: id }).exec();
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
     inventoryLog.type = type;
     inventoryLog.quantityLogs = quantityLogs;
 
     if (user_Id) {
-      const user = await this.userModel.findOne({_id:user_Id});
+      const user = await this.userModel.findOne({_id:user_Id}).exec();
       inventoryLog.user = user;
     }
 

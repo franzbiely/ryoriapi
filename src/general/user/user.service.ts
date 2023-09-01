@@ -58,12 +58,12 @@ export class UserService {
     });
 
     if (_user.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _user.store_Id });
+      const store = await this.storeModel.findOne({ _id: _user.store_Id }).exec();
       user.store = store;
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _user.branch_Id });
+      const branch = await this.branchModel.findOne({ _id: _user.branch_Id }).exec();
       user.branch = [branch];
     }
     await user.save()
@@ -71,7 +71,7 @@ export class UserService {
   }
 
   async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
-    const user = await this.usersModel.findOne({_id: id});
+    const user = await this.usersModel.findOne({_id: id}).exec();
     
     const {
       role,
@@ -101,12 +101,12 @@ export class UserService {
     }
 
     if (store_Id) {
-      const store = await this.storeModel.findOne({ _id: store_Id });
+      const store = await this.storeModel.findOne({ _id: store_Id }).exec();
       user.store = store;
     }
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: branch_Id });
+      const branch = await this.branchModel.findOne({ _id: branch_Id }).exec();
       branch.user = await this.utils.pushWhenNew(branch.user, user);
       branch.save();
       user.branch = [branch];

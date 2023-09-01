@@ -40,7 +40,7 @@ export class MenuCategoryService {
   }
 
   async update(id: ObjectId, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {
-    const menuCategory = await this.menuCategoryModel.findOne({_id:id});
+    const menuCategory = await this.menuCategoryModel.findOne({_id:id}).exec();
     console.log({menuCategory})
 
     const { title, photo, store_Id } = menuCategoryDto;

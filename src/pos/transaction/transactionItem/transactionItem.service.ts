@@ -47,18 +47,18 @@ export class TransactionItemService {
     });
 
     if (_transaction.transaction_Id) {
-      const transaction = await this.transactionModel.findOne({_id: _transaction.transaction_Id });
+      const transaction = await this.transactionModel.findOne({_id: _transaction.transaction_Id }).exec();
       transactionItem.transaction = transaction;
       transaction.transactionItem.push(transactionItem)
       transaction.save()
     }
     if (_transaction.menuItem_Id) {
-      const menuItem = await this.menuItemModel.findOne({_id: _transaction.menuItem_Id });
+      const menuItem = await this.menuItemModel.findOne({_id: _transaction.menuItem_Id }).exec();
       transactionItem.menuItem = menuItem;
     }
 
     if (_transaction.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _transaction.branch_Id });
+      const branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
       transactionItem.branch = branch;
     }
     return await transactionItem.save();
@@ -82,12 +82,12 @@ export class TransactionItemService {
     id: ObjectId,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<ITransactionItem | any> {
-    const transactionItem = await this.transactionItemModel.findOne({_id:id});
+    const transactionItem = await this.transactionItemModel.findOne({_id:id}).exec();
     const { status, quantity } = updateTransactionItem;
     transactionItem.status = status;
     transactionItem.quantity = quantity;
 
-    const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] });
+    const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] }).exec();
     transactionItem.transaction = _transaction;
     const result = await transactionItem.save();
 

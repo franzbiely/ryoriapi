@@ -36,7 +36,7 @@ export class BranchItemService {
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
-    const menuItem = await this.menuItemModel.find({_id: id})
+    const menuItem = await this.menuItemModel.find({_id: id}).exec()
     return this.branchItemModel.findOne({menuItem:menuItem})
       .populate('branch')
       .populate('menuItem')
@@ -44,12 +44,12 @@ export class BranchItemService {
   }
 
   async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
-    const branch = await this.branchModel.findOne({_id: dto.branch_Id})
-    const menuItem = await this.menuItemModel.findOne({_id: dto.menuItem_Id})
+    const branch = await this.branchModel.findOne({_id: dto.branch_Id}).exec()
+    const menuItem = await this.menuItemModel.findOne({_id: dto.menuItem_Id}).exec()
     const branchItem = await this.branchItemModel.findOne({
       branch: branch,
       menuItem: menuItem,
-    });
+    }).exec();
 
     if (branchItem) {
       return this.update(branchItem.id, dto);
@@ -70,7 +70,7 @@ export class BranchItemService {
   }
 
   async update(id: ObjectId, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
-    const branchItem = await this.branchItemModel.findOne({_id:id});
+    const branchItem = await this.branchItemModel.findOne({_id:id}).exec();
     console.log({branchItem})
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = quantity;

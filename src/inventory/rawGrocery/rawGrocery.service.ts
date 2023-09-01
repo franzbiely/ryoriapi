@@ -55,12 +55,12 @@ export class RawGroceryService {
     });
 
     if (_rawInv.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_rawInv.branch_Id});
+      const branch = await this.branchModel.findOne({_id:_rawInv.branch_Id}).exec();
       rawGroc.branch = branch;
     }
 
     if (_rawInv.rawCategory_Id) {
-      const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id});
+      const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id}).exec();
       rawGroc.rawCategory = await this.utils.pushWhenNew(rawGroc.rawCategory, rawCategory);
       rawGroc.save();
     }
@@ -70,7 +70,7 @@ export class RawGroceryService {
   }
 
   async update(id: ObjectId, rawGroceryDto: UpdateRawGroceryDto): Promise<IRawGrocery> {
-    const rawGrocery = await this.rawGroceryModel.findOne({_id:id});
+    const rawGrocery = await this.rawGroceryModel.findOne({_id:id}).exec();
     const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
     rawGrocery.item = item;
@@ -78,7 +78,7 @@ export class RawGroceryService {
     rawGrocery.quantity = quantity;
 
     if (rawCategory_Id) {
-      const rawCategory = await this.rawCategoryModel.findOne({_id:rawCategory_Id});
+      const rawCategory = await this.rawCategoryModel.findOne({_id:rawCategory_Id}).exec();
       rawGrocery.rawCategory = [rawCategory];
     }
 
