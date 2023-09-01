@@ -44,9 +44,9 @@ export class QuantityController {
     return {
       ...response,
       // photo: await this.s3Service.getFile(response.menuItem.photo) || '',
-      // title: response.menuItem.title,
-      // description: response.menuItem.description,
-      // price: response.menuItem.price,
+      title: response.menuItem.title,
+      description: response.menuItem.description,
+      price: response.menuItem.price,
       
     }
   }
