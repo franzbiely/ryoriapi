@@ -7,6 +7,7 @@ import { MenuCategorySchema } from '../menuCategory/menuCategory.model';
 import { StoreSchema } from 'src/general/store/store.model';
 import { S3Service } from 'src/utils/S3Service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [MongooseModule.forFeature([
@@ -16,6 +17,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     { name: 'Store', schema: StoreSchema }
   ])],
   controllers: [MenuItemController],
-  providers: [MenuItemService, S3Service],
+  providers: [MenuItemService, S3Service, Utils],
 })
 export class MenuItemModule {}

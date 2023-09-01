@@ -5,6 +5,7 @@ import { RawCategorySchema } from '../rawCategory/rawCategory.model';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RawGrocerySchema } from './rawGrocery.model';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [MongooseModule.forFeature([
@@ -13,6 +14,6 @@ import { RawGrocerySchema } from './rawGrocery.model';
     { name: 'Branch', schema: BranchSchema }
   ])],
   controllers: [RawGroceryController],
-  providers: [RawGroceryService],
+  providers: [RawGroceryService, Utils],
 })
 export class RawGroceryModule {}
