@@ -14,6 +14,9 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   @IsString()
   table: string;
 
+  @IsString()
+  notes: string;
+
   @IsInt()
   branch_Id?: number;
 

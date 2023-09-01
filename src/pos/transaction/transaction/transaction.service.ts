@@ -164,8 +164,9 @@ export class TransactionService {
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
     const transaction = await this.transactionModel.findOne({_id:id});
-    const { status } = updateTransactionDto;
+    const { status, notes } = updateTransactionDto;
     transaction.status = status;
+    transaction.notes = notes;
 
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
