@@ -42,43 +42,12 @@ import { InventoryLogsSchema } from './inventory/inventoryLogs/inventoryLogs.mod
 import { DashboardModule } from './general/dashboard/dashboard.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Encryptor } from './utils/encryptor';
+import { Utils } from './utils/utils';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mongodb',
-    //   url: process.env.DATABASE_CONNECTION_STRING,
-      // host: process.env.DATABASE_HOST,
-      // port: 3306,
-      // username: process.env.DATABASE_USER,
-      // password: process.env.DATABASE_PASSWORD,
-      // database: process.env.DATABASE_NAME,
-      // entities: [
-        // general
-        // Consumption,
-        // Users,
-        // Store,
-        // Reviews,
-        // Branch,
-
-        // inventory
-        // InventoryCategory,
-        // RawGrocery,
-        // InventoryLogs,
-
-        // pos
-        // MenuItem,
-        // MenuCategory,
-        // Transaction,
-        // Report,
-        // TransactionItem,
-        // BranchItem,
-      // ],
-    //   synchronize: true,
-    //   autoLoadEntities: true,
-    // }),
     MongooseModule.forRoot(process.env.DATABASE_CONNECTION_STRING),
     
 
@@ -109,6 +78,6 @@ import { Encryptor } from './utils/encryptor';
     SocketModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Encryptor],
+  providers: [AppService, Encryptor, Utils],
 })
 export class AppModule {}

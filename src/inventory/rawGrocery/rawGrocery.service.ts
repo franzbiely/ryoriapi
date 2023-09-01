@@ -6,6 +6,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { IRawGrocery } from './rawGrocery.model';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class RawGroceryService {
@@ -16,6 +17,7 @@ export class RawGroceryService {
     private readonly rawCategoryModel: Model<IRawCategory>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) {}
 
   async findAll(branch_Id: ObjectId): Promise<any[]> {
@@ -32,8 +34,8 @@ export class RawGroceryService {
 
     const newData = response.map((data) => ({
       ...data.toJSON(),
-      // readyQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'ready' ? prev + cur.quantityLogs : prev), 0),
-      // wasteQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'waste' ? prev + cur.quantityLogs : prev), 0),
+      readyQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'ready' ? prev + cur.quantityLogs : prev), 0),
+      wasteQty: data.inventoryLogs.reduce((prev, cur) => (cur.type === 'waste' ? prev + cur.quantityLogs : prev), 0),
     }));
 
     return newData;
@@ -59,7 +61,8 @@ export class RawGroceryService {
 
     if (_rawInv.rawCategory_Id) {
       const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id});
-      rawGroc.rawCategory = [rawCategory];
+      rawGroc.rawCategory = await this.utils.pushWhenNew(rawGroc.rawCategory, rawCategory);
+      rawGroc.save();
     }
 
     await rawGroc.save();

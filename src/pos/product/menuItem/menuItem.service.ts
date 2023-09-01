@@ -6,6 +6,7 @@ import { IMenuCategory } from '../menuCategory/menuCategory.model';
 import { IStore } from 'src/general/store/store.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class MenuItemService {
@@ -16,6 +17,7 @@ export class MenuItemService {
     private readonly menuCategoryModel: Model<IMenuCategory>,
     @InjectModel('Store')
     private readonly storeModel: Model<IStore>,
+    private readonly utils: Utils
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuItem[]> {
@@ -62,14 +64,14 @@ export class MenuItemService {
 
     if (_menuItem.category_Id) {
       const menuCategory = await this.menuCategoryModel.findOne({_id:_menuItem.category_Id}).exec();
-      menuItem.menuCategory = [menuCategory];
+      menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
+      menuItem.save();
     }
 
     if (_menuItem.store_Id) {
       const store = await this.storeModel.findOne({_id: _menuItem.store_Id}).exec();
-      console.log({store})
       menuItem.store = store;
-      store.menuItem.push(menuItem);
+      store.menuItem = await this.utils.pushWhenNew(store.menuItem, menuItem);
       store.save();
     }
     
@@ -92,6 +94,8 @@ export class MenuItemService {
     if (category_Id) {
       const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();
       menuItem.menuCategory = [menuCategory];
+      menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
+      menuItem.save();
     }
 
     await menuItem.save();

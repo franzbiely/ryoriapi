@@ -284,27 +284,27 @@ export class TransactionService {
 
   // @TODO : Add validation, amount should > 2000
   async create_payment(payTransactionDto: PayTransactionDto) {
-    // const transaction = await this.findOne(payTransactionDto.id);
-    // const payment_intent_data = await this.create_payment_intent(transaction);
+    const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id});
+    const payment_intent_data = await this.create_payment_intent(transaction);
 
-    // transaction.status = payment_intent_data.attributes.status;
-    // transaction.paymongo_pi_id = payment_intent_data.id;
-    // transaction.amount = payTransactionDto.amount;
+    transaction.status = payment_intent_data.attributes.status;
+    transaction.paymongo_pi_id = payment_intent_data.id;
+    transaction.amount = payTransactionDto.amount;
 
-    // await this.transactionModel.save(transaction);
+    await transaction.save();
 
-    // const payment_method_data = await this.create_payment_method(
-    //   payTransactionDto,
-    // );
-    // const payment_intent_attach_data =
-    //   await this.attach_payment_intent_to_method(
-    //     payment_intent_data.id,
-    //     payment_method_data.id,
-    //   );
+    const payment_method_data = await this.create_payment_method(
+      payTransactionDto,
+    );
+    const payment_intent_attach_data =
+      await this.attach_payment_intent_to_method(
+        payment_intent_data.id,
+        payment_method_data.id,
+      );
 
-    // return {
-    //   redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
-    // };
+    return {
+      redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
+    };
   }
 
   async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[]> {

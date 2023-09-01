@@ -7,6 +7,7 @@ import { IUsers } from '../user/user.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class BranchService {
@@ -19,6 +20,7 @@ export class BranchService {
     private readonly userModel: Model<IUsers>,
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
+    private readonly utils: Utils
   ) {}
 
   //Get All User
@@ -48,13 +50,15 @@ export class BranchService {
 
     if (_branch.store_Id) {
       const store = await this.storeModel.findOne({ _id: _branch.store_Id });
+      store.branch = await this.utils.pushWhenNew(store.branch, branch);
+      store.save();
       branch.store = store;
     }
 
     if (_branch.user_Id) {
       const user = await this.userModel.findOne({ _id: _branch.user_Id });
+      user.branch = await this.utils.pushWhenNew(user.branch, branch);
       branch.user = [user];
-      user.branch = [branch];
       await user.save();
     }
     await branch.save();
@@ -81,11 +85,15 @@ export class BranchService {
     if (store_Id) {
       const store = await this.storeModel.findOne({ _id: store_Id });
       branch.store = store;
+      store.branch = await this.utils.pushWhenNew(store.branch, branch);
+      store.save();
     }
 
     if (user_Id) {
       const user = await this.userModel.findOne({ _id: user_Id });
       branch.user = [user];
+      user.branch = await this.utils.pushWhenNew(user.branch, branch);
+      user.save()
     }
 
     await branch.save();
@@ -97,3 +105,4 @@ export class BranchService {
     return `Deleted ${result.deletedCount} record`;
   }
 }
+
