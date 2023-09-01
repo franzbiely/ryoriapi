@@ -41,14 +41,17 @@ export class QuantityController {
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.branchItemService.findOne(id);
-    return {
-      ...response,
-      // photo: await this.s3Service.getFile(response.menuItem.photo) || '',
-      title: response.menuItem.title,
-      description: response.menuItem.description,
-      price: response.menuItem.price,
-      
+    if(response) {
+      return {
+        ...response,
+        photo: await this.s3Service.getFile(response.menuItem.photo) || '',
+        title: response.menuItem.title,
+        description: response.menuItem.description,
+        price: response.menuItem.price,
+        
+      }
     }
+    return []
   }
 
   @UseGuards(JwtAuthGuard)
