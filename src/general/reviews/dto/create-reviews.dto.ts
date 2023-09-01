@@ -13,7 +13,7 @@ export class CreateReviewsDto {
     rating: number;
 
     @IsInt()
-    branch_Id: number;
+    branch_Id: ObjectId;
 
     @IsDate()
     createdAt: Date;

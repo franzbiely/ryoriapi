@@ -27,10 +27,11 @@ export class ReviewsService {
     }
 
     async create(_reviews: CreateReviewsDto): Promise<IReviews> {
+
         const reviews = new this.reviewsModel({
             description: _reviews.description,
             rating: _reviews.rating,
-            branchId: _reviews.branch_Id
+            branch: _reviews.branch_Id
         });
         await reviews.save();
         return reviews
