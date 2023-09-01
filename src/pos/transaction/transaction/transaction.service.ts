@@ -85,7 +85,9 @@ export class TransactionService {
       }
 
       return {
+        ...transaction,
         status: data.status,
+        
       };
     } else {
       return {
@@ -101,10 +103,19 @@ export class TransactionService {
   ): Promise<{ status: string } | []> {
     const transaction = await this.transactionModel
     .findOne({ branch: bid, table: tid })
+    .populate({
+      path: 'transactionItem',
+      populate: {
+        path: 'menuItem'
+      }
+    })
     .sort({ id: -1 })
-    .exec();
+    .lean();
     if (transaction) {
-      return this.getTransactionStatus(transaction);
+      return {
+        ...transaction,
+        ...this.getTransactionStatus(transaction)
+      }
     }
   
     return []; // Return null if no transaction is found
