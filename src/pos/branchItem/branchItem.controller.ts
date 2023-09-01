@@ -23,7 +23,7 @@ export class QuantityController {
 
   // @UseGuards(JwtAuthGuard), need to be accessible in front end
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: number, @Query('category_Id') category_Id: number,) {
+  async fillAll(@Query('branch_Id') branch_Id: ObjectId, @Query('category_Id') category_Id: ObjectId,) {
     const response = await this.branchItemService.findAll(branch_Id, category_Id);
     // @Todo: Refactor and remove other non used properties..
     return await Promise.all(

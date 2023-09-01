@@ -18,23 +18,21 @@ export class BranchItemService {
     private readonly branchItemModel: Model<IBranchItem>,
   ) {}
 
-  async findAll(branch_Id: number, category_Id: number = -1): Promise<any[]> {
-    const where = (category_Id < 0) ? {
-      branch: branch_Id,
-    } : {
-      branch: branch_Id,
-      'menuItem.menuCategory': category_Id,
-    };
-    return this.branchItemModel.find(where)
-      .populate('branch')
-      .populate('menuItem')
-      .populate({
+  async findAll(branch_Id: ObjectId, category_Id: ObjectId = null): Promise<any[]> {
+    const query = this.branchItemModel.find().populate('branch')
+    if(category_Id) {
+      query.populate({
         path: 'menuItem',
         populate: {
-          path:'menuCategory'
+          path: 'menuCategory',
+          match: {
+            _id: category_Id
+          }
         }
       })
-      .lean();
+    }
+    const result = await query.lean();
+    return result;
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
@@ -44,13 +42,15 @@ export class BranchItemService {
   }
 
   async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
+    const branch = await this.branchModel.findOne({_id: dto.branch_Id})
+    const menuItem = await this.menuItemModel.findOne({_id: dto.menuItem_Id})
     const branchItem = await this.branchItemModel.findOne({
-      branch: dto.branch_Id,
-      menuItem: dto.menuItem_Id,
+      branch: branch,
+      menuItem: menuItem,
     });
 
     if (branchItem) {
-      // return this.update(branchItem.id, dto);
+      return this.update(branchItem.id, dto);
     } else {
       return this.create(dto);
     }
