@@ -3,6 +3,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { BranchItemSchema } from "src/pos/branchItem/branchItem.model";
 import { BranchItemService } from "src/pos/branchItem/branchItem.service";
+import { MenuCategorySchema } from "src/pos/product/menuCategory/menuCategory.model";
 import { MenuItemSchema } from "src/pos/product/menuItem/menuItem.model";
 import { TransactionSchema } from "src/pos/transaction/transaction/transaction.model";
 import { TransactionItemSchema } from "src/pos/transaction/transactionItem/transactionItem.model";
@@ -16,6 +17,7 @@ import { DashboardController } from "./dashboard.controller";
         {name: 'MenuItem', schema: MenuItemSchema},
         {name: 'TransactionItem', schema: TransactionItemSchema},
         {name: 'Transaction', schema: TransactionSchema},
+        { name: 'MenuCategory', schema: MenuCategorySchema }
     ])],
     controllers: [DashboardController],
     providers: [BranchItemService],

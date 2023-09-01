@@ -6,6 +6,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from './../product/menuItem/menuItem.model';
 import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { IMenuCategory } from '../product/menuCategory/menuCategory.model';
 
 @Injectable()
 export class BranchItemService {
@@ -16,21 +17,25 @@ export class BranchItemService {
     private readonly menuItemModel: Model<IMenuItem>,
     @InjectModel('BranchItem')
     private readonly branchItemModel: Model<IBranchItem>,
+    @InjectModel('MenuCategory')
+    private readonly menuCategory: Model<IMenuCategory>,
   ) {}
 
   async findAll(branch_Id: ObjectId, category_Id: ObjectId = null): Promise<any[]> {
-    const query = this.branchItemModel.find().populate('branch')
-    if(category_Id) {
-      query.populate({
-        path: 'menuItem',
-        populate: {
-          path: 'menuCategory',
-          match: {
-            _id: category_Id
-          }
+    const menuItem = await this.menuItemModel.find({
+      menuCategory: {
+        $elemMatch: {
+          $eq: category_Id
         }
-      })
-    }
+      }
+    })
+    const query = this.branchItemModel.find({
+      branch: branch_Id,
+      menuItem
+    })
+    .populate('menuItem')
+    .populate('menuItem.menuCategory')
+    .populate('branch')
     const result = await query.lean();
     return result;
   }
