@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, ObjectId } from 'mongoose';
 import { IStore } from 'src/general/store/store.model';
 import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 import { ITransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.model';
@@ -11,7 +11,7 @@ export interface IMenuItem extends Document {
   description: string;
   cookingTime: string;
   menuCategory: IMenuCategory[];
-  storeId: number;
+  storeId: ObjectId;
   store: IStore;
   branchItem: IBranchItem[];
   transactionItem: ITransactionItem[];

@@ -3,7 +3,7 @@ import { IBranchItem } from './branchItem.model';
 import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { IBranch } from 'src/general/branch/branch.model';
-import { IMenuItem } from '../product/menuItem/menuItem.model';
+import { IMenuItem } from './../product/menuItem/menuItem.model';
 import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -23,14 +23,18 @@ export class BranchItemService {
       branch: branch_Id,
     } : {
       branch: branch_Id,
-      menuItem: {
-        menuCategory: category_Id,
-      },
+      'menuItem.menuCategory': category_Id,
     };
-
     return this.branchItemModel.find(where)
-      .populate({ path: 'branch menuItem', populate: { path: 'menuCategory' } })
-      .exec();
+      .populate('branch')
+      .populate('menuItem')
+      .populate({
+        path: 'menuItem',
+        populate: {
+          path:'menuCategory'
+        }
+      })
+      .lean();
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
