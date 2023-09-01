@@ -69,6 +69,8 @@ export class MenuItemService {
       const store = await this.storeModel.findOne({_id: _menuItem.store_Id}).exec();
       console.log({store})
       menuItem.store = store;
+      store.menuItem.push(menuItem);
+      store.save();
     }
     
     await menuItem.save();

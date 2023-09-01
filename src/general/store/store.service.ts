@@ -30,6 +30,7 @@ export class StoreService {
     const store = await this.storeModel
       .findOne({ _id: id })
       .populate('user')
+      .populate('menuItem')
       .exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
