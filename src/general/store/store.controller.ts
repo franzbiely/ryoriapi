@@ -67,7 +67,6 @@ export class StoreController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.storeService.findOneId(id);
