@@ -296,13 +296,17 @@ export class TransactionService {
 
   // @TODO : Add validation, amount should > 2000
   async create_payment(payTransactionDto: PayTransactionDto) {
-    const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id});
+    const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id})
+    .populate({
+      path: 'transactionItem',
+      populate: {
+        path: 'menuItem'
+      }
+    })
     const payment_intent_data = await this.create_payment_intent(transaction);
-
     transaction.status = payment_intent_data.attributes.status;
     transaction.paymongo_pi_id = payment_intent_data.id;
     transaction.amount = payTransactionDto.amount;
-
     await transaction.save();
 
     const payment_method_data = await this.create_payment_method(
