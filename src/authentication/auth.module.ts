@@ -13,6 +13,7 @@ import { UsersSchema } from 'src/general/user/user.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { StoreSchema } from 'src/general/store/store.model';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { StoreSchema } from 'src/general/store/store.model';
       signOptions: { expiresIn: '24h' },
     }),
   ],
-  providers: [UserService, AuthService, LocalStrategy, JwtStrategy],
+  providers: [UserService, AuthService, LocalStrategy, JwtStrategy, Utils],
   controllers: [AuthController],
   exports: [UserService, AuthService],
 })

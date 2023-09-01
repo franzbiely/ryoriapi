@@ -47,7 +47,7 @@ export class TransactionService {
     try {
       const transaction = await this.transactionModel.findOne({_id:id})
         .populate('branch')
-        .populate({ path: 'transactionItem', populate: 'menuItem' });
+        .populate({ path: 'transactionItem', populate: 'menuItem' }).exec();
   
       if (!transaction) {
         throw new Error('Transaction not found');
@@ -85,7 +85,9 @@ export class TransactionService {
       }
 
       return {
+        ...transaction,
         status: data.status,
+        
       };
     } else {
       return {
@@ -101,10 +103,19 @@ export class TransactionService {
   ): Promise<{ status: string } | []> {
     const transaction = await this.transactionModel
     .findOne({ branch: bid, table: tid })
+    .populate({
+      path: 'transactionItem',
+      populate: {
+        path: 'menuItem'
+      }
+    })
     .sort({ id: -1 })
-    .exec();
+    .lean();
     if (transaction) {
-      return this.getTransactionStatus(transaction);
+      return {
+        ...transaction,
+        ...this.getTransactionStatus(transaction)
+      }
     }
   
     return []; // Return null if no transaction is found
@@ -136,10 +147,11 @@ export class TransactionService {
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
+    console.log({_transaction})
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);
-        const menuItem = await this.menuItemModel.findOne({ _id: _item.id });
+        const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
 
         const transactionItem = new this.transactionItemModel({
           quantity : _item.qty,
@@ -163,9 +175,10 @@ export class TransactionService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    const transaction = await this.transactionModel.findOne({_id:id});
-    const { status } = updateTransactionDto;
+    const transaction = await this.transactionModel.findOne({_id:id}).exec();
+    const { status, notes } = updateTransactionDto;
     transaction.status = status;
+    transaction.notes = notes;
 
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
@@ -283,27 +296,31 @@ export class TransactionService {
 
   // @TODO : Add validation, amount should > 2000
   async create_payment(payTransactionDto: PayTransactionDto) {
-    // const transaction = await this.findOne(payTransactionDto.id);
-    // const payment_intent_data = await this.create_payment_intent(transaction);
+    const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id})
+    .populate({
+      path: 'transactionItem',
+      populate: {
+        path: 'menuItem'
+      }
+    })
+    const payment_intent_data = await this.create_payment_intent(transaction);
+    transaction.status = payment_intent_data.attributes.status;
+    transaction.paymongo_pi_id = payment_intent_data.id;
+    transaction.amount = payTransactionDto.amount;
+    await transaction.save();
 
-    // transaction.status = payment_intent_data.attributes.status;
-    // transaction.paymongo_pi_id = payment_intent_data.id;
-    // transaction.amount = payTransactionDto.amount;
+    const payment_method_data = await this.create_payment_method(
+      payTransactionDto,
+    );
+    const payment_intent_attach_data =
+      await this.attach_payment_intent_to_method(
+        payment_intent_data.id,
+        payment_method_data.id,
+      );
 
-    // await this.transactionModel.save(transaction);
-
-    // const payment_method_data = await this.create_payment_method(
-    //   payTransactionDto,
-    // );
-    // const payment_intent_attach_data =
-    //   await this.attach_payment_intent_to_method(
-    //     payment_intent_data.id,
-    //     payment_method_data.id,
-    //   );
-
-    // return {
-    //   redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
-    // };
+    return {
+      redirect: payment_intent_attach_data.attributes.next_action.redirect.url,
+    };
   }
 
   async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[]> {

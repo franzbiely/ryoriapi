@@ -7,6 +7,7 @@ import { IBranch } from '../branch/branch.model';
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 
 @Injectable()
@@ -18,6 +19,7 @@ export class UserService {
     private readonly storeModel: Model<IStore>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) {}
 
   async userCredential(query: object | any): Promise<IUsers> {
@@ -56,12 +58,12 @@ export class UserService {
     });
 
     if (_user.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _user.store_Id });
+      const store = await this.storeModel.findOne({ _id: _user.store_Id }).exec();
       user.store = store;
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _user.branch_Id });
+      const branch = await this.branchModel.findOne({ _id: _user.branch_Id }).exec();
       user.branch = [branch];
     }
     await user.save()
@@ -69,7 +71,7 @@ export class UserService {
   }
 
   async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
-    const user = await this.usersModel.findOne({_id: id});
+    const user = await this.usersModel.findOne({_id: id}).exec();
     
     const {
       role,
@@ -85,9 +87,6 @@ export class UserService {
       branch_Id,
     } = updateUserDto;
 
-    console.log({
-      user
-    })
     user.role = role;
     user.username = username;
     user.firstName = firstName;
@@ -97,20 +96,19 @@ export class UserService {
     user.phone = phone;
     user.userPhoto = userPhoto;
 
-    console.log({user})
-
     if (password) {
       user.password = await bcrypt.hash(password, 10);
     }
 
     if (store_Id) {
-      const store = await this.storeModel.findOne({ _id: store_Id });
-      console.log({store})
+      const store = await this.storeModel.findOne({ _id: store_Id }).exec();
       user.store = store;
     }
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: branch_Id });
+      const branch = await this.branchModel.findOne({ _id: branch_Id }).exec();
+      branch.user = await this.utils.pushWhenNew(branch.user, user);
+      branch.save();
       user.branch = [branch];
     }
 

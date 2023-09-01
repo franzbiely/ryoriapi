@@ -73,18 +73,14 @@ export class StoreController {
     const {
       storeName,
       branch,
-      user,
       menuItem,
-      menuCategory,
       createdAt,
     } = response
     return {
       _id: response['_id'],
       storeName,
       branch,
-      user,
       menuItem,
-      menuCategory,
       createdAt,
       photo: await this.s3Service.getFile(response.photo) || '',
     }

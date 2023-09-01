@@ -5,6 +5,7 @@ import { UserController } from './user.controller';
 import { StoreSchema } from '../store/store.model';
 import { BranchSchema } from '../branch/branch.model';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [MongooseModule.forFeature([
@@ -13,6 +14,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     { name: 'Branch', schema: BranchSchema }
   ])],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, Utils],
 })
 export class UserModule {}

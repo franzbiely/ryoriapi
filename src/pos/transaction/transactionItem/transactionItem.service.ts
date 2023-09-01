@@ -41,31 +41,29 @@ export class TransactionItemService {
   async create(
     _transaction: CreateTransactionItemDto,
   ): Promise<ITransactionItem | any> {
-    // const transactionItem = new TransactionItem();
-    // transactionItem.status = _transaction.status;
-    // transactionItem.quantity = _transaction.quantity;
+    const transactionItem = new this.transactionItemModel({
+      status : _transaction.status,
+      quantity : _transaction.quantity,
+    });
 
-    // if (_transaction.transaction_Id) {
-    //   const transaction = await this.transactionModel.findOne({
-    //     where: { id: _transaction.transaction_Id },
-    //   });
-    //   transactionItem.transaction = transaction;
-    // }
-    // if (_transaction.menuItem_Id) {
-    //   const menuItem = await this.menuItemModel.findOne({
-    //     where: { id: _transaction.menuItem_Id },
-    //   });
-    //   transactionItem.menuItem = menuItem;
-    // }
+    if (_transaction.transaction_Id) {
+      const transaction = await this.transactionModel.findOne({_id: _transaction.transaction_Id }).exec();
+      transactionItem.transaction = transaction;
+      transaction.transactionItem.push(transactionItem)
+      transaction.save()
+    }
+    if (_transaction.menuItem_Id) {
+      const menuItem = await this.menuItemModel.findOne({_id: _transaction.menuItem_Id }).exec();
+      transactionItem.menuItem = menuItem;
+    }
 
-    // if (_transaction.branch_Id) {
-    //   const branch = await this.branchModel.findOne({
-    //     where: { id: _transaction.branch_Id },
-    //   });
-    //   transactionItem.branch = branch;
-    // }
-    // return this.transactionItemModel.save(transactionItem);
+    if (_transaction.branch_Id) {
+      const branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
+      transactionItem.branch = branch;
+    }
+    return await transactionItem.save();
   }
+
   checkSameStatus(data) {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return null;
@@ -84,34 +82,26 @@ export class TransactionItemService {
     id: ObjectId,
     updateTransactionItem: UpdateTransactionItemDto,
   ): Promise<ITransactionItem | any> {
-    // const transactionItem = await this.findOne({_id:id});
-    // const { status, quantity } = updateTransactionItem;
-    // transactionItem.status = status;
-    // transactionItem.quantity = quantity;
+    const transactionItem = await this.transactionItemModel.findOne({_id:id}).exec();
+    const { status, quantity } = updateTransactionItem;
+    transactionItem.status = status;
+    transactionItem.quantity = quantity;
 
-    // const _transaction = await this.transactionModel.findOne({
-    //   where: { id: transactionItem.transaction.id },
-    // });
-    // transactionItem.transaction = _transaction;
-    // const result = await this.transactionItemModel.save(transactionItem);
+    const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] }).exec();
+    transactionItem.transaction = _transaction;
+    const result = await transactionItem.save();
 
-    // const itemStatus = await this.transactionItemModel.find({
-    //   where: {
-    //     transaction: {
-    //       id: transactionItem.transaction.id,
-    //     },
-    //   },
-    // });
+    const itemStatus = await this.transactionItemModel
+      .find({ 'transaction.id': transactionItem.transaction['_id'] })
+      .populate('transaction');
 
-    // const data = this.checkSameStatus(itemStatus);
-    // if (data) {
-    //   _transaction.status = data;
-    //   await this.transactionModel.save(_transaction);
-    // }
+    const data = this.checkSameStatus(itemStatus);
+    if (data) {
+      _transaction.status = data;
+      await _transaction.save();
+    }
 
-    // console.log({ transactionItem });
-
-    // return result;
+    return result;
   }
 
   async remove(id: ObjectId): Promise<string | void> {

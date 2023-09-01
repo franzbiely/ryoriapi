@@ -30,6 +30,7 @@ export class StoreService {
     const store = await this.storeModel
       .findOne({ _id: id })
       .populate('user')
+      .populate('menuItem')
       .exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
@@ -57,7 +58,7 @@ export class StoreService {
     });
 
     if (_store.user_Id) {
-      const user = await this.usersModel.findOne({ _id: _store.user_Id });
+      const user = await this.usersModel.findOne({ _id: _store.user_Id }).exec();
       store.user = [user];
       user.store = store;
       await user.save();
@@ -81,7 +82,7 @@ export class StoreService {
   }
 
   async update(id: ObjectId, updateStoreDto: UpdateStoreDto): Promise<IStore> {
-    const store = await this.storeModel.findOne({ _id: id });
+    const store = await this.storeModel.findOne({ _id: id }).exec();
     const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
       updateStoreDto;
     store.storeName = storeName;
@@ -95,7 +96,7 @@ export class StoreService {
     }
 
     if (branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: branch_Id });
+      const branch = await this.branchModel.findOne({ _id: branch_Id }).exec();
       branch.branchName = updateStoreDto.branchName;
       branch.email = updateStoreDto.email;
       branch.contactNumber = updateStoreDto.contactNumber;
