@@ -39,7 +39,6 @@ export class RawGroceryController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    console.log({ token });
     return this.rawGroceryService.create(createRawGroceyDto);
   }
 

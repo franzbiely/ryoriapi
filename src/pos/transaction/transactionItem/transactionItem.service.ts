@@ -70,7 +70,6 @@ export class TransactionItemService {
     }
     const firstStatus = data[0].status;
     for (let i = 1; i < data.length; i++) {
-      console.log(data[i]);
       if (data[i].status !== firstStatus) {
         return null;
       }

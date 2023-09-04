@@ -36,7 +36,6 @@ export class MenuItemController {
   async findByBatch(@Query('ids') _ids: string) {
     const ids = _ids.split(',') || []
     const response = await this.menuItemService.findByBatch(ids);
-    console.log({response})
     return await Promise.all(
       response.map(async (item) => {
         return {

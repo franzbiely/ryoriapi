@@ -30,7 +30,6 @@ export class MenuItemService {
 
   async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
     const menuItems = await this.menuItemModel.find({ store: store_Id }).exec();
-    console.log({menuItems})
 
     if(menuItems.length > 0) {
       return menuItems.map((item) => {
@@ -74,7 +73,6 @@ export class MenuItemService {
       store.menuItem = await this.utils.pushWhenNew(store.menuItem, menuItem);
       store.save();
     }
-    console.log({menuItem})
     
     await menuItem.save();
     return menuItem

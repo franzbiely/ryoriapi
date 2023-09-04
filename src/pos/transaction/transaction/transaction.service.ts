@@ -147,7 +147,6 @@ export class TransactionService {
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
-    console.log({_transaction})
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);

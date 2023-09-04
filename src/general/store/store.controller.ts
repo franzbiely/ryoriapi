@@ -39,7 +39,6 @@ export class StoreController {
   ) {
     const response = await this.storeService.findStoreAndBranch(sid, bid);
 
-    console.log({ response });
     return {
       _id: response['_id'],
       branchName: response.branchName,

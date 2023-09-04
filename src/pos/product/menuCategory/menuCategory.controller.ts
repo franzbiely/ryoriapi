@@ -59,7 +59,6 @@ export class MenuCategoryController {
     @Request() req,
     @UploadedFile() photo,
   ) {
-    console.log('In menuCategory controller');
 
     if(photo) {
       const response = await this.s3Service.uploadFile(photo)
