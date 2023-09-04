@@ -43,8 +43,15 @@ export class RawGroceryService {
 
   async findOne(id: ObjectId): Promise<IRawGrocery> {
     return this.rawGroceryModel.findOne({_id:id})
-      .populate({ path: 'branch rawCategory inventoryLogs', populate: { path: 'user' } })
-      .lean();
+      .populate('branch')
+      .populate('rawCategory')
+      .populate('inventoryLogs')
+      .populate({
+        path:'inventoryLogs',
+        populate: {
+          path:'user'
+        }
+      }).lean();
   }
 
   async create(_rawInv: CreateRawGroceryDto): Promise<IRawGrocery> {
