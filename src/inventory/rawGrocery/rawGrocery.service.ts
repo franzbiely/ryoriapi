@@ -69,7 +69,7 @@ export class RawGroceryService {
     if (_rawInv.rawCategory_Id) {
       const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id}).exec();
       rawGroc.rawCategory = await this.utils.pushWhenNew(rawGroc.rawCategory, rawCategory);
-      rawGroc.save();
+      rawCategory.save();
     }
 
     await rawGroc.save();

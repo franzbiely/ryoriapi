@@ -53,7 +53,7 @@ export class MenuItemService {
   }
 
   async create(_menuItem: CreateMenuItemDto): Promise<IMenuItem> {
-    console.log({_menuItem})
+    
     const menuItem = new this.menuItemModel({
       title: _menuItem.title,
       photo: _menuItem.photo || '',
@@ -65,7 +65,7 @@ export class MenuItemService {
     if (_menuItem.category_Id) {
       const menuCategory = await this.menuCategoryModel.findOne({_id:_menuItem.category_Id}).exec();
       menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
-      menuItem.save();
+      menuCategory.save();
     }
 
     if (_menuItem.store_Id) {
@@ -74,6 +74,7 @@ export class MenuItemService {
       store.menuItem = await this.utils.pushWhenNew(store.menuItem, menuItem);
       store.save();
     }
+    console.log({menuItem})
     
     await menuItem.save();
     return menuItem
@@ -95,7 +96,7 @@ export class MenuItemService {
       const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();
       menuItem.menuCategory = [menuCategory];
       menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
-      menuItem.save();
+      menuCategory.save();
     }
 
     await menuItem.save();

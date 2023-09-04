@@ -26,7 +26,7 @@ export const MenuItemSchema = new Schema<IMenuItem>({
   cookingTime: String,
   menuCategory: [{ type: Schema.Types.ObjectId, ref: 'MenuCategory' }],
   storeId: Number,
-  store: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
+  store: { type: Schema.Types.ObjectId, ref: 'Store' },
   branchItem: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
   transactionItem: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem' }],
   createdAt: { type: Date, default: Date.now },
