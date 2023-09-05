@@ -57,8 +57,8 @@ export class InventoryLogsService {
     const inventoryLog = await this.invLogsModel.findOne({ _id: id }).exec();
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
-    inventoryLog.type = type;
-    inventoryLog.quantityLogs = quantityLogs;
+    inventoryLog.type = updateInvLogsDto.type || inventoryLog.type;
+    inventoryLog.quantityLogs = updateInvLogsDto.quantityLogs || inventoryLog.quantityLogs;
 
     if (user_Id) {
       const user = await this.userModel.findOne({_id:user_Id}).exec();

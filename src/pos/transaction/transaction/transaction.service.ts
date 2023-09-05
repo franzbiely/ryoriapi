@@ -33,7 +33,7 @@ export class TransactionService {
           path: 'menuItem'
         }
       })
-      .exec();
+      .lean();
     const newData = response.map((data) => ({
       ...data,
       total: data.transactionItem.reduce((prev, cur) => {
@@ -176,8 +176,8 @@ export class TransactionService {
   ): Promise<ITransaction | any> {
     const transaction = await this.transactionModel.findOne({_id:id}).exec();
     const { status, notes } = updateTransactionDto;
-    transaction.status = status;
-    transaction.notes = notes;
+    transaction.status = updateTransactionDto.status || transaction.status;
+    transaction.notes = updateTransactionDto.notes || transaction.notes;
 
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;

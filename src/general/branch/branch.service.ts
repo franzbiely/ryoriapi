@@ -77,10 +77,10 @@ export class BranchService {
 
     const { branchName, email, address, contactNumber, store_Id, user_Id } =
       updateBranchDto;
-    branch.branchName = branchName;
-    branch.email = email;
-    branch.address = address;
-    branch.contactNumber = contactNumber;
+    branch.branchName = updateBranchDto.branchName || branch.branchName;
+    branch.email = updateBranchDto.email || branch.email;
+    branch.address = updateBranchDto.address || branch.address;
+    branch.contactNumber = updateBranchDto.contactNumber || branch.contactNumber;
 
     if (store_Id) {
       const store = await this.storeModel.findOne({ _id: store_Id }).exec();

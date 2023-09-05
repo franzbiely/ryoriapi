@@ -40,7 +40,7 @@ export class RawCategoryService {
     const rawCategory = await this.rawCategoryModel.findOne({_id:id}).exec();
     const { title, branch_Id } = category;
 
-    rawCategory.title = title;
+    rawCategory.title = category.title || rawCategory.title;
 
     if (branch_Id) {
       const branch = await this.branchModel.findOne({_id:branch_Id}).exec();

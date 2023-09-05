@@ -80,9 +80,9 @@ export class RawGroceryService {
     const rawGrocery = await this.rawGroceryModel.findOne({_id:id}).exec();
     const { item, weight, quantity, rawCategory_Id } = rawGroceryDto;
 
-    rawGrocery.item = item;
-    rawGrocery.weight = weight;
-    rawGrocery.quantity = quantity;
+    rawGrocery.item = rawGroceryDto.item || rawGrocery.item;
+    rawGrocery.weight = rawGroceryDto.weight || rawGrocery.weight;
+    rawGrocery.quantity = rawGroceryDto.quantity || rawGrocery.quantity;
 
     if (rawCategory_Id) {
       const rawCategory = await this.rawCategoryModel.findOne({_id:rawCategory_Id}).exec();

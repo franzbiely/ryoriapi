@@ -85,10 +85,10 @@ export class StoreService {
     const store = await this.storeModel.findOne({ _id: id }).exec();
     const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
       updateStoreDto;
-    store.storeName = storeName;
-    store.photo = photo;
-    store.appId = appId;
-    store.appSecret = appSecret;
+    store.storeName = updateStoreDto.storeName || store.storeName;
+    store.photo = updateStoreDto.photo || store.photo;
+    store.appId = updateStoreDto.appId || store.appId;
+    store.appSecret = updateStoreDto.appSecret || store.appSecret;
 
     if (user_Id) {
       const user = await this.usersModel.findOne({ _id: user_Id });

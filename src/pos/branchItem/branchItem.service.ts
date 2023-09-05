@@ -77,7 +77,7 @@ export class BranchItemService {
   async update(id: ObjectId, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({_id:id}).exec();
     const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
-    branchItem.quantity = quantity;
+    branchItem.quantity = updateQuantityDto.quantity || branchItem.quantity;
 
     if (branch_Id) {
       branchItem.branch = branch_Id;

@@ -84,11 +84,11 @@ export class MenuItemService {
     const { title, photo, price, description, cookingTime, category_Id } =
       updateMenuItemDto;
 
-    menuItem.title = title;
-    menuItem.photo = photo;
-    menuItem.price = price;
-    menuItem.description = description;
-    menuItem.cookingTime = cookingTime;
+    menuItem.title = updateMenuItemDto.title || menuItem.title;
+    menuItem.photo = updateMenuItemDto.photo || photo;
+    menuItem.price = updateMenuItemDto.price || price;
+    menuItem.description = updateMenuItemDto.description || description;
+    menuItem.cookingTime = updateMenuItemDto.cookingTime || cookingTime;
 
     if (category_Id) {
       const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();

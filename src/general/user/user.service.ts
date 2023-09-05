@@ -87,14 +87,14 @@ export class UserService {
       branch_Id,
     } = updateUserDto;
 
-    user.role = role;
-    user.username = username;
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.email = email;
-    user.address = address;
-    user.phone = phone;
-    user.userPhoto = userPhoto;
+    user.role = updateUserDto.role || user.role;
+    user.username = updateUserDto.username || user.username;
+    user.firstName = updateUserDto.firstName || user.firstName;
+    user.lastName = updateUserDto.lastName || user.lastName;
+    user.email = updateUserDto.email || user.email;
+    user.address = updateUserDto.address || user.address;
+    user.phone = updateUserDto.phone || user.phone;
+    user.userPhoto = updateUserDto.userPhoto || user.userPhoto;
 
     if (password) {
       user.password = await bcrypt.hash(password, 10);

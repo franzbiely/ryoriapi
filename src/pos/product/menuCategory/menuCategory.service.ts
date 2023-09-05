@@ -47,8 +47,8 @@ export class MenuCategoryService {
     const menuCategory = await this.menuCategoryModel.findOne({_id:id}).exec();
 
     const { title, photo, store_Id } = menuCategoryDto;
-    menuCategory.title = title;
-    menuCategory.photo = photo;
+    menuCategory.title = menuCategoryDto.title || menuCategory.title;
+    menuCategory.photo = menuCategoryDto.photo || menuCategory.photo;
 
     if (store_Id) {
       const store = await this.storeModel.findOne({_id:store_Id}).exec();
