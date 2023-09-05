@@ -350,7 +350,7 @@ export class TransactionService {
     return newData;
   }
 
-  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]> {
+  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]| any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -364,14 +364,16 @@ export class TransactionService {
       populate: {
         path: 'menuItem'
       }
-  });
-    const newData = response.map((data) => ({
-      ...data,
-      total: data.transactionItem.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
-    }));
-
+    }).lean();
+    
+    const newData = response.map((data) => {
+      return ({
+        ...data,
+        total: data.transactionItem.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
+      })
+    });
     return newData;
   }
 }
