@@ -7,6 +7,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class InventoryLogsService {
@@ -19,6 +20,7 @@ export class InventoryLogsService {
     private readonly rawGroceryModel: Model<IRawGrocery>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) { }
 
   findAll(branch_Id: ObjectId): Promise<IInventoryLogs[]> {
@@ -44,6 +46,8 @@ export class InventoryLogsService {
     if (_inventoryLogs.rawGrocery_Id) {
       const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id}).exec();
       logs.rawGrocery = rawGrocery;
+      rawGrocery.inventoryLogs = await this.utils.pushWhenNew(rawGrocery.inventoryLogs, logs);
+      rawGrocery.save();
     }
     if (_inventoryLogs.branch_Id) {
       const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id}).exec();
