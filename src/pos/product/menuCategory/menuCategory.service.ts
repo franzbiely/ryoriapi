@@ -25,18 +25,22 @@ export class MenuCategoryService {
   }
 
   async create(_menuCategory: CreateMenuCategoryDto): Promise<IMenuCategory> {
-    const menuCategory = new this.menuCategoryModel({
-      title: _menuCategory.title,
-      photo: _menuCategory.photo || '',
-    });
+    try {
+      const menuCategory = new this.menuCategoryModel({
+        title: _menuCategory.title,
+        photo: _menuCategory.photo || '',
+      });
 
-    if (_menuCategory.store_Id) {
-      const store = await this.storeModel.findOne({_id: _menuCategory.store_Id}).exec();
-      menuCategory.store = store;
+      if (_menuCategory.store_Id) {
+        const store = await this.storeModel.findOne({_id: _menuCategory.store_Id}).exec();
+        menuCategory.store = store;
+      }
+
+      await menuCategory.save();
+      return menuCategory
+    }catch (error) {
+      throw new Error(`Error : ` + JSON.stringify(error));
     }
-
-    await menuCategory.save();
-    return menuCategory
   }
 
   async update(id: ObjectId, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {

@@ -70,7 +70,7 @@ export class StoreController {
       transactionItem: response.transactionItem,
       inventoryLogs: response.inventoryLogs,
       createdAt: response.createdAt,
-      // photo: await this.s3Service.getFile(response.store.photo) || '',
+      photo: await this.s3Service.getFile(response.store.photo) || '',
     };
   }
 
