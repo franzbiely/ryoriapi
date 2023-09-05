@@ -45,9 +45,9 @@ export class InventoryLogsService {
     }
     if (_inventoryLogs.rawGrocery_Id) {
       const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id}).exec();
-      logs.rawGrocery = rawGrocery;
       rawGrocery.inventoryLogs = await this.utils.pushWhenNew(rawGrocery.inventoryLogs, logs);
       rawGrocery.save();
+      logs.rawGrocery = rawGrocery;
     }
     if (_inventoryLogs.branch_Id) {
       const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id}).exec();
