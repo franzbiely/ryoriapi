@@ -2,11 +2,11 @@ import { IsString, IsInt, IsDate, IsArray } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateTransactionDto {
-  @IsInt()
-  id: ObjectId;
-
   @IsString()
   status: string;
+
+  @IsString()
+  table: string;
 
   @IsString()
   notes: string;
@@ -15,15 +15,16 @@ export class CreateTransactionDto {
   amount: number;
 
   @IsString()
-  table: string;
-
-  @IsInt()
-  branch_Id: number;
+  paymongo_pi_id: string;
 
   @IsArray()
   @IsString({ each: true })
-  item: string[];
+  transactionItem_Id: string[];
 
   @IsDate()
   createdAt: Date;
+  
+  // Not in Model but necessary in HTTP
+  @IsString()
+  branch_Id: string;
 }

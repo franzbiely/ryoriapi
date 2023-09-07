@@ -14,13 +14,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { StoreSchema } from 'src/general/store/store.model';
 import { Utils } from 'src/utils/utils';
+import { RawGrocerySchema } from 'src/inventory/rawGrocery/rawGrocery.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       {name: 'Users', schema: UsersSchema},
       {name: 'Store', schema: StoreSchema},
-      {name: 'Branch', schema: BranchSchema}
+      {name: 'Branch', schema: BranchSchema},
+      {name: 'RawGrocery', schema: RawGrocerySchema}
     ]),
     UserModule,
     PassportModule,

@@ -4,9 +4,6 @@ import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
-  @IsInt()
-  id: ObjectId;
-
   @IsOptional()
   title: string;
 
@@ -17,19 +14,13 @@ export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
   price: number;
 
   @IsOptional()
-  quantity: number;
-
-  @IsOptional()
   description: string;
 
   @IsOptional()
   cookingTime: string;
 
   @IsOptional()
-  store_Id: number;
-
-  @IsOptional()
-  category_Id: number;
+  menuCategory_Id: string;
 
   @IsOptional()
   createdAt: Date;

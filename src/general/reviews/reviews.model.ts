@@ -1,5 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
-import { ObjectId } from 'typeorm';
+import { Schema, model, Types, ObjectId } from 'mongoose';
 import { IBranch } from '../branch/branch.model';
 
 export interface IReviews extends Document {

@@ -6,14 +6,19 @@ import { UpdateRawCategoryDto } from './dto/update-rawCategory.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
+import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
 
 @Injectable()
 export class RawCategoryService {
   constructor(
     @InjectModel('RawCategory')
     private readonly rawCategoryModel: Model<IRawCategory>,
+    @InjectModel('RawGrocery')
+    private readonly rawGroceryModel: Model<IRawGrocery>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) {}
 
   //Get All User
@@ -26,14 +31,27 @@ export class RawCategoryService {
   }
 
   async create(_category: CreateRawCategoryDto): Promise<IRawCategory> {
-    const category = new this.rawCategoryModel({ title: _category.title });
+    const rawCategory = new this.rawCategoryModel({ title: _category.title });
 
     if (_category.branch_Id) {
       const branch = await this.branchModel.findOne({_id:_category.branch_Id}).exec();
-      category.branch = branch;
+      rawCategory.branch = branch;
     }
-    await category.save();
-    return category
+
+    if(_category.branch_Id) {
+      const branch = await this.branchModel.findOne({_id: _category.branch_Id}).exec()
+      branch.rawCategorys = await this.utils.pushWhenNew(branch.rawCategorys, branch);
+      branch.save()
+    }
+
+    if(_category.rawGrocery_Id) {
+      const rawGrocery = await this.rawGroceryModel.findOne({_id: _category.rawGrocery_Id}).exec()
+      rawGrocery.rawCategories = await this.utils.pushWhenNew(rawGrocery.rawCategories, rawCategory);
+      rawGrocery.save()
+    }
+
+    await rawCategory.save();
+    return rawCategory
   }
 
   async update(id: ObjectId, category: UpdateRawCategoryDto): Promise<IRawCategory> {

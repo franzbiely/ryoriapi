@@ -10,12 +10,7 @@ export interface IMenuItem extends Document {
   price: number;
   description: string;
   cookingTime: string;
-  menuCategory: IMenuCategory[];
-  storeId: ObjectId;
-  store: IStore;
-  branchItem: IBranchItem[];
-  transactionItem: ITransactionItem[];
-  createdAt: Date;
+  menuCategories?: IMenuCategory[];
 }
 
 export const MenuItemSchema = new Schema<IMenuItem>({
@@ -24,12 +19,7 @@ export const MenuItemSchema = new Schema<IMenuItem>({
   price: Number,
   description: String,
   cookingTime: String,
-  menuCategory: [{ type: Schema.Types.ObjectId, ref: 'MenuCategory' }],
-  storeId: Number,
-  store: { type: Schema.Types.ObjectId, ref: 'Store' },
-  branchItem: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
-  transactionItem: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem' }],
-  createdAt: { type: Date, default: Date.now },
-});
+  menuCategories: [{ type: Schema.Types.ObjectId, ref: 'MenuCategory' }]
+}, {timestamps: true});
 
 export const MenuItemModel = model('MenuItem', MenuItemSchema);

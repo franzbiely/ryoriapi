@@ -5,28 +5,29 @@ import { IsOptional } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
-  @IsInt()
-  id: ObjectId;
-
-  @IsString()
+  @IsOptional()
   status: string;
 
-  @IsString()
+  @IsOptional()
   table: string;
 
-  @IsString()
+  @IsOptional()
   notes: string;
 
-  @IsInt()
-  branch_Id?: number;
+  @IsOptional()
+  amount: number;
 
   @IsOptional()
-  paymongo_pi_id: ObjectId;
+  paymongo_pi_id: string;
 
   @IsArray()
-  @IsString({ each: true })
-  item: string[];
+  @IsOptional({ each: true })
+  transactionItem_Id: string[];
 
   @IsDate()
   createdAt: Date;
+
+  // Not in Model but necessary in HTTP
+  @IsString()
+  branch_Id: string;
 }

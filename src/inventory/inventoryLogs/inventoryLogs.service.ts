@@ -34,27 +34,24 @@ export class InventoryLogsService {
   }
 
   async create(_inventoryLogs: CreateInventoryLogsDto): Promise<IInventoryLogs> {
-    const logs = new this.invLogsModel({
+    const inventoryLog = new this.invLogsModel({
       type: _inventoryLogs.type,
       quantityLogs: _inventoryLogs.quantityLogs,
     });
 
     if (_inventoryLogs.user_Id) {
       const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id}).exec();
-      logs.user = user;
+      inventoryLog.user = user;
     }
-    if (_inventoryLogs.rawGrocery_Id) {
-      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id}).exec();
-      rawGrocery.inventoryLogs = await this.utils.pushWhenNew(rawGrocery.inventoryLogs, logs);
-      rawGrocery.save();
-      logs.rawGrocery = rawGrocery;
+
+    if(_inventoryLogs.rawGrocery_Id) {
+      const rawGrocery = await this.rawGroceryModel.findOne({_id: _inventoryLogs.rawGrocery_Id}).exec()
+      rawGrocery.inventoryLogs = await this.utils.pushWhenNew(rawGrocery.inventoryLogs, inventoryLog);
+      rawGrocery.save()
     }
-    if (_inventoryLogs.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id}).exec();
-      logs.branch = branch;
-    }
-    await logs.save();
-    return logs
+    
+    await inventoryLog.save();
+    return inventoryLog
   }
 
   async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {

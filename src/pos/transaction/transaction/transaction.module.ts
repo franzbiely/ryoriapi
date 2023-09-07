@@ -9,6 +9,7 @@ import { S3Service } from 'src/utils/S3Service';
 import { SocketService } from 'src/utils/socket/socket.service';
 import { AppGateway } from 'src/app.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, S3Service, SocketService, AppGateway],
+  providers: [TransactionService, S3Service, SocketService, AppGateway, Utils],
 })
 export class TransactionModule { }

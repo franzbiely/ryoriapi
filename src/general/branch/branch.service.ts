@@ -48,18 +48,9 @@ export class BranchService {
     branch.contactNumber = _branch.contactNumber;
     branch.address = _branch.address;
 
-    if (_branch.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _branch.store_Id }).exec();
-      store.branch = await this.utils.pushWhenNew(store.branch, branch);
-      store.save();
-      branch.store = store;
-    }
-
     if (_branch.user_Id) {
       const user = await this.userModel.findOne({ _id: _branch.user_Id }).exec();
-      user.branch = await this.utils.pushWhenNew(user.branch, branch);
-      branch.user = [user];
-      await user.save();
+      branch.users = [user];
     }
     await branch.save();
     return branch;
@@ -75,23 +66,16 @@ export class BranchService {
       throw new NotFoundException(`Branch with id ${id} not found`);
     }
 
-    const { branchName, email, address, contactNumber, store_Id, user_Id } =
+    const { branchName, email, address, contactNumber, user_Id } =
       updateBranchDto;
     branch.branchName = updateBranchDto.branchName || branch.branchName;
     branch.email = updateBranchDto.email || branch.email;
     branch.address = updateBranchDto.address || branch.address;
     branch.contactNumber = updateBranchDto.contactNumber || branch.contactNumber;
 
-    if (store_Id) {
-      const store = await this.storeModel.findOne({ _id: store_Id }).exec();
-      branch.store = store;
-      store.branch = await this.utils.pushWhenNew(store.branch, branch);
-      store.save();
-    }
-
     if (user_Id) {
       const user = await this.userModel.findOne({ _id: user_Id }).exec();
-      branch.user = [user];
+      branch.users = [user];
       user.branch = await this.utils.pushWhenNew(user.branch, branch);
       user.save()
     }

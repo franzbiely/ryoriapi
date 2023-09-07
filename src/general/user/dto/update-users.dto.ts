@@ -1,44 +1,44 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUsersDto } from './create-users.dto';
-import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateUserDto extends PartialType(CreateUsersDto) {
   @IsInt()
   id: ObjectId;
 
-  @IsString()
+  @IsOptional()
   role: string;
 
-  @IsString()
+  @IsOptional()
   username: string;
 
-  @IsString()
+  @IsOptional()
   firstName: string;
 
-  @IsString()
+  @IsOptional()
   lastName: string;
 
-  @IsInt()
+  @IsOptional()
   email: string;
 
-  @IsString()
+  @IsOptional()
   password: string;
 
-  @IsString()
+  @IsOptional()
   userPhoto: string;
 
-  @IsString()
+  @IsOptional()
   address?: string;
 
-  @IsString()
+  @IsOptional()
   phone: string;
 
-  @IsInt()
-  store_Id?: number;
+  @IsOptional()
+  store_Id?: string;
 
-  @IsInt()
-  branch_Id: number;
+  @IsOptional()
+  branch_Id: string;
 
   @IsDate()
   createdAt: Date;

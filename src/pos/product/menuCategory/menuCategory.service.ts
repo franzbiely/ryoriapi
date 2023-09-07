@@ -6,14 +6,19 @@ import { UpdateMenuCategoryDto } from './dto/update-menuCategory.dto';
 import { S3Service } from 'src/utils/S3Service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
+import { IMenuItem } from '../menuItem/menuItem.model';
 @Injectable()
 export class MenuCategoryService {
   constructor(
     @InjectModel('MenuCategory')
     private readonly menuCategoryModel: Model<IMenuCategory>,
+    @InjectModel('MenuItem')
+    private readonly menuItemModel: Model<IMenuItem>,
     @InjectModel('Store')
     private readonly storeModel: Model<IStore>,
     // private readonly s3Service: Model<S3Service>,
+    private readonly utils: Utils
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuCategory[]> {
@@ -33,7 +38,14 @@ export class MenuCategoryService {
 
       if (_menuCategory.store_Id) {
         const store = await this.storeModel.findOne({_id: _menuCategory.store_Id}).exec();
-        menuCategory.store = store;
+        store.menuCategories = await this.utils.pushWhenNew(store.menuCategories, menuCategory);
+        store.save()        
+      }
+
+      if (_menuCategory.menuItem_Id) {
+        const menuItem = await this.menuItemModel.findOne({_id: _menuCategory.menuItem_Id}).exec();
+        menuItem.menuCategories = await this.utils.pushWhenNew(menuItem.menuCategories, menuCategory);
+        menuItem.save()        
       }
 
       await menuCategory.save();

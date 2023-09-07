@@ -63,7 +63,7 @@ export class TransactionController {
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.transactionService.findOne(id);
     const transactionItem = await Promise.all(
-      response.transactionItem.map(async (item) => {
+      response.transactionItems.map(async (item) => {
         return {
           ...item,
           photo: (await this.s3Service.getFile(item['menuItem']['photo'])) || '',

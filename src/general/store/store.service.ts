@@ -7,6 +7,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class StoreService {
@@ -38,28 +39,39 @@ export class StoreService {
     return store;
   }
 
-  async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IBranch> {
-    const branch = await this.branchModel
-      .findOne({ _id: bid })
-      .populate({ path: 'store', populate: { path: 'user' } })
-      .exec();
-    if (!branch) {
-      throw new NotFoundException(`Branch with id ${bid} not found`);
+  async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IStore | any> {
+    const store = await this.storeModel.find({_id: sid})
+      .populate({
+        path: 'branches',
+        populate: {
+          path: 'users'
+        }
+      }).exec()
+    if (!store) {
+        throw new NotFoundException(`Store with id ${sid} not found`);
     }
-    return branch;
+    return store;
+    // const branch = await this.branchModel
+    //   .findOne({ _id: bid })
+    //   .populate({ path: 'store', populate: { path: 'user' } })
+    //   .exec();
+    // if (!branch) {
+    //   throw new NotFoundException(`Branch with id ${bid} not found`);
+    // }
+    // return branch;
   }
 
   async create(_store: CreateStoreDto): Promise<IStore | void> {
+
     const store = new this.storeModel({
       storeName: _store.storeName,
       photo: _store.photo || '',
       appId: _store.appId,
       appSecret: _store.appSecret,
     });
-
+    
     if (_store.user_Id) {
       const user = await this.usersModel.findOne({ _id: _store.user_Id }).exec();
-      store.user = [user];
       user.store = store;
       await user.save();
     }
@@ -70,12 +82,10 @@ export class StoreService {
         email: _store.email || '',
         contactNumber: _store.contactNumber || '',
         address: _store.address || '',
-        store: store._id,
       });
-      store.branch.push(branch);
+      store.branches.push(branch);
       await branch.save();
     }
-
     const result = await store.save();
 
     return result;
@@ -92,7 +102,7 @@ export class StoreService {
 
     if (user_Id) {
       const user = await this.usersModel.findOne({ _id: user_Id });
-      store.user = [user];
+      store.user = user;
     }
 
     if (branch_Id) {

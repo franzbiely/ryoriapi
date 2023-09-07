@@ -8,24 +8,23 @@ export interface IStore extends Document {
   storeName: string;
   appId: string;
   appSecret: string;
-  branch: IBranch[];
   photo: string;
-  user: IUsers[];
-  menuItem: IMenuItem[];
-  menuCategory: IMenuCategory[];
-  createdAt: Date;
+
+  user: IUsers;
+  branches?: IBranch[];
+  menuItems?: IMenuItem[];
+  menuCategories?: IMenuCategory[];
 }
 
 export const StoreSchema = new Schema<IStore>({
   storeName: String,
   appId: String,
   appSecret: String,
-  branch: [{ type: Schema.Types.ObjectId, ref: 'Branch' }],
+  branches: [{ type: Schema.Types.ObjectId, ref: 'Branch' }],
   photo: String,
-  user: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
-  menuItem: [{ type: Schema.Types.ObjectId, ref: 'MenuItem' }],
-  menuCategory: [{ type: Schema.Types.ObjectId, ref: 'MenuCategory' }],
-  createdAt: { type: Date, default: Date.now },
-});
+  user: { type: Schema.Types.ObjectId, ref: 'Users' },
+  menuItems: [{ type: Schema.Types.ObjectId, ref: 'MenuItem' }],
+  menuCategories: [{ type: Schema.Types.ObjectId, ref: 'MenuCategory' }],
+}, {timestamps: true});
 
 export const StoreModel = model('Store', StoreSchema);

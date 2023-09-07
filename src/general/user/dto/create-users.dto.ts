@@ -17,7 +17,7 @@ export class CreateUsersDto {
   @IsString()
   lastName: string;
 
-  @IsInt()
+  @IsString()
   email: string;
 
   @IsString()
@@ -32,12 +32,13 @@ export class CreateUsersDto {
   @IsString()
   address?: string;
 
-  @IsInt()
-  store_Id?: number;
-
-  @IsInt()
-  branch_Id: number;
-
   @IsDate()
   createdAt: Date;
+
+  // Not in DB
+
+  @IsString()
+  store_Id?: string;
+  @IsString()
+  branch_Id: string;
 }

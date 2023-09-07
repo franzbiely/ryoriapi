@@ -40,36 +40,7 @@ export class StoreController {
     const response = await this.storeService.findStoreAndBranch(sid, bid);
 
     return {
-      _id: response['_id'],
-      branchName: response.branchName,
-      email: response.email,
-      contactNumber: response.contactNumber,
-      address: response.address,
-      store: {
-        storeName: response.store['storeName'],
-        appId: response.store['appId'],
-        appSecret: response.store['appSecret'],
-        photo: response.store['photo'],
-        user: response.store['user'].map((user) => ({
-          id: user['_id'],
-          role: user.role,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phone: user.phone,
-          password: user.password,
-          userPhoto: user.userPhoto,
-          createdAt: user.createdAt,
-        })),
-      },
-      transaction: response.transaction,
-      rawGrocery: response.rawGrocery,
-      branchItem: response.branchItem,
-      rawCategory: response.rawCategory,
-      transactionItem: response.transactionItem,
-      inventoryLogs: response.inventoryLogs,
-      createdAt: response.createdAt,
+      ...response,
       photo: await this.s3Service.getFile(response.store.photo) || '',
     };
   }
@@ -77,13 +48,10 @@ export class StoreController {
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.storeService.findOneId(id);
-    const { storeName, branch, menuItem, createdAt } = response;
+    const { storeName } = response;
     return {
       _id: response['_id'],
       storeName,
-      branch,
-      menuItem,
-      createdAt,
       photo: (await this.s3Service.getFile(response.photo)) || '',
     };
   }
@@ -96,6 +64,7 @@ export class StoreController {
     @Request() req,
     @UploadedFile() photo,
   ) {
+    console.log({createStoreDto, photo, req})
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),

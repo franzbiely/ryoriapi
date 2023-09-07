@@ -7,6 +7,7 @@ import { UpdateTransactionItemDto } from './dto/update-transactionItem.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class TransactionItemService {
@@ -20,6 +21,7 @@ export class TransactionItemService {
     private readonly menuItemModel: Model<IMenuItem>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) {}
 
   findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
@@ -46,21 +48,17 @@ export class TransactionItemService {
       quantity : _transaction.quantity,
     });
 
-    if (_transaction.transaction_Id) {
-      const transaction = await this.transactionModel.findOne({_id: _transaction.transaction_Id }).exec();
-      transactionItem.transaction = transaction;
-      transaction.transactionItem.push(transactionItem)
-      transaction.save()
-    }
     if (_transaction.menuItem_Id) {
       const menuItem = await this.menuItemModel.findOne({_id: _transaction.menuItem_Id }).exec();
       transactionItem.menuItem = menuItem;
     }
 
-    if (_transaction.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
-      transactionItem.branch = branch;
+    if (_transaction.transaction_Id) {
+      const transaction = await this.transactionModel.findOne({_id: _transaction.transaction_Id}).exec();
+      transaction.transactionItems = await this.utils.pushWhenNew(transaction.transactionItems, transactionItem);
+      transaction.save()        
     }
+
     return await transactionItem.save();
   }
 
@@ -86,21 +84,21 @@ export class TransactionItemService {
     transactionItem.status = updateTransactionItem.status || transactionItem.status;
     transactionItem.quantity = updateTransactionItem.quantity || transactionItem.quantity;
 
-    const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] }).exec();
-    transactionItem.transaction = _transaction;
-    const result = await transactionItem.save();
+    // Recheck later
+    // const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] }).exec();
+    // const result = await transactionItem.save();
 
-    const itemStatus = await this.transactionItemModel
-      .find({ 'transaction.id': transactionItem.transaction['_id'] })
-      .populate('transaction');
+    // const itemStatus = await this.transactionItemModel
+    //   .find({ 'transaction.id': transactionItem.transaction['_id'] })
+    //   .populate('transaction');
 
-    const data = this.checkSameStatus(itemStatus);
-    if (data) {
-      _transaction.status = data;
-      await _transaction.save();
-    }
+    // const data = this.checkSameStatus(itemStatus);
+    // if (data) {
+    //   _transaction.status = data;
+    //   await _transaction.save();
+    // }
 
-    return result;
+    // return result;
   }
 
   async remove(id: ObjectId): Promise<string | void> {

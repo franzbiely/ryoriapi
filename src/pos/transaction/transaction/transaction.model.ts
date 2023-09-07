@@ -8,10 +8,8 @@ export interface ITransaction extends Document {
   notes: string;
   amount: number;
   paymongo_pi_id: ObjectId;
-  branchId: number;
-  branch: IBranch;
-  transactionItem?: ITransactionItem[];
-  createdAt: Date;
+  
+  transactionItems: ITransactionItem[]
 }
 
 export const TransactionSchema = new Schema<ITransaction>({
@@ -20,10 +18,7 @@ export const TransactionSchema = new Schema<ITransaction>({
   notes: String,
   amount: Number,
   paymongo_pi_id: { type: String, default: '' },
-  branchId: Number,
-  branch: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
-  transactionItem: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem' }],
-  createdAt: { type: Date, default: Date.now },
-});
+  transactionItems: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem', required: true }]
+}, {timestamps: true});
 
 export const TransactionModel = model('Transaction', TransactionSchema);

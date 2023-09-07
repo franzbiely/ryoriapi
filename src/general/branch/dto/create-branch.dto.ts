@@ -1,31 +1,31 @@
-import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateBranchDto {
-  @IsInt()
-  id: ObjectId;
-
-  @IsString()
+  @IsOptional()
   branchName: string;
 
-  @IsString()
+  @IsOptional()
   email: string;
 
-  @IsString()
+  @IsOptional()
   contactNumber: string;
 
-  @IsString()
+  @IsOptional()
   address: string;
 
-  @IsInt()
-  store_Id: number;
+  @IsOptional()
+  branchItem_Id: string;
 
-  @IsInt()
-  user_Id: number;
+  @IsOptional()
+  rawGrocery_Id: string;
 
-  @IsInt()
-  menuItem_Id: number;
+  @IsOptional()
+  rawCategory_Id: string;
 
-  @IsDate()
-  createdAt: Date;
+  @IsOptional()
+  transaction_Id: string;
+
+  @IsOptional()
+  user_Id: string;
 }

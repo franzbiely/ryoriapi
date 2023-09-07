@@ -15,8 +15,8 @@ export interface IUsers extends Document {
   address: string;
   storeId: number;
   store?: IStore;
-  branch: IBranch[];
-  inventoryLogs: IInventoryLogs[];
+  branch?: IBranch[];
+  inventoryLogs?: IInventoryLogs[];
   createdAt: Date;
 }
 

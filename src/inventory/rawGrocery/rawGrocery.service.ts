@@ -61,15 +61,14 @@ export class RawGroceryService {
       quantity: _rawInv.quantity,
     });
 
-    if (_rawInv.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_rawInv.branch_Id}).exec();
-      rawGroc.branch = branch;
+    if (_rawInv.rawCategory_Id) {
+      rawGroc.rawCategories = await this.utils.pushWhenNew(rawGroc.rawCategories, _rawInv.rawCategory_Id);
     }
 
-    if (_rawInv.rawCategory_Id) {
-      const rawCategory = await this.rawCategoryModel.findOne({_id:_rawInv.rawCategory_Id}).exec();
-      rawGroc.rawCategory = await this.utils.pushWhenNew(rawGroc.rawCategory, rawCategory);
-      rawCategory.save();
+    if(_rawInv.branch_Id) {
+      const branch = await this.branchModel.findOne({_id: _rawInv.branch_Id}).exec()
+      branch.rawGrocerys = await this.utils.pushWhenNew(branch.rawGrocerys, branch);
+      branch.save();
     }
 
     await rawGroc.save();
@@ -86,7 +85,7 @@ export class RawGroceryService {
 
     if (rawCategory_Id) {
       const rawCategory = await this.rawCategoryModel.findOne({_id:rawCategory_Id}).exec();
-      rawGrocery.rawCategory = [rawCategory];
+      rawGrocery.rawCategories = [rawCategory];
     }
 
     await rawGrocery.save();

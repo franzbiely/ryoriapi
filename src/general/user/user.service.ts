@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
+import { IRawGrocery } from 'src/inventory/rawGrocery/rawGrocery.model';
 
 
 @Injectable()
@@ -19,6 +20,8 @@ export class UserService {
     private readonly storeModel: Model<IStore>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    @InjectModel('RawGrocery')
+    private readonly rawGroceryModel: Model<IRawGrocery>,
     private readonly utils: Utils
   ) {}
 
@@ -59,13 +62,16 @@ export class UserService {
 
     if (_user.store_Id) {
       const store = await this.storeModel.findOne({ _id: _user.store_Id }).exec();
-      user.store = store;
+      store.user = user
+      store.save();
     }
 
     if (_user.branch_Id) {
       const branch = await this.branchModel.findOne({ _id: _user.branch_Id }).exec();
-      user.branch = [branch];
+      branch.users = await this.utils.pushWhenNew(branch.users, user);
+      branch.save();
     }
+
     await user.save()
     return user
   }
@@ -103,13 +109,6 @@ export class UserService {
     if (store_Id) {
       const store = await this.storeModel.findOne({ _id: store_Id }).exec();
       user.store = store;
-    }
-
-    if (branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: branch_Id }).exec();
-      branch.user = await this.utils.pushWhenNew(branch.user, user);
-      branch.save();
-      user.branch = [branch];
     }
 
     await user.save();

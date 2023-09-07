@@ -13,8 +13,8 @@ export class UpdateMenuCategoryDto extends PartialType(CreateMenuCategoryDto) {
   @IsString()
   photo: string;
 
-  @IsInt()
-  store_Id: number;
+  @IsString()
+  store_Id: string;
 
   @IsString()
   createdAt: Date;
