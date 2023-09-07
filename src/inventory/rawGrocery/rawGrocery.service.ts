@@ -67,7 +67,7 @@ export class RawGroceryService {
 
     if(_rawInv.branch_Id) {
       const branch = await this.branchModel.findOne({_id: _rawInv.branch_Id}).exec()
-      branch.rawGrocerys = await this.utils.pushWhenNew(branch.rawGrocerys, branch);
+      branch.rawGrocerys = await this.utils.pushWhenNew(branch.rawGrocerys, rawGroc);
       branch.save();
     }
 
