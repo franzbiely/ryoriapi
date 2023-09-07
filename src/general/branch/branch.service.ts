@@ -29,7 +29,6 @@ export class BranchService {
       .find({
         store: store_Id,
       })
-      .populate('store')
       .lean();
   }
 
