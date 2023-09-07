@@ -8,6 +8,7 @@ export class Utils {
         if(!exists) {
             object.push(element)
         }
+        console.log({exists, object})
         return object
     }
 }

@@ -30,7 +30,7 @@ export class MenuCategoryService {
   }
 
   async create(_menuCategory: CreateMenuCategoryDto): Promise<IMenuCategory> {
-    try {
+    // try {
       const menuCategory = new this.menuCategoryModel({
         title: _menuCategory.title,
         photo: _menuCategory.photo || '',
@@ -39,6 +39,7 @@ export class MenuCategoryService {
       if (_menuCategory.store_Id) {
         const store = await this.storeModel.findOne({_id: _menuCategory.store_Id}).exec();
         store.menuCategories = await this.utils.pushWhenNew(store.menuCategories, menuCategory);
+        menuCategory.store = store
         store.save()        
       }
 
@@ -50,9 +51,9 @@ export class MenuCategoryService {
 
       await menuCategory.save();
       return menuCategory
-    }catch (error) {
-      throw new Error(`Error : ` + JSON.stringify(error));
-    }
+    // }catch (error) {
+    //   throw new Error(`Error : ` + JSON.stringify(error));
+    // }
   }
 
   async update(id: ObjectId, menuCategoryDto: UpdateMenuCategoryDto): Promise<IMenuCategory> {

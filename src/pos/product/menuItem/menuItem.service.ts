@@ -8,14 +8,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
 import { IBranch } from 'src/general/branch/branch.model';
+import { IUsers } from 'src/general/user/user.model';
+import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 
 @Injectable()
 export class MenuItemService {
   constructor(
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('BranchItem')
+    private readonly branchItemModel: Model<IBranchItem>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    @InjectModel('User')
+    private readonly userModel: Model<IUsers>,
     @InjectModel('MenuCategory')
     private readonly menuCategoryModel: Model<IMenuCategory>,
     @InjectModel('Store')
@@ -58,7 +64,7 @@ export class MenuItemService {
     return this.menuItemModel.findOne({_id:id}).lean();
   }
 
-  async create(_menuItem: CreateMenuItemDto): Promise<IMenuItem> {
+  async create(_menuItem: CreateMenuItemDto, user_Id:string): Promise<IMenuItem> {
     
     const menuItem = new this.menuItemModel({
       title: _menuItem.title,
@@ -68,11 +74,32 @@ export class MenuItemService {
       cookingTime: _menuItem.cookingTime,
     });
 
+    const user = await this.userModel.findOne({ _id: user_Id }).exec();
+    menuItem.user = user;
+
+    if (_menuItem.menuCategory_Id) {
+      const menuCategory = await this.menuCategoryModel.findOne({ _id: _menuItem.menuCategory_Id }).exec();
+      menuItem.menuCategories = await this.utils.pushWhenNew(menuItem.menuCategories, menuCategory);
+      console.log({menuItem}, 2)
+    }
+    console.log({menuItem}, 1)
+
     if (_menuItem.store_Id) {
       const store = await this.storeModel.findOne({ _id: _menuItem.store_Id }).exec();
       store.menuItems = await this.utils.pushWhenNew(store.menuItems, menuItem);
       store.save();
     }
+    
+    if (_menuItem.qty) {
+      const branchItem = new this.branchItemModel({
+        quantity: _menuItem.qty,
+        user: user,
+        menuItem: menuItem
+      });      
+      branchItem.save();
+    }
+
+    console.log({menuItem})
     
     await menuItem.save();
     return menuItem

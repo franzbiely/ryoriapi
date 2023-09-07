@@ -44,8 +44,8 @@ export class AuthService {
       role: user.user.role,
       user_Id: user.user.id,
     };
-    if (user.user.branch.length === 1) {
-      userdata['branch_Id'] = user.user.branch[0].id;
+    if (user.user.store.branches.length === 1) {
+      userdata['branch_Id'] = user.user.store.branches[0].id;
     }
     return userdata;
   }

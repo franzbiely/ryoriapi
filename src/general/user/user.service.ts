@@ -27,8 +27,12 @@ export class UserService {
 
   async userCredential(query: object | any): Promise<IUsers> {
     const x = await this.usersModel.findOne(query)
-      .populate('store')
-      .populate('branch')
+      .populate({
+        path: 'store',
+        populate: {
+          path: 'branches'
+        }
+      })
       .exec();
     return x;
   }

@@ -91,13 +91,14 @@ export class MenuItemController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
+    const user_Id = decodedToken.userPayload.id;
     if (photo) {
       const response = await this.s3Service.uploadFile(photo);
       if(response) {
         createMenuItemDto.photo = response.Key;
       }
     }
-    return this.menuItemService.create(createMenuItemDto);
+    return this.menuItemService.create(createMenuItemDto, user_Id);
   }
 
   @UseGuards(JwtAuthGuard)
