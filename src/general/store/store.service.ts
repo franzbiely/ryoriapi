@@ -23,8 +23,10 @@ export class StoreService {
   ) {}
 
   //Get All food
-  findAll(): Promise<IStore[]> {
-    return this.storeModel.find({});
+  findAll(store_Id): Promise<IStore[]> {
+    return this.storeModel.find({_id: store_Id})
+    .populate('branches')
+    .populate('menuCategories');
   }
 
   async findOneId(id: ObjectId): Promise<IStore> {

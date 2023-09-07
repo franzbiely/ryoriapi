@@ -28,8 +28,13 @@ export class StoreController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.storeService.findAll();
+  async fillAll(@Request() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
+    );
+    const store_Id = decodedToken.userPayload.store_Id;
+    return this.storeService.findAll(store_Id);
   }
 
   @Get(':sid/:bid')
