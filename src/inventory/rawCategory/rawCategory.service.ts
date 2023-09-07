@@ -40,7 +40,7 @@ export class RawCategoryService {
 
     if(_category.branch_Id) {
       const branch = await this.branchModel.findOne({_id: _category.branch_Id}).exec()
-      branch.rawCategorys = await this.utils.pushWhenNew(branch.rawCategorys, branch);
+      branch.rawCategorys = await this.utils.pushWhenNew(branch.rawCategorys, rawCategory);
       branch.save()
     }
 

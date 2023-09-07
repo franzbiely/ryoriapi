@@ -24,20 +24,20 @@ export class BranchService {
   ) {}
 
   //Get All User
-  findAll(store_Id: ObjectId): Promise<IBranch[]> {
-    return this.branchModel
-      .find({
-        store: store_Id,
+  async findAll(store_Id: ObjectId): Promise<IBranch[]|any> {
+    const store = await this.storeModel
+      .findOne({
+        _id: store_Id,
       })
-      .populate('store')
+      .populate('branches')
       .lean();
+    
+    return store.branches
   }
 
   async findOneId(id: ObjectId): Promise<IBranch> {
     return this.branchModel
       .findOne({ _id: id })
-      .populate('store')
-      .populate('user')
       .lean();
   }
 

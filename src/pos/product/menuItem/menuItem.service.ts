@@ -39,25 +39,21 @@ export class MenuItemService {
 
   // @Todo : Should be transfered to branchItem
   async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
-    const branch = await this.branchModel.find({ _id: branch_Id }).populate('branchItems').lean();
-    console.log({branch})
-    // const itemsWithQty = branch.branchItems.map(item => {
-
-    // })
-  //   if(menuItems.length > 0) {
-  //     return menuItems.map((item) => {
-  //       const newBranch = item.branchItem.filter(
-  //         (subItem) => subItem['_id'] === branch_Id,
-  //       );
-
-  //       return {
-  //         ...item.toObject(),
-  //         branchItem: undefined,
-  //         quantity: newBranch[0]?.quantity || 0,
-  //       };
-  //     });
-  //   }
-  //   return []
+    const branch = await this.branchModel.findOne({ _id: branch_Id })
+    .populate({
+      path: 'branchItems',
+      populate: {
+        path: 'menuItem'
+      }
+    })
+    .lean();
+    const itemsWithQty = branch.branchItems.map(item => {
+      return {
+        ...item.menuItem,
+        quantity: item.quantity || 0,
+      };
+    });
+    return itemsWithQty
   }
 
   findOne(id: ObjectId): Promise<IMenuItem> {

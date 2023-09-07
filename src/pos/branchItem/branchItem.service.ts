@@ -8,10 +8,13 @@ import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IMenuCategory } from '../product/menuCategory/menuCategory.model';
 import { Utils } from 'src/utils/utils';
+import { IUsers } from 'src/general/user/user.model';
 
 @Injectable()
 export class BranchItemService {
   constructor(
+    @InjectModel('User')
+    private readonly userModel: Model<IUsers>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
     @InjectModel('MenuItem')
@@ -50,32 +53,36 @@ export class BranchItemService {
       .lean();
   }
 
-  async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
+  async save(dto: CreateBranchItemDto, user_Id:String): Promise<IBranchItem | any> {
     const menuItem = await this.menuItemModel.findOne({_id: dto.menuItem_Id}).exec()
     // Might be transfered to branch
-    // const branchItem = await this.branchItemModel.findOne({
-    //   branch: branch,
-    //   menuItem: menuItem,
-    // }).exec();
-    // if (branchItem) {
-    //   return this.update(branchItem.id, dto);
-    // } else {
-    //   return this.create(dto);
-    // }
+    const branchItem = await this.branchItemModel.findOne({
+      menuItem: menuItem,
+    }).exec();
+    if (branchItem) {
+      console.log('here')
+      return this.update(branchItem.id, dto);
+    } else {
+      console.log('there')
+      return this.create(dto, user_Id);
+    }
   }
 
-  async create(_branchItem: CreateBranchItemDto): Promise<IBranchItem> {
+  async create(_branchItem: CreateBranchItemDto, user_Id): Promise<IBranchItem> {
     const branchItem = new this.branchItemModel({
       quantity: _branchItem.quantity,
       menuItem: _branchItem.menuItem_Id,
     });
 
+    const user = await this.userModel.findOne({_id: user_Id}).exec();
+    branchItem.user = user;
+
+
     if(_branchItem.branch_Id) {
       const branch = await this.branchModel.findOne({_id: _branchItem.branch_Id}).exec()
-      branch.branchItems = await this.utils.pushWhenNew(branch.branchItems, branch);
+      branch.branchItems = await this.utils.pushWhenNew(branch.branchItems, branchItem);
       branch.save();
     }
-
     await branchItem.save();
     return branchItem
   }
