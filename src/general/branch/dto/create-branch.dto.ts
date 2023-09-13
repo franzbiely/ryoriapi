@@ -28,4 +28,9 @@ export class CreateBranchDto {
 
   @IsOptional()
   user_Id: string;
+
+  // Not in model
+
+  @IsOptional()
+  store_Id: string;
 }
