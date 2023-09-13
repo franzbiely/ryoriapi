@@ -51,6 +51,8 @@ export class MenuItemService {
         },
       })
       .lean();
+
+    console.log({ branch });
     const itemsWithQty = branch.branchItems.map((item) => {
       return {
         ...item.menuItem,
@@ -79,6 +81,7 @@ export class MenuItemService {
     const user = await this.userModel.findOne({ _id: user_Id }).exec();
     menuItem.user = user;
 
+    console.log('THE USER : ', { user, user_Id });
     if (_menuItem.menuCategory_Id) {
       const menuCategory = await this.menuCategoryModel
         .findOne({ _id: _menuItem.menuCategory_Id })
@@ -128,12 +131,19 @@ export class MenuItemService {
     menuItem.description = updateMenuItemDto.description || description;
     menuItem.cookingTime = updateMenuItemDto.cookingTime || cookingTime;
 
+    if (updateMenuItemDto.qty) {
+      const branchItem = await this.branchItemModel.findOne({ menuItem: id });
+      branchItem.quantity = updateMenuItemDto.qty;
+      branchItem.save();
+    }
+
     await menuItem.save();
     return menuItem;
   }
 
   async remove(id: ObjectId): Promise<string | void> {
     const result = await this.menuItemModel.deleteOne({ _id: id }).exec();
+    await this.branchItemModel.deleteOne({ menuItem: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }

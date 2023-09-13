@@ -24,4 +24,8 @@ export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
 
   @IsOptional()
   createdAt: Date;
+
+  // Not in model
+  @IsOptional() // This is for branchItem
+  qty: number;
 }
