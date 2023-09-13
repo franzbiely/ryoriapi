@@ -52,8 +52,16 @@ export class BranchService {
       const user = await this.userModel.findOne({ _id: _branch.user_Id }).exec();
       branch.users = [user];
     }
+
     await branch.save();
-    return branch;
+
+    if (_branch.store_Id) {
+      const store = await this.storeModel.findOne({ _id: _branch.store_Id }).exec();
+      store.branches = await this.utils.pushWhenNew(store.branches, branch);
+      store.save();
+    }
+    
+    return branch;  
   }
 
   async update(
