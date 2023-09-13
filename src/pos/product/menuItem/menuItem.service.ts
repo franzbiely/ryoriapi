@@ -26,7 +26,7 @@ export class MenuItemService {
     private readonly menuCategoryModel: Model<IMenuCategory>,
     @InjectModel('Store')
     private readonly storeModel: Model<IStore>,
-    private readonly utils: Utils
+    private readonly utils: Utils,
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuItem[]> {
@@ -38,30 +38,36 @@ export class MenuItemService {
   }
 
   // @Todo : Should be transfered to branchItem
-  async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
-    const branch = await this.branchModel.findOne({ _id: branch_Id })
-    .populate({
-      path: 'branchItems',
-      populate: {
-        path: 'menuItem'
-      }
-    })
-    .lean();
-    const itemsWithQty = branch.branchItems.map(item => {
+  async findAllWithBranchQty(
+    store_Id: ObjectId,
+    branch_Id: ObjectId,
+  ): Promise<IMenuItem[] | any> {
+    const branch = await this.branchModel
+      .findOne({ _id: branch_Id })
+      .populate({
+        path: 'branchItems',
+        populate: {
+          path: 'menuItem',
+        },
+      })
+      .lean();
+    const itemsWithQty = branch.branchItems.map((item) => {
       return {
         ...item.menuItem,
         quantity: item.quantity || 0,
       };
     });
-    return itemsWithQty
+    return itemsWithQty;
   }
 
   findOne(id: ObjectId): Promise<IMenuItem> {
-    return this.menuItemModel.findOne({_id:id}).lean();
+    return this.menuItemModel.findOne({ _id: id }).lean();
   }
 
-  async create(_menuItem: CreateMenuItemDto, user_Id:string): Promise<IMenuItem> {
-    
+  async create(
+    _menuItem: CreateMenuItemDto,
+    user_Id: string,
+  ): Promise<IMenuItem> {
     const menuItem = new this.menuItemModel({
       title: _menuItem.title,
       photo: _menuItem.photo || '',
@@ -74,38 +80,47 @@ export class MenuItemService {
     menuItem.user = user;
 
     if (_menuItem.menuCategory_Id) {
-      const menuCategory = await this.menuCategoryModel.findOne({ _id: _menuItem.menuCategory_Id }).exec();
-      menuItem.menuCategories = await this.utils.pushWhenNew(menuItem.menuCategories, menuCategory);
-      console.log({menuItem}, 2)
+      const menuCategory = await this.menuCategoryModel
+        .findOne({ _id: _menuItem.menuCategory_Id })
+        .exec();
+      menuItem.menuCategories = await this.utils.pushWhenNew(
+        menuItem.menuCategories,
+        menuCategory,
+      );
+      console.log({ menuItem }, 2);
     }
-    console.log({menuItem}, 1)
+    console.log({ menuItem }, 1);
 
     if (_menuItem.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _menuItem.store_Id }).exec();
+      const store = await this.storeModel
+        .findOne({ _id: _menuItem.store_Id })
+        .exec();
       store.menuItems = await this.utils.pushWhenNew(store.menuItems, menuItem);
       store.save();
     }
-    
+
     if (_menuItem.qty) {
       const branchItem = new this.branchItemModel({
         quantity: _menuItem.qty,
         user: user,
-        menuItem: menuItem
-      });      
+        menuItem: menuItem,
+      });
       branchItem.save();
     }
 
-    console.log({menuItem})
-    
+    console.log({ menuItem });
+
     await menuItem.save();
-    return menuItem
+    return menuItem;
   }
 
-  async update(id: ObjectId, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
-    const menuItem = await this.menuItemModel.findOne({_id:id}).exec();
+  async update(
+    id: ObjectId,
+    updateMenuItemDto: UpdateMenuItemDto,
+  ): Promise<IMenuItem> {
+    const menuItem = await this.menuItemModel.findOne({ _id: id }).exec();
 
-    const { title, photo, price, description, cookingTime } =
-      updateMenuItemDto;
+    const { title, photo, price, description, cookingTime } = updateMenuItemDto;
 
     menuItem.title = updateMenuItemDto.title || menuItem.title;
     menuItem.photo = updateMenuItemDto.photo || photo;
@@ -114,11 +129,11 @@ export class MenuItemService {
     menuItem.cookingTime = updateMenuItemDto.cookingTime || cookingTime;
 
     await menuItem.save();
-    return menuItem
+    return menuItem;
   }
 
   async remove(id: ObjectId): Promise<string | void> {
-    const result = await this.menuItemModel.deleteOne({ _id : id }).exec();
+    const result = await this.menuItemModel.deleteOne({ _id: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }
