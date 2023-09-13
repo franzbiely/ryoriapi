@@ -46,9 +46,7 @@ export class BranchItemService {
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
-    const menuItem = await this.menuItemModel.find({_id: id}).exec()
-    return this.branchItemModel.findOne({menuItem:menuItem})
-      .populate('branch')
+    return this.branchItemModel.findOne({_id:id})
       .populate('menuItem')
       .lean();
   }

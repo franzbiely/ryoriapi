@@ -22,11 +22,11 @@ export class MenuCategoryService {
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuCategory[]> {
-    return this.menuCategoryModel.find({ store: store_Id }).lean();
+    return this.menuCategoryModel.find({ store: store_Id }).populate('menuItem').lean();
   }
 
   findOneId(id: ObjectId): Promise<IMenuCategory> {
-    return this.menuCategoryModel.findOne({_id:id}).lean();
+    return this.menuCategoryModel.findOne({_id:id}).populate('menuItem').lean();
   }
 
   async create(_menuCategory: CreateMenuCategoryDto): Promise<IMenuCategory> {

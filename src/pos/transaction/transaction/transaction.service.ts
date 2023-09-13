@@ -137,40 +137,36 @@ export class TransactionService {
     });
 
     let branch;
+    
+    
+    if (!Array.isArray(_transaction.item)) {
+      _transaction.item = [_transaction.item];
+    }
+    await Promise.all(
+      _transaction.item.map(async (item) => {
+        const _item = JSON.parse(item);
+        const menuItem = await this.menuItemModel.findOne({ _id: _item.id }).exec();
+
+
+        const transactionItem = new this.transactionItemModel({
+          quantity : _item.qty,
+          status : 'new',
+          menuItem : menuItem,
+          transaction : transaction._id,
+        });
+        
+        await transactionItem.save();
+        transaction.transactionItems.push(transactionItem)
+      }),
+    );
+    const currentTransaction = await transaction.save();
     if (_transaction.branch_Id) {
       branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
+      console.log({currentTransaction, transaction})
+      console.log({branch})
       branch.transaction = await this.utils.pushWhenNew(branch.transaction, transaction);
       branch.save()
     }
-    
-    // if (_transaction.branch_Id) {
-    //   transaction.branch = branch;
-    // }
-
-    
-    // if (!Array.isArray(_transaction.item)) {
-    //   _transaction.item = [_transaction.item];
-    // }
-    // await Promise.all(
-    //   _transaction.item.map(async (item) => {
-    //     const _item = JSON.parse(item);
-    //     const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
-
-    //     const transactionItem = new this.transactionItemModel({
-    //       quantity : _item.qty,
-    //       status : 'new',
-    //       menuItem : menuItem,
-    //       transaction : transaction._id,
-    //     });
-        
-    //     if (_transaction.branch_Id) {
-    //       transactionItem.branch = branch;
-    //     }
-    //     await transactionItem.save();
-    //     transaction.transactionItem.push(transactionItem)
-    //   }),
-    // );
-    const currentTransaction = await transaction.save();
     return currentTransaction;
   }
 
@@ -345,13 +341,13 @@ export class TransactionService {
         }
     });
 
-    // const newData = response.map((data) => ({
-    //   ...data,
-    //   total: data.transactionItem.reduce((prev, cur) => {
-    //     return prev + cur.quantity * cur.menuItem.price;
-    //   }, 0),
-    // }));
-    // return newData;
+    const newData = response.map((data) => ({
+      ...data,
+      total: data.transactionItems.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
+    }));
+    return newData;
   }
 
   async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]| any> {
@@ -370,14 +366,14 @@ export class TransactionService {
       }
     }).lean();
     
-    // const newData = response.map((data) => {
-    //   return ({
-    //     ...data,
-    //     total: data.transactionItem.reduce((prev, cur) => {
-    //       return prev + cur.quantity * cur.menuItem.price;
-    //     }, 0),
-    //   })
-    // });
-    // return newData;
+    const newData = response.map((data) => {
+      return ({
+        ...data,
+        total: data.transactionItems.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
+      })
+    });
+    return newData;
   }
 }

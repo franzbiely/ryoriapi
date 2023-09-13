@@ -1,6 +1,4 @@
-import { IsString, IsInt, IsDate, IsArray } from '@nestjs/class-validator';
-import { ObjectId } from 'mongoose';
-
+import { IsString, IsInt, IsDate, IsArray, IsObject } from '@nestjs/class-validator';
 export class CreateTransactionDto {
   @IsString()
   status: string;
@@ -24,6 +22,9 @@ export class CreateTransactionDto {
   @IsDate()
   createdAt: Date;
   
+  @IsString()
+  item: string | string[];
+
   // Not in Model but necessary in HTTP
   @IsString()
   branch_Id: string;

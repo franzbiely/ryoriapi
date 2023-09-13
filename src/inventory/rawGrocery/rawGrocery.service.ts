@@ -22,13 +22,12 @@ export class RawGroceryService {
 
   async findAll(branch_Id: ObjectId): Promise<any[]> {
     const response = await this.rawGroceryModel.find({ branch: branch_Id })
-      .populate('branch')
       .populate('inventoryLogs')
       .populate({
         path: 'inventoryLogs',
         populate: {path :'user'}
       })
-      .populate('rawCategory')
+      .populate('rawCategories')
       .exec();
 
 
@@ -43,8 +42,7 @@ export class RawGroceryService {
 
   async findOne(id: ObjectId): Promise<IRawGrocery> {
     return this.rawGroceryModel.findOne({_id:id})
-      .populate('branch')
-      .populate('rawCategory')
+      .populate('rawCategories')
       .populate('inventoryLogs')
       .populate({
         path:'inventoryLogs',
