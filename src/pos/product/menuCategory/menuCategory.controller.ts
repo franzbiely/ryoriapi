@@ -76,9 +76,9 @@ export class MenuCategoryController {
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
     @UploadedFile() photo,
   ) {
-    if (photo) {
-      const response = await this.s3Service.uploadFile(photo);
-      if (response) {
+    if(photo) {
+      const response = await this.s3Service.uploadFile(photo)
+      if(response) {
         updateMenuCategoryDto.photo = response.Key;
       }
     }

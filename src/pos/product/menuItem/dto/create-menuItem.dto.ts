@@ -26,6 +26,8 @@ export class CreateMenuItemDto {
   // Not in Model but necessary in HTTP
   @IsString()
   store_Id: string;
+  @IsString()
+  branch_Id: string;
   @IsInt() // This is for branchItem
   qty: number;
 }

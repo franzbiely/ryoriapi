@@ -58,14 +58,6 @@ export class StoreService {
       throw new NotFoundException(`Store with id ${sid} not found`);
     }
     return store;
-    // const branch = await this.branchModel
-    //   .findOne({ _id: bid })
-    //   .populate({ path: 'store', populate: { path: 'user' } })
-    //   .exec();
-    // if (!branch) {
-    //   throw new NotFoundException(`Branch with id ${bid} not found`);
-    // }
-    // return branch;
   }
 
   async create(_store: CreateStoreDto): Promise<IStore | void> {
