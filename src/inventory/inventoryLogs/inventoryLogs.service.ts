@@ -7,6 +7,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { IRawGrocery } from '../rawGrocery/rawGrocery.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class InventoryLogsService {
@@ -19,6 +20,7 @@ export class InventoryLogsService {
     private readonly rawGroceryModel: Model<IRawGrocery>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
+    private readonly utils: Utils
   ) { }
 
   findAll(branch_Id: ObjectId): Promise<IInventoryLogs[]> {
@@ -32,33 +34,32 @@ export class InventoryLogsService {
   }
 
   async create(_inventoryLogs: CreateInventoryLogsDto): Promise<IInventoryLogs> {
-    const logs = new this.invLogsModel({
+    const inventoryLog = new this.invLogsModel({
       type: _inventoryLogs.type,
       quantityLogs: _inventoryLogs.quantityLogs,
     });
 
     if (_inventoryLogs.user_Id) {
       const user = await this.userModel.findOne({_id:_inventoryLogs.user_Id}).exec();
-      logs.user = user;
+      inventoryLog.user = user;
     }
-    if (_inventoryLogs.rawGrocery_Id) {
-      const rawGrocery = await this.rawGroceryModel.findOne({_id:_inventoryLogs.rawGrocery_Id}).exec();
-      logs.rawGrocery = rawGrocery;
+
+    if(_inventoryLogs.rawGrocery_Id) {
+      const rawGrocery = await this.rawGroceryModel.findOne({_id: _inventoryLogs.rawGrocery_Id}).exec()
+      rawGrocery.inventoryLogs = await this.utils.pushWhenNew(rawGrocery.inventoryLogs, inventoryLog);
+      rawGrocery.save()
     }
-    if (_inventoryLogs.branch_Id) {
-      const branch = await this.branchModel.findOne({_id:_inventoryLogs.branch_Id}).exec();
-      logs.branch = branch;
-    }
-    await logs.save();
-    return logs
+    
+    await inventoryLog.save();
+    return inventoryLog
   }
 
   async update(id: ObjectId, updateInvLogsDto: UpdateInventoryLogsDto): Promise<IInventoryLogs> {
     const inventoryLog = await this.invLogsModel.findOne({ _id: id }).exec();
 
     const { type, quantityLogs, user_Id } = updateInvLogsDto;
-    inventoryLog.type = type;
-    inventoryLog.quantityLogs = quantityLogs;
+    inventoryLog.type = updateInvLogsDto.type || inventoryLog.type;
+    inventoryLog.quantityLogs = updateInvLogsDto.quantityLogs || inventoryLog.quantityLogs;
 
     if (user_Id) {
       const user = await this.userModel.findOne({_id:user_Id}).exec();

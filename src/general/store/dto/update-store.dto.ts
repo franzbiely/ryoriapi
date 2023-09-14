@@ -1,40 +1,30 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateStoreDto } from './create-store.dto';
-import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
-import { IsOptional } from 'class-validator';
+import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateStoreDto extends PartialType(CreateStoreDto) {
-  @IsInt()
-  id: ObjectId;
-
-  @IsInt()
-  user_Id: number;
-
-  @IsString()
+  @IsOptional()
   storeName: string;
 
-  @IsString()
+  @IsOptional()
   appId: string;
 
-  @IsString()
+  @IsOptional()
   appSecret: string;
 
-  @IsString()
+  @IsOptional()
   photo: string;
 
   @IsOptional()
-  branchName: string;
+  user_Id: string;
 
   @IsOptional()
-  email: string;
+  branch_Id: string;
 
   @IsOptional()
-  contactNumber: string;
+  menuItem_Id: string;
 
   @IsOptional()
-  address: string;
-
-  @IsOptional()
-  branch_Id: number;
+  menuCategory_Id: string;
 }

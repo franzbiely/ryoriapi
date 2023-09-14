@@ -6,6 +6,7 @@ import { UsersSchema } from 'src/general/user/user.model';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { RawGrocerySchema } from '../rawGrocery/rawGrocery.model';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { MongooseModule } from '@nestjs/mongoose';
       ]),
   ],
   controllers: [InvLogsController],
-  providers: [InventoryLogsService],
+  providers: [InventoryLogsService, Utils],
 })
 export class InventoryLogsModule {}

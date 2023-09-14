@@ -61,8 +61,8 @@ export class QuantityController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
-    console.log({ token });
-    return this.branchItemService.save(dto);
+    const user_Id = decodedToken.userPayload.id;
+    return this.branchItemService.save(dto, user_Id);
   }
 
   @UseGuards(JwtAuthGuard)

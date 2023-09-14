@@ -6,13 +6,16 @@ import { IsOptional } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateRawCategoryDto extends PartialType(CreateRawCategoryDto) {
-  @IsInt()
+  @IsOptional()
   id: ObjectId;
 
-  @IsString()
+  @IsOptional()
   title: string;
 
   @IsDate()
   createdAt: Date;
 
+  // Not in Model but necessary in HTTP
+  @IsOptional()
+  branch_Id: string;
 }

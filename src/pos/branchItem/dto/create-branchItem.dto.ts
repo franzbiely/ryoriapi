@@ -3,17 +3,18 @@ import { ObjectId } from 'mongoose';
 
 export class CreateBranchItemDto {
   @IsInt()
-  id: ObjectId;
-
-  @IsInt()
   quantity: number;
 
-  @IsInt()
-  branch_Id: number;
+  @IsString()
+  menuItem_Id: string;
 
-  @IsInt()
-  menuItem_Id: number;
+  @IsString()
+  user_Id: string;
 
   @IsDate()
   createdAt: Date;
+
+  // Not in Model but necessary in HTTP
+  @IsString()
+  branch_Id: string;
 }

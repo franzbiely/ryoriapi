@@ -7,10 +7,14 @@ import { IMenuItem } from './../product/menuItem/menuItem.model';
 import { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IMenuCategory } from '../product/menuCategory/menuCategory.model';
+import { Utils } from 'src/utils/utils';
+import { IUsers } from 'src/general/user/user.model';
 
 @Injectable()
 export class BranchItemService {
   constructor(
+    @InjectModel('User')
+    private readonly userModel: Model<IUsers>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
     @InjectModel('MenuItem')
@@ -19,6 +23,7 @@ export class BranchItemService {
     private readonly branchItemModel: Model<IBranchItem>,
     @InjectModel('MenuCategory')
     private readonly menuCategory: Model<IMenuCategory>,
+    private readonly utils: Utils
   ) {}
 
   async findAll(branch_Id: ObjectId, category_Id: ObjectId = null): Promise<any[]> {
@@ -41,50 +46,51 @@ export class BranchItemService {
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
-    const menuItem = await this.menuItemModel.find({_id: id}).exec()
-    return this.branchItemModel.findOne({menuItem:menuItem})
-      .populate('branch')
+    return this.branchItemModel.findOne({_id:id})
       .populate('menuItem')
       .lean();
   }
 
-  async save(dto: CreateBranchItemDto): Promise<IBranchItem | any> {
-    const branch = await this.branchModel.findOne({_id: dto.branch_Id}).exec()
+  async save(dto: CreateBranchItemDto, user_Id:String): Promise<IBranchItem | any> {
     const menuItem = await this.menuItemModel.findOne({_id: dto.menuItem_Id}).exec()
+    // Might be transfered to branch
     const branchItem = await this.branchItemModel.findOne({
-      branch: branch,
       menuItem: menuItem,
     }).exec();
-
     if (branchItem) {
       return this.update(branchItem.id, dto);
     } else {
-      return this.create(dto);
+      return this.create(dto, user_Id);
     }
   }
 
-  async create(_quantity: CreateBranchItemDto): Promise<IBranchItem> {
-    const qty = new this.branchItemModel({
-      quantity: _quantity.quantity,
-      branch: _quantity.branch_Id,
-      menuItem: _quantity.menuItem_Id,
+  async create(_branchItem: CreateBranchItemDto, user_Id): Promise<IBranchItem> {
+    const branchItem = new this.branchItemModel({
+      quantity: _branchItem.quantity,
+      menuItem: _branchItem.menuItem_Id,
     });
 
-    await qty.save();
-    return qty
+    const user = await this.userModel.findOne({_id: user_Id}).exec();
+    branchItem.user = user;
+
+
+    if(_branchItem.branch_Id) {
+      const branch = await this.branchModel.findOne({_id: _branchItem.branch_Id}).exec()
+      branch.branchItems = await this.utils.pushWhenNew(branch.branchItems, branchItem);
+      branch.save();
+    }
+    await branchItem.save();
+    return branchItem
   }
 
   async update(id: ObjectId, updateQuantityDto: UpdateBranchItemDto): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({_id:id}).exec();
-    console.log({branchItem})
-    const { quantity, branch_Id, menuItem_Id } = updateQuantityDto;
-    branchItem.quantity = quantity;
+    const { quantity, menuItem_Id } = updateQuantityDto;
+    branchItem.quantity = updateQuantityDto.quantity || branchItem.quantity;
 
-    if (branch_Id) {
-      branchItem.branch = branch_Id;
-    }
     if (menuItem_Id) {
-      branchItem.menuItem = menuItem_Id;
+      const menuItem = await this.menuItemModel.findOne({_id:id}).exec();
+      branchItem.menuItem = menuItem;
     }
 
     await branchItem.save();

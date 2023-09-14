@@ -2,9 +2,6 @@ import { IsString, IsInt, IsDate } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateRawGroceryDto {
-  @IsInt()
-  id: ObjectId;
-
   @IsString()
   item: string;
 
@@ -14,12 +11,19 @@ export class CreateRawGroceryDto {
   @IsInt()
   quantity: number;
 
-  @IsInt()
-  branch_Id: ObjectId;
+  @IsString()
+  rawCategory_Id: string;
 
-  @IsInt()
-  rawCategory_Id: ObjectId;
+  @IsString()
+  inventoryLogs_Id: string;
+
+  @IsString()
+  user_Id: string;
 
   @IsDate()
   createdAt: Date;
+
+  // Not in Model but necessary in HTTP
+  @IsString()
+  branch_Id: string;
 }

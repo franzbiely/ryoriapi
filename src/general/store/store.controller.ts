@@ -21,84 +21,63 @@ import { ObjectId } from 'mongoose';
 
 @Controller('store')
 export class StoreController {
-  constructor(private storeService: StoreService, private readonly s3Service: S3Service) {}
+  constructor(
+    private storeService: StoreService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async fillAll() {
-    return this.storeService.findAll();
+  async fillAll(@Request() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
+    );
+    const store_Id = decodedToken.userPayload.store_Id;
+    return this.storeService.findAll(store_Id);
   }
 
   @Get(':sid/:bid')
-  async findStoreAndBranch(@Param('sid') sid: ObjectId, @Param('bid') bid: ObjectId) {
+  async findStoreAndBranch(
+    @Param('sid') sid: ObjectId,
+    @Param('bid') bid: ObjectId,
+  ) {
     const response = await this.storeService.findStoreAndBranch(sid, bid);
 
-    console.log({response})
     return {
-      _id: response['_id'],
-      branchName: response.branchName,
-      email: response.email,
-      contactNumber: response.contactNumber,
-      address: response.address,
-      store: {
-        storeName: response.store['storeName'],
-        photo: response.store['photo'],
-        user: response.store['user'].map(user => ({
-          id: user['_id'],
-          role: user.role,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phone: user.phone,
-          password: user.password,
-          userPhoto: user.userPhoto,
-          createdAt: user.createdAt,
-        })),
-      },      
-      transaction: response.transaction,
-      rawGrocery: response.rawGrocery,
-      branchItem: response.branchItem,
-      rawCategory: response.rawCategory,
-      transactionItem: response.transactionItem,
-      inventoryLogs: response.inventoryLogs,
-      createdAt: response.createdAt,
-      // photo: await this.s3Service.getFile(response.store.photo) || '',
-    }
+      ...response,
+      photo: (await this.s3Service.getFile(response.photo)) || '',
+    };
   }
 
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.storeService.findOneId(id);
-    const {
-      storeName,
-      branch,
-      menuItem,
-      createdAt,
-    } = response
+    const { storeName } = response;
     return {
       _id: response['_id'],
       storeName,
-      branch,
-      menuItem,
-      createdAt,
-      photo: await this.s3Service.getFile(response.photo) || '',
-    }
+      photo: (await this.s3Service.getFile(response.photo)) || '',
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  async create(@Body() createStoreDto: CreateStoreDto, @Request() req, @UploadedFile() photo) {
+  async create(
+    @Body() createStoreDto: CreateStoreDto,
+    @Request() req,
+    @UploadedFile() photo,
+  ) {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
     const user_Id = decodedToken.userPayload.id;
     createStoreDto.user_Id = user_Id;
-    if(photo) {
-      const response = await this.s3Service.uploadFile(photo)
-      if(response) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
         createStoreDto.photo = response.Key;
       }
     }
@@ -108,7 +87,17 @@ export class StoreController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
-  update(@Param('id') id: ObjectId, @Body() updateStoreDto: UpdateStoreDto) {
+  async update(
+    @Param('id') id: ObjectId,
+    @Body() updateStoreDto: UpdateStoreDto,
+    @UploadedFile() photo,
+  ) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
+        updateStoreDto.photo = response.Key;
+      }
+    }
     return this.storeService.update(id, updateStoreDto);
   }
 

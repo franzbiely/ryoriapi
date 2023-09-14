@@ -1,24 +1,21 @@
 import { Schema, model, Types, ObjectId } from 'mongoose';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from '../product/menuItem/menuItem.model';
+import { IUsers } from 'src/general/user/user.model';
 
 export interface IBranchItem extends Document {
   quantity: number;
-  branchId: ObjectId;
-  menuItemId: ObjectId;
-  branch: IBranch;
+
   menuItem: IMenuItem;
-  createdAt: Date;
+  user: IUsers;
 }
 
 
 export const BranchItemSchema = new Schema<IBranchItem>({
   quantity: Number,
-  branchId: Number,
-  menuItemId: Number,
-  branch: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
+  
   menuItem: { type: Schema.Types.ObjectId, ref: 'MenuItem', required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+  user: { type: Schema.Types.ObjectId, ref: 'Users', required: true }
+}, {timestamps: true});
 
 export const BranchItemModel = model('BranchItem', BranchItemSchema);

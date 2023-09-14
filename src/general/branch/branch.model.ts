@@ -9,37 +9,28 @@ import { IStore } from '../store/store.model';
 import { IUsers } from '../user/user.model';
 
 export interface IBranch extends Document {
-    branchName: string;
-    email: string;
-    contactNumber: string;
-    address: string;
-    store: IStore;
-    storeId: number;
-    user: IUsers[];
-    transaction: ITransaction[];
-    rawGrocery: IRawGrocery[];
-    branchItem: IBranchItem[];
-    rawCategory: IRawCategory[];
-    transactionItem: ITransactionItem[];
-    inventoryLogs: IInventoryLogs[];
-    createdAt: Date;
+  branchName: string;
+  email: string;
+  contactNumber: string;
+  address: string;
+
+  branchItems?: IBranchItem[];
+  rawGrocerys?: IRawGrocery[];
+  rawCategorys?: IRawCategory[];
+  transactions?: ITransaction[];
+  users?: IUsers[];
 }
 
 export const BranchSchema = new Schema<IBranch>({
-    branchName: String,
-    email: String,
-    contactNumber: String,
-    address: String,
-    store: { type: Schema.Types.ObjectId, ref: 'Store', required: true },
-    storeId: Number,
-    user: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
-    transaction: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
-    rawGrocery: [{ type: Schema.Types.ObjectId, ref: 'RawGrocery' }],
-    branchItem: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
-    rawCategory: [{ type: Schema.Types.ObjectId, ref: 'RawCategory' }],
-    transactionItem: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem' }],
-    inventoryLogs: [{ type: Schema.Types.ObjectId, ref: 'InventoryLogs' }],
-    createdAt: { type: Date, default: Date.now },
-});
+  branchName: String,
+  email: String,
+  contactNumber: String,
+  address: String,
+  users: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
+  transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
+  rawGrocerys: [{ type: Schema.Types.ObjectId, ref: 'RawGrocery' }],
+  branchItems: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
+  rawCategorys: [{ type: Schema.Types.ObjectId, ref: 'RawCategory' }],
+}, {timestamps: true});
 
 export const BranchModel = model('Branch', BranchSchema);

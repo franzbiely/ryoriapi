@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
-
+import { IRawGrocery } from 'src/inventory/rawGrocery/rawGrocery.model';
 
 @Injectable()
 export class UserService {
@@ -19,29 +19,30 @@ export class UserService {
     private readonly storeModel: Model<IStore>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
-    private readonly utils: Utils
+    @InjectModel('RawGrocery')
+    private readonly rawGroceryModel: Model<IRawGrocery>,
+    private readonly utils: Utils,
   ) {}
 
   async userCredential(query: object | any): Promise<IUsers> {
-    const x = await this.usersModel.findOne(query)
-      .populate('store')
-      .populate('branch')
+    const x = await this.usersModel
+      .findOne(query)
+      .populate({
+        path: 'store',
+        populate: {
+          path: 'branches',
+        },
+      })
       .exec();
     return x;
   }
 
   async findAll(store_Id: ObjectId): Promise<IUsers[]> {
-    return this.usersModel
-      .find({ store: store_Id })
-      .populate('store')
-      .exec();
+    return this.usersModel.find({ store: store_Id }).populate('store').exec();
   }
 
   async findOneId(id: ObjectId): Promise<IUsers> {
-    return this.usersModel
-      .findOne({ _id: id })
-      .populate('store')
-      .exec();
+    return this.usersModel.findOne({ _id: id }).populate('store').exec();
   }
 
   async create(_user: CreateUsersDto): Promise<IUsers> {
@@ -58,21 +59,29 @@ export class UserService {
     });
 
     if (_user.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _user.store_Id }).exec();
-      user.store = store;
+      const store = await this.storeModel
+        .findOne({ _id: _user.store_Id })
+        .exec();
+      store.user = user;
+      store.save();
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _user.branch_Id }).exec();
-      user.branch = [branch];
+      const branch = await this.branchModel
+        .findOne({ _id: _user.branch_Id })
+        .exec();
+      branch.users = await this.utils.pushWhenNew(branch.users, user);
+      user.branch = await this.utils.pushWhenNew(user.branch, branch);
+      branch.save();
     }
-    await user.save()
-    return user
+
+    await user.save();
+    return user;
   }
 
   async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
-    const user = await this.usersModel.findOne({_id: id}).exec();
-    
+    const user = await this.usersModel.findOne({ _id: id }).exec();
+
     const {
       role,
       username,
@@ -87,14 +96,14 @@ export class UserService {
       branch_Id,
     } = updateUserDto;
 
-    user.role = role;
-    user.username = username;
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.email = email;
-    user.address = address;
-    user.phone = phone;
-    user.userPhoto = userPhoto;
+    user.role = updateUserDto.role || user.role;
+    user.username = updateUserDto.username || user.username;
+    user.firstName = updateUserDto.firstName || user.firstName;
+    user.lastName = updateUserDto.lastName || user.lastName;
+    user.email = updateUserDto.email || user.email;
+    user.address = updateUserDto.address || user.address;
+    user.phone = updateUserDto.phone || user.phone;
+    user.userPhoto = updateUserDto.userPhoto || user.userPhoto;
 
     if (password) {
       user.password = await bcrypt.hash(password, 10);
@@ -105,19 +114,12 @@ export class UserService {
       user.store = store;
     }
 
-    if (branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: branch_Id }).exec();
-      branch.user = await this.utils.pushWhenNew(branch.user, user);
-      branch.save();
-      user.branch = [branch];
-    }
-
     await user.save();
-    return user
+    return user;
   }
 
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.usersModel.deleteOne({ _id : id }).exec();
+    const result = await this.usersModel.deleteOne({ _id: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }

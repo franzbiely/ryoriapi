@@ -7,17 +7,26 @@ import { IStore } from 'src/general/store/store.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
+import { IBranch } from 'src/general/branch/branch.model';
+import { IUsers } from 'src/general/user/user.model';
+import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 
 @Injectable()
 export class MenuItemService {
   constructor(
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('BranchItem')
+    private readonly branchItemModel: Model<IBranchItem>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
+    @InjectModel('User')
+    private readonly userModel: Model<IUsers>,
     @InjectModel('MenuCategory')
     private readonly menuCategoryModel: Model<IMenuCategory>,
     @InjectModel('Store')
     private readonly storeModel: Model<IStore>,
-    private readonly utils: Utils
+    private readonly utils: Utils,
   ) {}
 
   findAll(store_Id: ObjectId): Promise<IMenuItem[]> {
@@ -28,32 +37,52 @@ export class MenuItemService {
     return this.menuItemModel.find({ _id: { $in: ids } }).lean();
   }
 
-  async findAllWithBranchQty(store_Id: ObjectId, branch_Id: ObjectId): Promise<IMenuItem[] | any> {
-    const menuItems = await this.menuItemModel.find({ store: store_Id }).exec();
-    console.log({menuItems})
+  // @Todo : Should be transfered to branchItem
+  async findAllWithBranchQty(
+    store_Id: ObjectId,
+    branch_Id: ObjectId,
+  ): Promise<IMenuItem[] | any> {
+    const branch = await this.branchModel
+      .findOne({ _id: branch_Id })
+      .populate({
+        path: 'branchItems',
+        populate: {
+          path: 'menuItem',
+        },
+      })
+      .lean();
 
-    if(menuItems.length > 0) {
-      return menuItems.map((item) => {
-        const newBranch = item.branchItem.filter(
-          (subItem) => subItem['_id'] === branch_Id,
-        );
-
-        return {
-          ...item.toObject(),
-          branchItem: undefined,
-          quantity: newBranch[0]?.quantity || 0,
-        };
-      });
-    }
-    return []
+    const itemsWithQty = branch.branchItems.map((item) => {
+      return {
+        ...item.menuItem,
+        quantity: item.quantity || 0,
+      };
+    });
+    return itemsWithQty;
   }
 
-  findOne(id: ObjectId): Promise<IMenuItem> {
-    return this.menuItemModel.findOne({_id:id}).lean();
+  async findOne(id: ObjectId): Promise<IMenuItem | any> {
+    const ret = await this.branchItemModel
+      .findOne({ menuItem: id })
+      .populate('menuItem')
+      .populate({
+        path: 'menuItem',
+        populate: {
+          path: 'menuCategories',
+        },
+      })
+      .lean();
+    console.log({ ret });
+    return {
+      ...ret.menuItem,
+      quantity: ret.quantity,
+    };
   }
 
-  async create(_menuItem: CreateMenuItemDto): Promise<IMenuItem> {
-    console.log({_menuItem})
+  async create(
+    _menuItem: CreateMenuItemDto,
+    user_Id: string,
+  ): Promise<IMenuItem> {
     const menuItem = new this.menuItemModel({
       title: _menuItem.title,
       photo: _menuItem.photo || '',
@@ -62,48 +91,79 @@ export class MenuItemService {
       cookingTime: _menuItem.cookingTime,
     });
 
-    if (_menuItem.category_Id) {
-      const menuCategory = await this.menuCategoryModel.findOne({_id:_menuItem.category_Id}).exec();
-      menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
-      menuItem.save();
+    const user = await this.userModel.findOne({ _id: user_Id }).exec();
+    menuItem.user = user;
+
+    if (_menuItem.menuCategory_Id) {
+      const menuCategory = await this.menuCategoryModel
+        .findOne({ _id: _menuItem.menuCategory_Id })
+        .exec();
+
+      menuItem.menuCategories = await this.utils.pushWhenNew(
+        menuItem.menuCategories,
+        menuCategory,
+      );
     }
 
     if (_menuItem.store_Id) {
-      const store = await this.storeModel.findOne({_id: _menuItem.store_Id}).exec();
-      menuItem.store = store;
-      store.menuItem = await this.utils.pushWhenNew(store.menuItem, menuItem);
+      const store = await this.storeModel
+        .findOne({ _id: _menuItem.store_Id })
+        .exec();
+      store.menuItems = await this.utils.pushWhenNew(store.menuItems, menuItem);
       store.save();
     }
-    
-    await menuItem.save();
-    return menuItem
-  }
-
-  async update(id: ObjectId, updateMenuItemDto: UpdateMenuItemDto): Promise<IMenuItem> {
-    const menuItem = await this.menuItemModel.findOne({_id:id}).exec();
-
-    const { title, photo, price, description, cookingTime, category_Id } =
-      updateMenuItemDto;
-
-    menuItem.title = title;
-    menuItem.photo = photo;
-    menuItem.price = price;
-    menuItem.description = description;
-    menuItem.cookingTime = cookingTime;
-
-    if (category_Id) {
-      const menuCategory = await this.menuCategoryModel.findOne({_id:category_Id}).exec();
-      menuItem.menuCategory = [menuCategory];
-      menuItem.menuCategory = await this.utils.pushWhenNew(menuItem.menuCategory, menuCategory);
-      menuItem.save();
+    if (_menuItem.qty) {
+      const branchItem = new this.branchItemModel({
+        quantity: _menuItem.qty,
+        user: user,
+        menuItem: menuItem,
+      });
+      branchItem.save();
+      console.log({ _menuItem });
+      const branch = await this.branchModel
+        .findOne({ _id: _menuItem.branch_Id })
+        .exec();
+      console.log({ branch });
+      branch.branchItems = await this.utils.pushWhenNew(
+        branch.branchItems,
+        branchItem,
+      );
+      branch.save();
     }
 
     await menuItem.save();
-    return menuItem
+    return menuItem;
+  }
+
+  async update(
+    id: ObjectId,
+    updateMenuItemDto: UpdateMenuItemDto,
+  ): Promise<IMenuItem> {
+    const menuItem = await this.menuItemModel.findOne({ _id: id }).exec();
+
+    const { title, photo, price, description, cookingTime } = updateMenuItemDto;
+
+    menuItem.title = updateMenuItemDto.title || menuItem.title;
+    menuItem.photo = updateMenuItemDto.photo || menuItem.photo;
+    menuItem.price = updateMenuItemDto.price || menuItem.price;
+    menuItem.description =
+      updateMenuItemDto.description || menuItem.description;
+    menuItem.cookingTime =
+      updateMenuItemDto.cookingTime || menuItem.cookingTime;
+
+    if (updateMenuItemDto.qty) {
+      const branchItem = await this.branchItemModel.findOne({ menuItem: id });
+      branchItem.quantity = updateMenuItemDto.qty;
+      branchItem.save();
+    }
+
+    await menuItem.save();
+    return menuItem;
   }
 
   async remove(id: ObjectId): Promise<string | void> {
-    const result = await this.menuItemModel.deleteOne({ _id : id }).exec();
+    const result = await this.menuItemModel.deleteOne({ _id: id }).exec();
+    await this.branchItemModel.deleteOne({ menuItem: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }

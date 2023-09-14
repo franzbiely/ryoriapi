@@ -11,9 +11,13 @@ export class CreateMenuCategoryDto {
   @IsString()
   photo: string;
 
-  @IsInt()
-  store_Id: number;
-
   @IsString()
   createdAt: Date;
+
+  // Not in the database
+  @IsString()
+  store_Id: string;
+  @IsString()
+  menuItem_Id: string;
+
 }

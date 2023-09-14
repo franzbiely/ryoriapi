@@ -9,6 +9,7 @@ import { ITransaction } from './transaction.model';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { ITransactionItem } from '../transactionItem/transactionItem.model';
+import { Utils } from 'src/utils/utils';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -20,6 +21,7 @@ export class TransactionService {
     private readonly menuItemModel: Model<IMenuItem>,
     @InjectModel('TransactionItem')
     private readonly transactionItemModel: Model<ITransactionItem>,
+    private readonly utils: Utils
   ) {}
 
   //Get All User
@@ -33,12 +35,12 @@ export class TransactionService {
           path: 'menuItem'
         }
       })
-      .exec();
+      .lean();
     const newData = response.map((data) => ({
       ...data,
-      total: data.transactionItem.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
+      // total: data.transactionItem.reduce((prev, cur) => {
+      //   return prev + cur.quantity * cur.menuItem.price;
+      // }, 0),
     }));
     return newData;
   }
@@ -135,23 +137,16 @@ export class TransactionService {
     });
 
     let branch;
-    if (_transaction.branch_Id) {
-      branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
-    }
     
-    if (_transaction.branch_Id) {
-      transaction.branch = branch;
-    }
-
     
     if (!Array.isArray(_transaction.item)) {
       _transaction.item = [_transaction.item];
     }
-    console.log({_transaction})
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);
-        const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
+        const menuItem = await this.menuItemModel.findOne({ _id: _item.id }).exec();
+
 
         const transactionItem = new this.transactionItemModel({
           quantity : _item.qty,
@@ -160,14 +155,16 @@ export class TransactionService {
           transaction : transaction._id,
         });
         
-        if (_transaction.branch_Id) {
-          transactionItem.branch = branch;
-        }
         await transactionItem.save();
-        transaction.transactionItem.push(transactionItem)
+        transaction.transactionItems.push(transactionItem)
       }),
     );
     const currentTransaction = await transaction.save();
+    if (_transaction.branch_Id) {
+      branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
+      branch.transaction = await this.utils.pushWhenNew(branch.transaction, transaction);
+      branch.save()
+    }
     return currentTransaction;
   }
 
@@ -177,11 +174,11 @@ export class TransactionService {
   ): Promise<ITransaction | any> {
     const transaction = await this.transactionModel.findOne({_id:id}).exec();
     const { status, notes } = updateTransactionDto;
-    transaction.status = status;
-    transaction.notes = notes;
+    transaction.status = updateTransactionDto.status || transaction.status;
+    transaction.notes = updateTransactionDto.notes || transaction.notes;
 
     if (updateTransactionDto.paymongo_pi_id) {
-      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
+      // transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
 
     return await transaction.save();
@@ -323,7 +320,7 @@ export class TransactionService {
     };
   }
 
-  async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[]> {
+  async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[] | any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -344,14 +341,14 @@ export class TransactionService {
 
     const newData = response.map((data) => ({
       ...data,
-      total: data.transactionItem.reduce((prev, cur) => {
+      total: data.transactionItems.reduce((prev, cur) => {
         return prev + cur.quantity * cur.menuItem.price;
       }, 0),
     }));
     return newData;
   }
 
-  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]> {
+  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]| any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -365,14 +362,16 @@ export class TransactionService {
       populate: {
         path: 'menuItem'
       }
-  });
-    const newData = response.map((data) => ({
-      ...data,
-      total: data.transactionItem.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
-    }));
-
+    }).lean();
+    
+    const newData = response.map((data) => {
+      return ({
+        ...data,
+        total: data.transactionItems.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
+      })
+    });
     return newData;
   }
 }

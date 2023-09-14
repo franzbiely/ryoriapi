@@ -7,6 +7,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class StoreService {
@@ -22,15 +23,17 @@ export class StoreService {
   ) {}
 
   //Get All food
-  findAll(): Promise<IStore[]> {
-    return this.storeModel.find({});
+  findAll(store_Id): Promise<IStore[]> {
+    return this.storeModel
+      .find({ _id: store_Id })
+      .populate('branches')
+      .populate('menuCategories');
   }
 
   async findOneId(id: ObjectId): Promise<IStore> {
     const store = await this.storeModel
       .findOne({ _id: id })
       .populate('user')
-      .populate('menuItem')
       .exec();
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
@@ -38,15 +41,23 @@ export class StoreService {
     return store;
   }
 
-  async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IBranch> {
-    const branch = await this.branchModel
-      .findOne({ _id: bid })
-      .populate({ path: 'store', populate: { path: 'user' } })
-      .exec();
-    if (!branch) {
-      throw new NotFoundException(`Branch with id ${bid} not found`);
+  async findStoreAndBranch(
+    sid: ObjectId,
+    bid: ObjectId,
+  ): Promise<IStore | any> {
+    const store = await this.storeModel
+      .findOne({ _id: sid })
+      .populate({
+        path: 'branches',
+        populate: {
+          path: 'users',
+        },
+      })
+      .lean();
+    if (!store) {
+      throw new NotFoundException(`Store with id ${sid} not found`);
     }
-    return branch;
+    return store;
   }
 
   async create(_store: CreateStoreDto): Promise<IStore | void> {
@@ -58,8 +69,9 @@ export class StoreService {
     });
 
     if (_store.user_Id) {
-      const user = await this.usersModel.findOne({ _id: _store.user_Id }).exec();
-      store.user = [user];
+      const user = await this.usersModel
+        .findOne({ _id: _store.user_Id })
+        .exec();
       user.store = store;
       await user.save();
     }
@@ -70,12 +82,10 @@ export class StoreService {
         email: _store.email || '',
         contactNumber: _store.contactNumber || '',
         address: _store.address || '',
-        store: store._id,
       });
-      store.branch.push(branch);
+      store.branches.push(branch);
       await branch.save();
     }
-
     const result = await store.save();
 
     return result;
@@ -85,14 +95,14 @@ export class StoreService {
     const store = await this.storeModel.findOne({ _id: id }).exec();
     const { storeName, appId, appSecret, photo, user_Id, branch_Id } =
       updateStoreDto;
-    store.storeName = storeName;
-    store.photo = photo;
-    store.appId = appId;
-    store.appSecret = appSecret;
+    store.storeName = updateStoreDto.storeName || store.storeName;
+    store.photo = updateStoreDto.photo || store.photo;
+    store.appId = updateStoreDto.appId || store.appId;
+    store.appSecret = updateStoreDto.appSecret || store.appSecret;
 
     if (user_Id) {
       const user = await this.usersModel.findOne({ _id: user_Id });
-      store.user = [user];
+      store.user = user;
     }
 
     if (branch_Id) {

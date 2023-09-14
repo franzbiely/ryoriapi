@@ -8,11 +8,15 @@ import { StoreSchema } from 'src/general/store/store.model';
 import { S3Service } from 'src/utils/S3Service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
+import { BranchItemSchema } from 'src/pos/branchItem/branchItem.model';
+import { UsersSchema } from 'src/general/user/user.model';
 
 @Module({
   imports: [MongooseModule.forFeature([
     { name: 'MenuItem', schema: MenuItemSchema },
     { name: 'MenuCategory', schema: MenuCategorySchema },
+    { name: 'BranchItem', schema: BranchItemSchema },
+    { name: 'User', schema: UsersSchema },
     { name: 'Branch', schema: BranchSchema },
     { name: 'Store', schema: StoreSchema }
   ])],

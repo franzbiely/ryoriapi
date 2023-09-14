@@ -11,7 +11,7 @@ import { Utils } from 'src/utils/utils';
   imports: [MongooseModule.forFeature([
     { name: 'RawGrocery', schema: RawGrocerySchema },
     { name: 'RawCategory', schema: RawCategorySchema },
-    { name: 'Branch', schema: BranchSchema }
+    { name: 'Branch', schema: BranchSchema },
   ])],
   controllers: [RawGroceryController],
   providers: [RawGroceryService, Utils],

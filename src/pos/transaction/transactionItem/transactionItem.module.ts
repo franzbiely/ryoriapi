@@ -6,6 +6,7 @@ import { TransactionSchema } from '../transaction/transaction.model';
 import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Utils } from 'src/utils/utils';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [TransactionItemController],
-  providers: [TransactionItemService],
+  providers: [TransactionItemService, Utils],
 })
 export class TransactionItemModule {}

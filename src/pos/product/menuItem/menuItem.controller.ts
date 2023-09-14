@@ -36,7 +36,6 @@ export class MenuItemController {
   async findByBatch(@Query('ids') _ids: string) {
     const ids = _ids.split(',') || []
     const response = await this.menuItemService.findByBatch(ids);
-    console.log({response})
     return await Promise.all(
       response.map(async (item) => {
         return {
@@ -92,21 +91,30 @@ export class MenuItemController {
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
     );
+    const user_Id = decodedToken.userPayload.id;
     if (photo) {
       const response = await this.s3Service.uploadFile(photo);
       if(response) {
         createMenuItemDto.photo = response.Key;
       }
     }
-    return this.menuItemService.create(createMenuItemDto);
+    return this.menuItemService.create(createMenuItemDto, user_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(
+  @UseInterceptors(FileInterceptor('photo'))
+  async update(
     @Param('id') id: ObjectId,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
+    @UploadedFile() photo,
   ) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if(response) {
+        updateMenuItemDto.photo = response.Key;
+      }
+    }
     return this.menuItemService.update(id, updateMenuItemDto);
   }
 

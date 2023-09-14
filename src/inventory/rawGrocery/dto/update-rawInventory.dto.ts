@@ -4,21 +4,28 @@ import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateRawGroceryDto extends PartialType(CreateRawGroceryDto) {
-  @IsInt()
-  id: ObjectId;
-
-  @IsString()
+  @IsOptional()
   item: string;
 
-  @IsString()
+  @IsOptional()
   weight: string;
 
-  @IsInt()
+  @IsOptional()
   quantity: number;
 
   @IsOptional()
-  rawCategory_Id: ObjectId;
+  rawCategory_Id: string;
+
+  @IsOptional()
+  inventoryLogs_Id: string;
+
+  @IsOptional()
+  user_Id: string;
 
   @IsDate()
   createdAt: Date;
+
+  // Not in Model but necessary in HTTP
+  @IsOptional()
+  branch_Id: string;
 }

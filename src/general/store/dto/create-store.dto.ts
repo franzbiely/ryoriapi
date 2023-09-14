@@ -2,9 +2,6 @@ import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class CreateStoreDto {
-  @IsInt()
-  id: ObjectId;
-
   @IsString()
   storeName: string;
 
@@ -14,30 +11,28 @@ export class CreateStoreDto {
   @IsString()
   appSecret: string;
 
-  @IsInt()
-  branchId: number;
-
   @IsString()
   photo: string;
 
-  @IsInt()
-  menuItem_Id: number;
+  @IsString()
+  user_Id: string;
 
-  @IsInt()
-  user_Id: number;
+  @IsString()
+  branch_Id: string;
 
-  @IsDate()
-  createdAt: Date;
+  @IsString()
+  menuItem_Id: string;
 
-  @IsOptional()
+  @IsString()
+  menuCategory_Id: string;
+
+  // Not in Modal but can be requested from HTTP
+  @IsString()
   branchName: string;
-
-  @IsOptional()
+  @IsString()
   email: string;
-
-  @IsOptional()
+  @IsString()
   contactNumber: string;
-
-  @IsOptional()
+  @IsString()
   address: string;
 }
