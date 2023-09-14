@@ -24,9 +24,10 @@ export class StoreService {
 
   //Get All food
   findAll(store_Id): Promise<IStore[]> {
-    return this.storeModel.find({_id: store_Id})
-    .populate('branches')
-    .populate('menuCategories');
+    return this.storeModel
+      .find({ _id: store_Id })
+      .populate('branches')
+      .populate('menuCategories');
   }
 
   async findOneId(id: ObjectId): Promise<IStore> {
@@ -40,16 +41,21 @@ export class StoreService {
     return store;
   }
 
-  async findStoreAndBranch(sid: ObjectId, bid: ObjectId): Promise<IStore | any> {
-    const store = await this.storeModel.find({_id: sid})
+  async findStoreAndBranch(
+    sid: ObjectId,
+    bid: ObjectId,
+  ): Promise<IStore | any> {
+    const store = await this.storeModel
+      .findOne({ _id: sid })
       .populate({
         path: 'branches',
         populate: {
-          path: 'users'
-        }
-      }).exec()
+          path: 'users',
+        },
+      })
+      .lean();
     if (!store) {
-        throw new NotFoundException(`Store with id ${sid} not found`);
+      throw new NotFoundException(`Store with id ${sid} not found`);
     }
     return store;
     // const branch = await this.branchModel
@@ -63,16 +69,17 @@ export class StoreService {
   }
 
   async create(_store: CreateStoreDto): Promise<IStore | void> {
-
     const store = new this.storeModel({
       storeName: _store.storeName,
       photo: _store.photo || '',
       appId: _store.appId,
       appSecret: _store.appSecret,
     });
-    
+
     if (_store.user_Id) {
-      const user = await this.usersModel.findOne({ _id: _store.user_Id }).exec();
+      const user = await this.usersModel
+        .findOne({ _id: _store.user_Id })
+        .exec();
       user.store = store;
       await user.save();
     }
