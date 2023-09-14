@@ -36,10 +36,10 @@ export class MenuCategoryController {
       response.map(async (item) => {
         return {
           ...item,
-          photo: await this.s3Service.getFile(item.photo) || ''
-        }
-      })
-    )
+          photo: (await this.s3Service.getFile(item.photo)) || '',
+        };
+      }),
+    );
   }
 
   @Get(':id')
@@ -47,7 +47,7 @@ export class MenuCategoryController {
     const response = await this.menuCategoryService.findOneId(id);
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo) || '',
+      photo: (await this.s3Service.getFile(response.photo)) || '',
     };
   }
 
@@ -59,10 +59,9 @@ export class MenuCategoryController {
     @Request() req,
     @UploadedFile() photo,
   ) {
-
-    if(photo) {
-      const response = await this.s3Service.uploadFile(photo)
-      if(response) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
         createMenuCategoryDto.photo = response.Key;
       }
     }
@@ -72,10 +71,17 @@ export class MenuCategoryController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
-  update(
+  async update(
     @Param('id') id: ObjectId,
     @Body() updateMenuCategoryDto: UpdateMenuCategoryDto,
+    @UploadedFile() photo,
   ) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
+        updateMenuCategoryDto.photo = response.Key;
+      }
+    }
     return this.menuCategoryService.update(id, updateMenuCategoryDto);
   }
 

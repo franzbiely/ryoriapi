@@ -46,7 +46,7 @@ export class StoreController {
 
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.store.photo) || '',
+      photo: (await this.s3Service.getFile(response.photo)) || '',
     };
   }
 
@@ -69,7 +69,7 @@ export class StoreController {
     @Request() req,
     @UploadedFile() photo,
   ) {
-    console.log({createStoreDto, photo, req})
+    console.log({ createStoreDto, photo, req });
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = JSON.parse(
       Buffer.from(token.split('.')[1], 'base64').toString('utf-8'),
