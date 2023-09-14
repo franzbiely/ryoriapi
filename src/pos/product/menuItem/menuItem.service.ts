@@ -61,8 +61,22 @@ export class MenuItemService {
     return itemsWithQty;
   }
 
-  findOne(id: ObjectId): Promise<IMenuItem> {
-    return this.menuItemModel.findOne({ _id: id }).lean();
+  async findOne(id: ObjectId): Promise<IMenuItem | any> {
+    const ret = await this.branchItemModel
+      .findOne({ menuItem: id })
+      .populate('menuItem')
+      .populate({
+        path: 'menuItem',
+        populate: {
+          path: 'menuCategories',
+        },
+      })
+      .lean();
+    console.log({ ret });
+    return {
+      ...ret.menuItem,
+      quantity: ret.quantity,
+    };
   }
 
   async create(
@@ -84,6 +98,7 @@ export class MenuItemService {
       const menuCategory = await this.menuCategoryModel
         .findOne({ _id: _menuItem.menuCategory_Id })
         .exec();
+
       menuItem.menuCategories = await this.utils.pushWhenNew(
         menuItem.menuCategories,
         menuCategory,
@@ -104,14 +119,16 @@ export class MenuItemService {
         menuItem: menuItem,
       });
       branchItem.save();
-      console.log({_menuItem})
-      const branch = await this.branchModel.findOne({_id: _menuItem.branch_Id}).exec();
-      console.log({branch})
+      console.log({ _menuItem });
+      const branch = await this.branchModel
+        .findOne({ _id: _menuItem.branch_Id })
+        .exec();
+      console.log({ branch });
       branch.branchItems = await this.utils.pushWhenNew(
         branch.branchItems,
         branchItem,
       );
-      branch.save()
+      branch.save();
     }
 
     await menuItem.save();
@@ -129,8 +146,10 @@ export class MenuItemService {
     menuItem.title = updateMenuItemDto.title || menuItem.title;
     menuItem.photo = updateMenuItemDto.photo || menuItem.photo;
     menuItem.price = updateMenuItemDto.price || menuItem.price;
-    menuItem.description = updateMenuItemDto.description || menuItem.description;
-    menuItem.cookingTime = updateMenuItemDto.cookingTime || menuItem.cookingTime;
+    menuItem.description =
+      updateMenuItemDto.description || menuItem.description;
+    menuItem.cookingTime =
+      updateMenuItemDto.cookingTime || menuItem.cookingTime;
 
     if (updateMenuItemDto.qty) {
       const branchItem = await this.branchItemModel.findOne({ menuItem: id });
