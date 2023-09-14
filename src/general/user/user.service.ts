@@ -10,7 +10,6 @@ import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
 import { IRawGrocery } from 'src/inventory/rawGrocery/rawGrocery.model';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -22,33 +21,28 @@ export class UserService {
     private readonly branchModel: Model<IBranch>,
     @InjectModel('RawGrocery')
     private readonly rawGroceryModel: Model<IRawGrocery>,
-    private readonly utils: Utils
+    private readonly utils: Utils,
   ) {}
 
   async userCredential(query: object | any): Promise<IUsers> {
-    const x = await this.usersModel.findOne(query)
+    const x = await this.usersModel
+      .findOne(query)
       .populate({
         path: 'store',
         populate: {
-          path: 'branches'
-        }
+          path: 'branches',
+        },
       })
       .exec();
     return x;
   }
 
   async findAll(store_Id: ObjectId): Promise<IUsers[]> {
-    return this.usersModel
-      .find({ store: store_Id })
-      .populate('store')
-      .exec();
+    return this.usersModel.find({ store: store_Id }).populate('store').exec();
   }
 
   async findOneId(id: ObjectId): Promise<IUsers> {
-    return this.usersModel
-      .findOne({ _id: id })
-      .populate('store')
-      .exec();
+    return this.usersModel.findOne({ _id: id }).populate('store').exec();
   }
 
   async create(_user: CreateUsersDto): Promise<IUsers> {
@@ -65,24 +59,29 @@ export class UserService {
     });
 
     if (_user.store_Id) {
-      const store = await this.storeModel.findOne({ _id: _user.store_Id }).exec();
-      store.user = user
+      const store = await this.storeModel
+        .findOne({ _id: _user.store_Id })
+        .exec();
+      store.user = user;
       store.save();
     }
 
     if (_user.branch_Id) {
-      const branch = await this.branchModel.findOne({ _id: _user.branch_Id }).exec();
+      const branch = await this.branchModel
+        .findOne({ _id: _user.branch_Id })
+        .exec();
       branch.users = await this.utils.pushWhenNew(branch.users, user);
+      user.branch = await this.utils.pushWhenNew(user.branch, branch);
       branch.save();
     }
 
-    await user.save()
-    return user
+    await user.save();
+    return user;
   }
 
   async update(id: ObjectId, updateUserDto: UpdateUserDto): Promise<IUsers> {
-    const user = await this.usersModel.findOne({_id: id}).exec();
-    
+    const user = await this.usersModel.findOne({ _id: id }).exec();
+
     const {
       role,
       username,
@@ -116,11 +115,11 @@ export class UserService {
     }
 
     await user.save();
-    return user
+    return user;
   }
 
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.usersModel.deleteOne({ _id : id }).exec();
+    const result = await this.usersModel.deleteOne({ _id: id }).exec();
     return `Deleted ${result.deletedCount} record`;
   }
 }

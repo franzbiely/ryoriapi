@@ -35,7 +35,7 @@ export class AuthService {
         lastName: user.user.lastName,
         address: user.user.address,
         created_at: user.user.created_at,
-        store_Id: user.user.store?.id
+        store_Id: user.user.store?.id,
       },
     };
 
@@ -45,8 +45,9 @@ export class AuthService {
       role: user.user.role,
       user_Id: user.user.id,
     };
-    if (user.user.store.branches.length === 1) {
-      userdata['branch_Id'] = user.user.store.branches[0].id;
+    if (user.user.branch.length === 1 || user.user.role !== 'admin') {
+      console.log(user.user);
+      userdata['branch_Id'] = user.user.branch[0]._id;
     }
     return userdata;
   }
@@ -55,7 +56,7 @@ export class AuthService {
     data.password = await bcrypt.hash(data.password, 10);
     const response = await this.userService.create(data);
     if (response) {
-      const { 
+      const {
         role,
         username,
         firstName,
@@ -66,7 +67,7 @@ export class AuthService {
         address,
         branch,
         inventoryLogs,
-        createdAt 
+        createdAt,
       } = response;
       const payload = {
         userPayload: {
