@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateMenuItemDto } from './create-menuItem.dto';
-import { IsString, IsInt, IsDate, IsOptional } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsOptional, IsNumber } from '@nestjs/class-validator';
 import { ObjectId } from 'mongoose';
 
 export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
@@ -10,8 +10,8 @@ export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
   @IsOptional()
   photo: string;
 
-  @IsOptional()
-  price: number;
+  @IsNumber()
+  price?: number;
 
   @IsOptional()
   description: string;
@@ -26,6 +26,6 @@ export class UpdateMenuItemDto extends PartialType(CreateMenuItemDto) {
   createdAt: Date;
 
   // Not in model
-  @IsOptional() // This is for branchItem
-  qty: number;
+  @IsNumber() // This is for branchItem
+  qty?: number;
 }

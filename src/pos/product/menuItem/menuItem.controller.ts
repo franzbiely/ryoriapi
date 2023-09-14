@@ -103,10 +103,18 @@ export class MenuItemController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(
+  @UseInterceptors(FileInterceptor('photo'))
+  async update(
     @Param('id') id: ObjectId,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
+    @UploadedFile() photo,
   ) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if(response) {
+        updateMenuItemDto.photo = response.Key;
+      }
+    }
     return this.menuItemService.update(id, updateMenuItemDto);
   }
 

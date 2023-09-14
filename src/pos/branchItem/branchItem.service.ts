@@ -58,10 +58,8 @@ export class BranchItemService {
       menuItem: menuItem,
     }).exec();
     if (branchItem) {
-      console.log('here')
       return this.update(branchItem.id, dto);
     } else {
-      console.log('there')
       return this.create(dto, user_Id);
     }
   }

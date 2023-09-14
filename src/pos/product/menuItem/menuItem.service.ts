@@ -52,7 +52,6 @@ export class MenuItemService {
       })
       .lean();
 
-    console.log({ branch });
     const itemsWithQty = branch.branchItems.map((item) => {
       return {
         ...item.menuItem,
@@ -81,7 +80,6 @@ export class MenuItemService {
     const user = await this.userModel.findOne({ _id: user_Id }).exec();
     menuItem.user = user;
 
-    console.log('THE USER : ', { user, user_Id });
     if (_menuItem.menuCategory_Id) {
       const menuCategory = await this.menuCategoryModel
         .findOne({ _id: _menuItem.menuCategory_Id })
@@ -90,9 +88,7 @@ export class MenuItemService {
         menuItem.menuCategories,
         menuCategory,
       );
-      console.log({ menuItem }, 2);
     }
-    console.log({ menuItem }, 1);
 
     if (_menuItem.store_Id) {
       const store = await this.storeModel
@@ -101,7 +97,6 @@ export class MenuItemService {
       store.menuItems = await this.utils.pushWhenNew(store.menuItems, menuItem);
       store.save();
     }
-
     if (_menuItem.qty) {
       const branchItem = new this.branchItemModel({
         quantity: _menuItem.qty,
@@ -109,9 +104,15 @@ export class MenuItemService {
         menuItem: menuItem,
       });
       branchItem.save();
+      console.log({_menuItem})
+      const branch = await this.branchModel.findOne({_id: _menuItem.branch_Id}).exec();
+      console.log({branch})
+      branch.branchItems = await this.utils.pushWhenNew(
+        branch.branchItems,
+        branchItem,
+      );
+      branch.save()
     }
-
-    console.log({ menuItem });
 
     await menuItem.save();
     return menuItem;
@@ -126,10 +127,10 @@ export class MenuItemService {
     const { title, photo, price, description, cookingTime } = updateMenuItemDto;
 
     menuItem.title = updateMenuItemDto.title || menuItem.title;
-    menuItem.photo = updateMenuItemDto.photo || photo;
-    menuItem.price = updateMenuItemDto.price || price;
-    menuItem.description = updateMenuItemDto.description || description;
-    menuItem.cookingTime = updateMenuItemDto.cookingTime || cookingTime;
+    menuItem.photo = updateMenuItemDto.photo || menuItem.photo;
+    menuItem.price = updateMenuItemDto.price || menuItem.price;
+    menuItem.description = updateMenuItemDto.description || menuItem.description;
+    menuItem.cookingTime = updateMenuItemDto.cookingTime || menuItem.cookingTime;
 
     if (updateMenuItemDto.qty) {
       const branchItem = await this.branchItemModel.findOne({ menuItem: id });

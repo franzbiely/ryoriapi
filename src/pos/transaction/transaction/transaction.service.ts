@@ -162,8 +162,6 @@ export class TransactionService {
     const currentTransaction = await transaction.save();
     if (_transaction.branch_Id) {
       branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
-      console.log({currentTransaction, transaction})
-      console.log({branch})
       branch.transaction = await this.utils.pushWhenNew(branch.transaction, transaction);
       branch.save()
     }
