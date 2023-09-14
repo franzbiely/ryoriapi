@@ -11,9 +11,6 @@ export class UpdateMenuCategoryDto extends PartialType(CreateMenuCategoryDto) {
   title: string;
 
   @IsString()
-  photo: string;
-
-  @IsString()
   store_Id: string;
 
   @IsString()

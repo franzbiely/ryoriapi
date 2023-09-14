@@ -46,7 +46,7 @@ export class StoreController {
 
     return {
       ...response,
-      photo: await this.s3Service.getFile(response.photo) || '',
+      photo: (await this.s3Service.getFile(response.photo)) || '',
     };
   }
 
@@ -87,7 +87,17 @@ export class StoreController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('photo'))
-  update(@Param('id') id: ObjectId, @Body() updateStoreDto: UpdateStoreDto) {
+  async update(
+    @Param('id') id: ObjectId,
+    @Body() updateStoreDto: UpdateStoreDto,
+    @UploadedFile() photo,
+  ) {
+    if (photo) {
+      const response = await this.s3Service.uploadFile(photo);
+      if (response) {
+        updateStoreDto.photo = response.Key;
+      }
+    }
     return this.storeService.update(id, updateStoreDto);
   }
 
