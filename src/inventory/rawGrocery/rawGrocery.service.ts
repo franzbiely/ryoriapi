@@ -30,6 +30,12 @@ export class RawGroceryService {
           path: 'inventoryLogs',
         },
       })
+      .populate({
+        path: 'rawGrocerys',
+        populate: {
+          path: 'rawCategories',
+        },
+      })
       .populate('branchItems')
       .lean();
 
