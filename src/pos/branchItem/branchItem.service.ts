@@ -26,23 +26,28 @@ export class BranchItemService {
     private readonly utils: Utils
   ) {}
 
+  // TODO: branch_Id deprecated
   async findAll(branch_Id: ObjectId, category_Id: ObjectId = null): Promise<any[]> {
-    const menuItem = await this.menuItemModel.find({
-      menuCategory: {
+    const menuItems = await this.menuItemModel.find({
+      menuCategories: {
         $elemMatch: {
           $eq: category_Id
         }
       }
     })
-    const query = this.branchItemModel.find({
-      branch: branch_Id,
-      menuItem
-    })
-    .populate('menuItem')
-    .populate('menuItem.menuCategory')
-    .populate('branch')
-    const result = await query.lean();
-    return result;
+    const branchItems = await this.branchItemModel.find({
+        menuItem: {
+            $in: menuItems
+        }
+      })
+      .populate({
+          path: 'menuItem',
+          populate: {
+            path: 'menuCategories'
+        }
+      })
+      .lean()
+      return branchItems
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
