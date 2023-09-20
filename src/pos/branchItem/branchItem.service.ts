@@ -51,7 +51,7 @@ export class BranchItemService {
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
-    return this.branchItemModel.findOne({_id:id})
+    return this.branchItemModel.findOne({menuItem:id})
       .populate('menuItem')
       .lean();
   }
