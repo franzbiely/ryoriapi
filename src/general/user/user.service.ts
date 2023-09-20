@@ -37,7 +37,11 @@ export class UserService {
     return x;
   }
 
-  async findAll(store_Id: ObjectId): Promise<IUsers[]> {
+  async findAll(store_Id: ObjectId, branch_Id: ObjectId): Promise<IUsers[]> {
+    if(branch_Id) {
+      const branch = await this.branchModel.findOne({_id: branch_Id}).populate('users').exec()
+      return branch.users
+    }
     return this.usersModel.find({ store: store_Id }).populate('store').exec();
   }
 
