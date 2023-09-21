@@ -4,7 +4,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import axios, { AxiosRequestConfig } from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId, Types } from 'mongoose';
 import { ITransaction } from './transaction.model';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
@@ -100,26 +100,62 @@ export class TransactionService {
 
   async getStatusByBidAndTid(
     sid: ObjectId,
-    bid: ObjectId,
+    bid: string,
     tid: ObjectId,
   ): Promise<{ status: string } | []> {
-    const transaction = await this.transactionModel
-    .findOne({ branch: bid, table: tid })
-    .populate({
-      path: 'transactionItem',
-      populate: {
-        path: 'menuItem'
-      }
+    const branch = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(bid),
+        },
+      },
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: 'transactions',
+          foreignField: '_id',
+          as: 'transaction',
+        },
+      },
+      {
+        $unwind: '$transaction', 
+      },
+      {
+        $match: {
+          'transaction.table': tid,
+        },
+      },
+      {
+        $lookup : {
+            from: "transactionitems",
+            localField: "transaction.transactionItems",
+            foreignField: "_id",
+            as : "transaction.transactionItems"
+        }
+      },
+    ], {
+      allowDiskUse: false
     })
-    .sort({ id: -1 })
-    .lean();
-    if (transaction) {
-      return {
-        ...transaction,
-        ...this.getTransactionStatus(transaction)
+    if(branch.length > 0) {
+      const transaction = branch[0].transaction;
+      
+      const _transaction = await this.transactionModel.findOne({_id: transaction._id})
+        .populate({
+          path: 'transactionItems',
+          populate: {
+            path: 'menuItem'
+          }
+        }).lean()
+      ;
+
+      if (_transaction) {
+        return {
+          ..._transaction,
+          ...this.getTransactionStatus(_transaction)
+        }
       }
     }
-  
+
     return []; // Return null if no transaction is found
   }
 
@@ -133,21 +169,18 @@ export class TransactionService {
       status: _transaction.status,
       table: _transaction.table,
       notes: _transaction.notes,
-      amount: _transaction.amount,
     });
 
     let branch;
     
-    
     if (!Array.isArray(_transaction.item)) {
-      _transaction.item = [_transaction.item];
+      _transaction.item = [_transaction.item]
     }
     await Promise.all(
       _transaction.item.map(async (item) => {
         const _item = JSON.parse(item);
-        const menuItem = await this.menuItemModel.findOne({ _id: _item.id }).exec();
-
-
+        const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
+        
         const transactionItem = new this.transactionItemModel({
           quantity : _item.qty,
           status : 'new',
@@ -162,7 +195,7 @@ export class TransactionService {
     const currentTransaction = await transaction.save();
     if (_transaction.branch_Id) {
       branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
-      branch.transaction = await this.utils.pushWhenNew(branch.transaction, transaction);
+      branch.transactions = await this.utils.pushWhenNew(branch.transactions, transaction);
       branch.save()
     }
     return currentTransaction;

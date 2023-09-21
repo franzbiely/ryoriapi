@@ -51,7 +51,7 @@ export class TransactionController {
   @Get('/status/')
   async getStatus(
     @Query('sid') sid: ObjectId,
-    @Query('bid') bid: ObjectId,
+    @Query('bid') bid: string,
     @Query('tid') tid: ObjectId,
   ) {
     return this.transactionService.getStatusByBidAndTid(sid, bid, tid);
@@ -79,7 +79,6 @@ export class TransactionController {
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {
     const result = await this.transactionService.create(createTransactionDto);
-    
     this.appGateway.handleMessage({
       title: `New Order: Table ${result.table}` ,
       message: 'Please confirm the order.'
