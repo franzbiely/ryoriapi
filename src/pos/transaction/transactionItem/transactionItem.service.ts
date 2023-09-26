@@ -90,8 +90,8 @@ export class TransactionItemService {
           $eq: id 
         }
       }
-    }).exec();
-
+    })
+    .populate('transactionItems').exec();
     const data = this.checkSameStatus(_transaction.transactionItems);
     if (data) {
       _transaction.status = data;
