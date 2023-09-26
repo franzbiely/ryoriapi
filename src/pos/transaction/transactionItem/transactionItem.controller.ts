@@ -43,8 +43,7 @@ export class TransactionItemController {
     @Param('id') id: ObjectId,
     @Body() updateTransactionItemDto: UpdateTransactionItemDto,
   ) {
-    this.transactionItemService.update(id, updateTransactionItemDto);
-    return 'Updated';
+    return this.transactionItemService.update(id, updateTransactionItemDto);
   }
 
   @UseGuards(JwtAuthGuard)

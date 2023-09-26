@@ -81,22 +81,24 @@ export class TransactionItemService {
     const { status, quantity } = updateTransactionItem;
     transactionItem.status = updateTransactionItem.status || transactionItem.status;
     transactionItem.quantity = updateTransactionItem.quantity || transactionItem.quantity;
+    const result = await transactionItem.save();
 
     // Recheck later
-    // const _transaction = await this.transactionModel.findOne({_id: transactionItem.transaction['_id'] }).exec();
-    // const result = await transactionItem.save();
+    const _transaction = await this.transactionModel.findOne({
+      transactionItems: {
+        $elemMatch: {
+          $eq: id 
+        }
+      }
+    }).exec();
 
-    // const itemStatus = await this.transactionItemModel
-    //   .find({ 'transaction.id': transactionItem.transaction['_id'] })
-    //   .populate('transaction');
+    const data = this.checkSameStatus(_transaction.transactionItems);
+    if (data) {
+      _transaction.status = data;
+      await _transaction.save();
+    }
 
-    // const data = this.checkSameStatus(itemStatus);
-    // if (data) {
-    //   _transaction.status = data;
-    //   await _transaction.save();
-    // }
-
-    // return result;
+    return result;
   }
 
   async remove(id: ObjectId): Promise<string | void> {
