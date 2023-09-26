@@ -27,16 +27,14 @@ export class TransactionItemService {
   findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
     return this.transactionItemModel
       .find({ branch: branch_Id })
-      .populate('branch')
-      .populate('transaction')
+      .populate('menuItem')
       .exec();
   }
 
   findOne(id: ObjectId): Promise<ITransactionItem> {
     return this.transactionItemModel
       .findOne({ _id: id })
-      .populate('branch')
-      .populate('transaction')
+      .populate('menuItem')
       .lean();
   }
 
