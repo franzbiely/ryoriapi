@@ -26,21 +26,21 @@ export class TransactionService {
 
   //Get All User
   async findAll(branch_Id: ObjectId): Promise<ITransaction[]|any> {
-    const response = await this.transactionModel
-      .find({ branch: branch_Id })
-      .populate('branch')
+    const response = await this.branchModel.findOne({_id: branch_Id})
       .populate({
-        path: 'transactionItem',
+        path: 'transactions',
         populate: {
-          path: 'menuItem'
+          path: 'transactionItems',
+          populate: {
+            path: 'menuItem'
+          }
         }
-      })
-      .lean();
-    const newData = response.map((data) => ({
+      }).lean();
+    const newData = response.transactions.map((data) => ({
       ...data,
-      // total: data.transactionItem.reduce((prev, cur) => {
-      //   return prev + cur.quantity * cur.menuItem.price;
-      // }, 0),
+      total: data.transactionItems.reduce((prev, cur) => {
+        return prev + cur.quantity * cur.menuItem.price;
+      }, 0),
     }));
     return newData;
   }
