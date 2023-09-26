@@ -48,8 +48,12 @@ export class TransactionService {
   async findOne(id: ObjectId): Promise<ITransaction> {
     try {
       const transaction = await this.transactionModel.findOne({_id:id})
-        .populate('branch')
-        .populate({ path: 'transactionItem', populate: 'menuItem' }).exec();
+        .populate({ 
+          path: 'transactionItems', 
+          populate: {
+            path: 'menuItem' 
+          }
+        }).exec();
   
       if (!transaction) {
         throw new Error('Transaction not found');

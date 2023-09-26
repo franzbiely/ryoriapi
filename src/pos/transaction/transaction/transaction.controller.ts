@@ -62,7 +62,8 @@ export class TransactionController {
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.transactionService.findOne(id);
-    const transactionItem = await Promise.all(
+
+    const transactionItems = await Promise.all(
       response.transactionItems.map(async (item) => {
         return {
           ...item,
@@ -72,7 +73,7 @@ export class TransactionController {
     );
     return {
       ...response,
-      transactionItem,
+      transactionItems,
     };
   }
 
