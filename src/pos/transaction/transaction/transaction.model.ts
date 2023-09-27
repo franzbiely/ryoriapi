@@ -18,6 +18,8 @@ export const TransactionSchema = new Schema<ITransaction>({
   table: String,
   notes: String,
   amount: Number,
+  charges: Number,
+  discount: Number,
   paymongo_pi_id: { type: String, default: '' },
   transactionItems: [{ type: Schema.Types.ObjectId, ref: 'TransactionItem', required: true }]
 }, {timestamps: true});

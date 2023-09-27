@@ -210,7 +210,7 @@ export class TransactionService {
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
     const transaction = await this.transactionModel.findOne({_id:id}).exec();
-    const { status, notes } = updateTransactionDto;
+    console.log({updateTransactionDto})
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
     transaction.charges = updateTransactionDto.charges || transaction.charges;
@@ -219,7 +219,7 @@ export class TransactionService {
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
-
+    console.log({transaction})
     return await transaction.save();
   }
 
