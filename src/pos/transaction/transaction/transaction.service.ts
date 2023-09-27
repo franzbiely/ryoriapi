@@ -213,9 +213,11 @@ export class TransactionService {
     const { status, notes } = updateTransactionDto;
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
+    transaction.charges = updateTransactionDto.charges || transaction.charges;
+    transaction.discount = updateTransactionDto.discount || transaction.discount;
 
     if (updateTransactionDto.paymongo_pi_id) {
-      // transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
+      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
 
     return await transaction.save();

@@ -7,8 +7,9 @@ export interface ITransaction extends Document {
   table: string;
   notes: string;
   amount: number;
-  paymongo_pi_id: ObjectId;
-  
+  paymongo_pi_id: string;
+  charges: number;
+  discount: number;  
   transactionItems: ITransactionItem[]
 }
 

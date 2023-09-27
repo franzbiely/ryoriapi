@@ -18,6 +18,12 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   amount: number;
 
   @IsOptional()
+  charges: number;
+
+  @IsOptional()
+  discount: number;
+
+  @IsOptional()
   paymongo_pi_id: string;
 
   @IsArray()
