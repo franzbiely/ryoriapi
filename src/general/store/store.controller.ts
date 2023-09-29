@@ -39,8 +39,8 @@ export class StoreController {
 
   @Get(':sid/:bid')
   async findStoreAndBranch(
-    @Param('sid') sid: ObjectId,
-    @Param('bid') bid: ObjectId,
+    @Param('sid') sid: string,
+    @Param('bid') bid: string,
   ) {
     const response = await this.storeService.findStoreAndBranch(sid, bid);
 

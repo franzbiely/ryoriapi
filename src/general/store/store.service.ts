@@ -6,7 +6,7 @@ import { IUsers } from '../user/user.model';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
 
 @Injectable()
@@ -42,22 +42,57 @@ export class StoreService {
   }
 
   async findStoreAndBranch(
-    sid: ObjectId,
-    bid: ObjectId,
+    sid: string,
+    bid: string,
   ): Promise<IStore | any> {
-    const store = await this.storeModel
-      .findOne({ _id: sid })
-      .populate({
-        path: 'branches',
-        populate: {
-          path: 'users',
+    const store = await this.storeModel.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(sid),
+          },
         },
-      })
-      .lean();
-    if (!store) {
+        {
+          $lookup: {
+            from: 'branches',
+            localField: 'branches',
+            foreignField: '_id',
+            as: 'branch',
+          },
+        },
+        {
+          $unwind: '$branch', 
+        },
+        {
+          $match: {
+            'branch._id': new mongoose.Types.ObjectId(bid),
+          }
+        },
+        {
+          $lookup : {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as : "user"
+          }
+        },
+        {
+          $unwind: '$user', 
+        }
+      ])
+    if(store.length > 0) {
+      store[0].branch
+      return {
+        branch: store[0].branch,
+        storeName: store[0].storeName,
+        photo: store[0].photo,
+        appId: store[0].appId || '',
+        appSecret: store[0].appSecret || '',
+        user: store[0].user,
+      }
+    }
+    else {
       throw new NotFoundException(`Store with id ${sid} not found`);
     }
-    return store;
   }
 
   async create(_store: CreateStoreDto): Promise<IStore | void> {
