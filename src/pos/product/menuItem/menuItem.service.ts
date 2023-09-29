@@ -141,7 +141,8 @@ export class MenuItemService {
   ): Promise<IMenuItem> {
     const menuItem = await this.menuItemModel.findOne({ _id: id }).exec();
 
-    const { title, photo, price, description, cookingTime } = updateMenuItemDto;
+    const { title, photo, price, description, cookingTime, menuCategory_Id } =
+      updateMenuItemDto;
 
     menuItem.title = updateMenuItemDto.title || menuItem.title;
     menuItem.photo = updateMenuItemDto.photo || menuItem.photo;
@@ -155,6 +156,13 @@ export class MenuItemService {
       const branchItem = await this.branchItemModel.findOne({ menuItem: id });
       branchItem.quantity = updateMenuItemDto.qty;
       branchItem.save();
+    }
+
+    if (menuCategory_Id) {
+      const menuCategory = await this.menuCategoryModel
+        .findOne({ _id: menuCategory_Id })
+        .exec();
+      menuItem.menuCategories = [menuCategory];
     }
 
     await menuItem.save();
