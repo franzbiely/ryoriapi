@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
@@ -359,58 +359,117 @@ export class TransactionService {
     };
   }
 
-  async getTransactionToday(branch_Id: ObjectId): Promise<ITransaction[] | any> {
+  async getTransactionToday(branch_Id: string): Promise<ITransaction[] | any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const tomorrow = new Date(today);
     tomorrow.setUTCDate(today.getUTCDate() + 1); // Add one day
 
-    const response = await this.transactionModel.find({
-        branch: branch_Id,
-        createdAt: { $gte: today, $lt: tomorrow }
-      })
-      .populate('branch')
-      .populate({
-        path: 'transactionItem',
-        populate: {
-          path: 'menuItem'
+    const response = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: 'transactions',
+          foreignField: '_id',
+          as: 'transactions'
+        },
+      },
+      {
+        $match: {
+          'transactions.createdAt': {
+            $gte: today, //new Date(new Date().setHours(0, 0, 0, 0)), // Start of today
+            $lt: tomorrow, //new Date(new Date().setHours(23, 59, 59, 999)) // End of today
+          }
         }
-    });
+      },
+    ])
+    // TODO: Refactor this to pure aggregate instead of nested requests...
+    if(response.length > 0) {
+      const transactions = response[0].transactions
+        console.log({transactions})
+        const newData = await Promise.all(transactions.map(async (data) => {
+          const _transaction = await this.transactionModel.findOne({_id: data._id})
+          .populate({
+            path: 'transactionItems',
+            populate: {
+              path: 'menuItem'
+            }
+          }).lean()
 
-    const newData = response.map((data) => ({
-      ...data,
-      total: data.transactionItems.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
-    }));
-    return newData;
+          return {
+          ..._transaction,
+          total: _transaction.transactionItems.reduce((prev, cur) => {
+            return prev + cur.quantity * cur.menuItem.price;
+          }, 0),
+          }
+        })
+      );
+      return newData.filter(Boolean);
+    }
+    else {
+      throw new NotFoundException(`Transactions from branch id ${branch_Id} today not found`);
+    }
   }
 
-  async getTransactionNotToday(branch_Id: ObjectId): Promise<ITransaction[]| any> {
+  async getTransactionNotToday(branch_Id: string): Promise<ITransaction[]| any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const response = await this.transactionModel.find({
-      branch: branch_Id,
-      createdAt: { $lt: today}
-    })
-    .populate('branch')
-    .populate({
-      path: 'transactionItem',
-      populate: {
-        path: 'menuItem'
-      }
-    }).lean();
-    
-    const newData = response.map((data) => {
-      return ({
-        ...data,
-        total: data.transactionItems.reduce((prev, cur) => {
-          return prev + cur.quantity * cur.menuItem.price;
-        }, 0),
-      })
-    });
-    return newData;
+    const response = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: 'transactions',
+          foreignField: '_id',
+          as: 'transaction'
+        },
+      },
+      {
+        $match: {
+          'createdAt': {
+            $lt: today
+          }
+        }
+      },
+    ])
+
+    // TODO: Refactor this to pure aggregate instead of nested requests...
+    if(response.length > 0) {
+      const transactions = response[0].transactions
+      
+        const newData = await Promise.all(transactions.map(async (data) => {
+          const _transaction = await this.transactionModel.findOne({_id: data._id})
+            .populate({
+              path: 'transactionItems',
+              populate: {
+                path: 'menuItem'
+              }
+            }).lean()
+          if(_transaction) {
+            return {
+              ..._transaction,
+              total: _transaction.transactionItems?.reduce((prev, cur) => {
+                return prev + cur.quantity * cur.menuItem.price;
+              }, 0),
+            }
+          }
+        })
+      );
+      return newData.filter(Boolean);
+    }
+    else {
+      throw new NotFoundException(`Transactions from branch id ${branch_Id} today not found`);
+    }
   }
 }

@@ -38,13 +38,13 @@ export class TransactionController {
 
   @UseGuards(JwtAuthGuard)
   @Get('today')
-  async getTasksCreatedToday(@Query('branch_Id') branch_Id: ObjectId) {
+  async getTasksCreatedToday(@Query('branch_Id') branch_Id: string) {
     return this.transactionService.getTransactionToday(branch_Id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('nottoday')
-  async getTasksNotDueToday(@Query('branch_Id') branch_Id: ObjectId) {
+  async getTasksNotDueToday(@Query('branch_Id') branch_Id: string) {
     return this.transactionService.getTransactionNotToday(branch_Id);
   }
 
