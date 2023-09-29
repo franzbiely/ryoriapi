@@ -80,7 +80,6 @@ export class StoreService {
         }
       ])
     if(store.length > 0) {
-      store[0].branch
       return {
         branch: store[0].branch,
         storeName: store[0].storeName,
