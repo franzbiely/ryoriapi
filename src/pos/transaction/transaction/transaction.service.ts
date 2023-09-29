@@ -235,12 +235,11 @@ export class TransactionService {
   async create_payment_intent(transaction): Promise<any> {
     return new Promise(async (resolve, reject) => {
       // @TODO: Deductions/discounts to be implemented on FE.
-      const discounts = 0;
       const totalAmount =
         transaction.transactionItem.reduce(
           (prev, cur) => prev + cur.menuItem.price * cur.quantity,
           0,
-        ) - discounts;
+        ) - transaction.discount + transaction.charges;
       const response = await axios.post(
         'https://api.paymongo.com/v1/payment_intents',
         JSON.stringify({

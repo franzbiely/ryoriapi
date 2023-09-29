@@ -11,6 +11,7 @@ import { BranchSchema } from "../branch/branch.model";
 import { DashboardController } from "./dashboard.controller";
 import { Utils } from "src/utils/utils";
 import { UsersSchema } from "../user/user.model";
+import { StoreSchema } from "../store/store.model";
 
 @Module({
     imports:[MongooseModule.forFeature([
@@ -20,7 +21,9 @@ import { UsersSchema } from "../user/user.model";
         {name: 'TransactionItem', schema: TransactionItemSchema},
         {name: 'Transaction', schema: TransactionSchema},
         { name: 'MenuCategory', schema: MenuCategorySchema },
-        { name: 'User', schema: UsersSchema }
+        { name: 'User', schema: UsersSchema },
+        { name: 'Store', schema: StoreSchema },
+        { name: 'Branch', schema: BranchSchema }
     ])],
     controllers: [DashboardController],
     providers: [BranchItemService, Utils],
