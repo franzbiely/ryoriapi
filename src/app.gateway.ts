@@ -27,9 +27,11 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
   @SubscribeMessage('order.new')
   handleMessage(@MessageBody() data: any): void {
-    this.socketService.socket.emit('message', {
+    this.socketService.socket.socketsJoin('sc-channel-' + data.branch_Id);
+    this.socketService.socket.in('sc-channel-' + data.branch_Id).emit('message', {
       title: data.title,
-      message: data.message
+      message: data.message,
+      channelId: 'sc-channel-' + data.branch_Id
     });
   }
 }
