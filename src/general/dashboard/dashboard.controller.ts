@@ -6,12 +6,18 @@ import { Between } from 'typeorm';
 import * as moment from 'moment';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { IStore } from '../store/store.model';
+import { IBranch } from '../branch/branch.model';
 
 @Controller('dashboard')
 export class DashboardController {
   constructor(
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('Store')
+    private readonly storeModel: Model<IStore>,
+    @InjectModel('Branch')
+    private readonly branchModel: Model<IBranch>,
     @InjectModel('TransactionItem')
     private readonly transactionItemModel: Model<ITransactionItem>,
     @InjectModel('Transaction')
@@ -21,23 +27,15 @@ export class DashboardController {
   async getTransactionByStatusAndMoment(
     status: string,
     momentType,
-    branchId: number,
+    transactions: ITransaction[]
   ) {
-    return new Promise(async (resolve, reject) => {
-      const startMonthly = moment().startOf(momentType).toDate();
-      const endMonthly = moment().endOf(momentType).toDate();
-
-      resolve(
-        await this.transactionModel.countDocuments({
-          status: status,
-          branch: branchId,
-          createdAt: {
-            $gte: startMonthly,
-            $lte: endMonthly,
-          },
-        }),
-      );
-    });
+    const startMonthly = moment().startOf(momentType).toDate();
+    const endMonthly = moment().endOf(momentType).toDate();
+    return transactions && transactions.length > 0 && 
+      transactions.filter(item => {
+        const createdAtDate = moment(item['createdAt']);
+        return createdAtDate.isBetween(startMonthly, endMonthly, null, '[]') && item.status===status; // '[]' includes both start and end dates
+      });
   }
 
   @Get()
@@ -45,77 +43,84 @@ export class DashboardController {
     @Query('sid') store_Id,
     @Query('bid') branch_Id,
   ): Promise<any> {
-    const menuItem = await this.menuItemModel.find({ store: store_Id });
-    const transactionItems = await this.transactionItemModel.find({ branch: branch_Id });
-    const transactions = await this.transactionModel.find({ branch: branch_Id });
+    const menuItems = await this.storeModel.find({ _id: store_Id }, 'menuItems');
+    const branch = await this.branchModel.findOne({ _id: branch_Id}).populate({
+      path: 'transactions',
+      populate: {
+        path: 'transactionItems',
+        populate: {
+          path:'menuItem',
+        },
+      }
+    });
+    const transactions = branch.transactions
     const totalRevenues = transactions.reduce(
-      (prev, cur) => prev + cur.amount,
+      (prev, cur) => {
+        const amount = cur.transactionItems.reduce(
+          (prev2, cur2) => prev2 + cur2.menuItem.price * cur2.quantity,
+          0,
+        );
+        return prev + (amount + (cur.charges || 0) - (cur.discount || 0))
+      },
       0,
     );
 
-    const transactionNew = await this.transactionModel.countDocuments({
-      status: 'new',
-      branch: branch_Id,
-    });
-    const transactionPreparing = await this.transactionModel.countDocuments({
-      status: 'preparing',
-      branch: branch_Id,
-    });
-    const transactionDone = await this.transactionModel.countDocuments({
-      status: 'done',
-      branch: branch_Id,
-    });
+    const transactionNew = transactions.filter(b => b.status === 'new').length;
+    const transactionPreparing = transactions.filter(b => b.status === 'preparing').length
+    const transactionDone = transactions.filter(b => b.status === 'done').length
 
     const transactionsMonthlyServed =
-      await this.getTransactionByStatusAndMoment('served', 'month', branch_Id);
+      await this.getTransactionByStatusAndMoment('served', 'month', transactions);
+    
+      
     const transactionsMonthlyAwaitingPayment =
       await this.getTransactionByStatusAndMoment(
         'awaiting_payment_method',
         'month',
-        branch_Id,
+        transactions,
       );
     const transactionsMonthlyCancelled =
       await this.getTransactionByStatusAndMoment(
         'cancelled',
         'month',
-        branch_Id,
+        transactions,
       );
-
+      
     const transactionsWeeklyServed = await this.getTransactionByStatusAndMoment(
       'served',
       'week',
-      branch_Id,
+      transactions,
     );
     const transactionsWeeklyAwaitingPayment =
       await this.getTransactionByStatusAndMoment(
         'awaiting_payment_method',
         'week',
-        branch_Id,
+        transactions,
       );
     const transactionsWeeklyCancelled =
       await this.getTransactionByStatusAndMoment(
         'cancelled',
         'week',
-        branch_Id,
+        transactions,
       );
 
     const transactionsTodayServed = await this.getTransactionByStatusAndMoment(
       'served',
       'day',
-      branch_Id,
+      transactions,
     );
     const transactionsTodayAwaitingPayment =
       await this.getTransactionByStatusAndMoment(
         'awaiting_payment_method',
         'day',
-        branch_Id,
+        transactions,
       );
     const transactionsTodayCancelled =
-      await this.getTransactionByStatusAndMoment('cancelled', 'day', branch_Id);
+      await this.getTransactionByStatusAndMoment('cancelled', 'day', transactions);
 
     return {
-      totalMenus: menuItem.length,
-      totalOrders: transactionItems.length,
+      totalMenus: menuItems.length,
+      totalOrders: transactions.length,
       totalCustomers: transactions.length,
       totalRevenues,
       orderSummary: {

@@ -54,7 +54,19 @@ export class TransactionController {
     @Query('bid') bid: string,
     @Query('tid') tid: ObjectId,
   ) {
-    return this.transactionService.getStatusByBidAndTid(sid, bid, tid);
+    const response = await this.transactionService.getStatusByBidAndTid(sid, bid, tid);
+    const transactionItems = await Promise.all(
+      response.transactionItems.map(async (item) => {
+        return {
+          ...item,
+          photo: (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
+        };
+      }),
+    );
+    return {
+      ...response,
+      transactionItems,
+    };
   }
 
   // @TODO: Add security instead of guards..
