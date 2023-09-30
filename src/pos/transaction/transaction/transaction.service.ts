@@ -106,7 +106,7 @@ export class TransactionService {
     sid: ObjectId,
     bid: string,
     tid: ObjectId,
-  ): Promise<{ status: string } | []> {
+  ) {
     const branch = await this.branchModel.aggregate([
       {
         $match: {
@@ -236,10 +236,10 @@ export class TransactionService {
     return new Promise(async (resolve, reject) => {
       // @TODO: Deductions/discounts to be implemented on FE.
       const totalAmount =
-        transaction.transactionItem.reduce(
+        transaction.transactionItems.reduce(
           (prev, cur) => prev + cur.menuItem.price * cur.quantity,
           0,
-        ) - transaction.discount + transaction.charges;
+        ) - (transaction.discount || 0) + (transaction.charges || 0);
       const response = await axios.post(
         'https://api.paymongo.com/v1/payment_intents',
         JSON.stringify({
@@ -333,7 +333,7 @@ export class TransactionService {
   async create_payment(payTransactionDto: PayTransactionDto) {
     const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id})
     .populate({
-      path: 'transactionItem',
+      path: 'transactionItems',
       populate: {
         path: 'menuItem'
       }
