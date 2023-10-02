@@ -43,7 +43,8 @@ export class DashboardController {
     @Query('sid') store_Id,
     @Query('bid') branch_Id,
   ): Promise<any> {
-    const menuItems = await this.storeModel.find({ _id: store_Id }, 'menuItems');
+    const menuItems = (await this.storeModel.findOne({ _id: store_Id }, 'menuItems').populate('menuItems').lean()).menuItems;
+
     const branch = await this.branchModel.findOne({ _id: branch_Id}).populate({
       path: 'transactions',
       populate: {
@@ -56,10 +57,11 @@ export class DashboardController {
     const transactions = branch.transactions
     const totalRevenues = transactions.reduce(
       (prev, cur) => {
-        const amount = cur.transactionItems.reduce(
-          (prev2, cur2) => prev2 + cur2.menuItem.price * cur2.quantity,
-          0,
-        );
+        const amount = cur.transactionItems.reduce((prev2, cur2) => {
+          if(cur2.menuItem) {
+            return prev2 + cur2.menuItem.price * cur2.quantity
+          }
+        }, 0);
         return prev + (amount + (cur.charges || 0) - (cur.discount || 0))
       },
       0,

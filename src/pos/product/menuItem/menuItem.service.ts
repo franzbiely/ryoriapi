@@ -3,7 +3,7 @@ import { IMenuItem } from './menuItem.model';
 import { CreateMenuItemDto } from './dto/create-menuItem.dto';
 import { UpdateMenuItemDto } from './dto/update-menuItem.dto';
 import { IMenuCategory } from '../menuCategory/menuCategory.model';
-import { IStore } from 'src/general/store/store.model';
+import { IStore, StoreModel } from 'src/general/store/store.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
@@ -171,7 +171,10 @@ export class MenuItemService {
 
   async remove(id: ObjectId): Promise<string | void> {
     const result = await this.menuItemModel.deleteOne({ _id: id }).exec();
-    await this.branchItemModel.deleteOne({ menuItem: id }).exec();
+    this.branchItemModel.deleteOne({ menuItem: id }).exec();
+    const store = await this.storeModel.findOne({menuItems: { $elemMatch: { $in:  id} }}).exec()
+    store.menuItems = store.menuItems.filter(item => item.toString() !== id.toString());
+    store.save()
     return `Deleted ${result.deletedCount} record`;
   }
 }
