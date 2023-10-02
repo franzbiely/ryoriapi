@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TransactionSchema } from './transaction.model';
-import { TransactionController } from './transaction.controller';
-import { TransactionService } from './transaction.service';
+import { TransactionArchiveSchema } from './transactionArchive.model';
+import { TransactionArchiveController } from './transactionArchive.controller';
+import { TransactionArchiveService } from './transactionArchive.service';
 import { BranchSchema } from 'src/general/branch/branch.model';
 import { TransactionItemSchema } from '../transactionItem/transactionItem.model';
 import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
@@ -10,7 +10,7 @@ import { SocketService } from 'src/utils/socket/socket.service';
 import { AppGateway } from 'src/app.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
-import { TransactionArchiveSchema } from '../transactionArchive/transactionArchive.model';
+import { TransactionSchema } from '../transaction/transaction.model';
 
 @Module({
   imports: [
@@ -19,10 +19,15 @@ import { TransactionArchiveSchema } from '../transactionArchive/transactionArchi
       { name: 'Branch', schema: BranchSchema },
       { name: 'TransactionItem', schema: TransactionItemSchema },
       { name: 'MenuItem', schema: MenuItemSchema },
-      { name: 'TransactionArchive', schema: TransactionArchiveSchema },
     ]),
   ],
-  controllers: [TransactionController],
-  providers: [TransactionService, S3Service, SocketService, AppGateway, Utils],
+  controllers: [TransactionArchiveController],
+  providers: [
+    TransactionArchiveService,
+    S3Service,
+    SocketService,
+    AppGateway,
+    Utils,
+  ],
 })
-export class TransactionModule {}
+export class TransactionArchiveModule {}

@@ -43,13 +43,13 @@ import { DashboardModule } from './general/dashboard/dashboard.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Encryptor } from './utils/encryptor';
 import { Utils } from './utils/utils';
+import { TransactionArchiveModule } from './pos/transaction/transactionArchive/transactionArchive.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DATABASE_CONNECTION_STRING),
-    
 
     // general
     AuthModule,
@@ -76,6 +76,7 @@ import { Utils } from './utils/utils';
     TransactionItemModule,
     BranchItemModule,
     SocketModule,
+    TransactionArchiveModule,
   ],
   controllers: [AppController],
   providers: [AppService, Encryptor, Utils],
