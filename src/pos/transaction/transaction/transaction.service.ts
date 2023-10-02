@@ -168,41 +168,54 @@ export class TransactionService {
     return this.getTransactionStatus(transaction);
   }
 
+  async updateTransItems({_transaction, transaction, branch}) {
+      if (!Array.isArray(_transaction.item)) {
+        _transaction.item = [_transaction.item]
+      }
+      await Promise.all(
+        _transaction.item.map(async (item) => {
+          const _item = JSON.parse(item);
+          const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
+          
+          const transactionItem = new this.transactionItemModel({
+            quantity : _item.qty,
+            status : 'new',
+            menuItem : menuItem,
+            transaction : transaction._id,
+          });
+          
+          await transactionItem.save();
+          transaction.transactionItems.push(transactionItem)
+        }),
+      );
+      const currentTransaction = await transaction.save();
+      if (_transaction.branch_Id) {
+        branch.transactions = await this.utils.pushWhenNew(branch.transactions, transaction);
+        branch.save()
+      }
+      return currentTransaction;
+  }
   async create(_transaction: CreateTransactionDto): Promise<ITransaction | any> {
-    const transaction = new this.transactionModel({
-      status: _transaction.status,
-      table: _transaction.table,
-      notes: _transaction.notes,
-    });
 
-    let branch;
+    // TODO : Refactor this to aggregate
+    // Check if bid and tid has already transaction, if yes then just add the transactionItem to the transaction.
+    const branch = await this.branchModel
+      .findOne({_id: _transaction.branch_Id})
+      .populate('transactions')
+    const existingTransaction = branch.transactions.find(transaction => transaction.table === _transaction.table)
     
-    if (!Array.isArray(_transaction.item)) {
-      _transaction.item = [_transaction.item]
+    if(existingTransaction) {
+      const transaction = await this.transactionModel.findOne({_id: existingTransaction['_id']});
+      return this.updateTransItems({transaction, _transaction, branch})
     }
-    await Promise.all(
-      _transaction.item.map(async (item) => {
-        const _item = JSON.parse(item);
-        const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
-        
-        const transactionItem = new this.transactionItemModel({
-          quantity : _item.qty,
-          status : 'new',
-          menuItem : menuItem,
-          transaction : transaction._id,
-        });
-        
-        await transactionItem.save();
-        transaction.transactionItems.push(transactionItem)
-      }),
-    );
-    const currentTransaction = await transaction.save();
-    if (_transaction.branch_Id) {
-      branch = await this.branchModel.findOne({ _id: _transaction.branch_Id }).exec();
-      branch.transactions = await this.utils.pushWhenNew(branch.transactions, transaction);
-      branch.save()
+    else {
+      const transaction = new this.transactionModel({
+        status: _transaction.status,
+        table: _transaction.table,
+        notes: _transaction.notes,
+      });
+      return this.updateTransItems({_transaction, transaction, branch})
     }
-    return currentTransaction;
   }
 
   async update(

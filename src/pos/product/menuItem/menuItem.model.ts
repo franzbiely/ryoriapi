@@ -1,5 +1,5 @@
 import { Schema, model, Types, ObjectId } from 'mongoose';
-import { IStore } from 'src/general/store/store.model';
+import { IStore, StoreModel } from 'src/general/store/store.model';
 import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 import { ITransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.model';
 import { IMenuCategory } from '../menuCategory/menuCategory.model';
