@@ -61,6 +61,9 @@ export class DashboardController {
           if(cur2.menuItem) {
             return prev2 + cur2.menuItem.price * cur2.quantity
           }
+          else {
+            return prev2
+          }
         }, 0);
         return prev + (amount + (cur.charges || 0) - (cur.discount || 0))
       },
