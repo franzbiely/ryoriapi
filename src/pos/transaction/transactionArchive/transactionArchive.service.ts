@@ -13,7 +13,7 @@ import { Utils } from 'src/utils/utils';
 export class TransactionArchiveService {
   constructor(
     @InjectModel('Transaction')
-    private readonly transactionModel: Model<ITransactionArchive>,
+    private readonly transactionArchiveModel: Model<ITransactionArchive>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
     @InjectModel('MenuItem')
@@ -28,27 +28,25 @@ export class TransactionArchiveService {
     const response = await this.branchModel
       .findOne({ _id: branch_Id })
       .populate({
-        path: 'transactions',
-        populate: {
-          path: 'transactionItems',
-          populate: {
-            path: 'menuItem',
-          },
-        },
+        path: 'transactionsarchive',
       })
       .lean();
-    const newData = response.transactions.map((data) => ({
-      ...data,
-      total: data.transactionItems.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
-    }));
+    const newData = response.transactionsArchive.map((data) => {
+      const transactionItem = JSON.parse(data.transactionItems);
+      return {
+        ...data,
+        total: transactionItem.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
+      };
+    });
+
     return newData;
   }
 
   async findOne(id: ObjectId): Promise<ITransactionArchive> {
     try {
-      const transaction = await this.transactionModel
+      const transaction = await this.transactionArchiveModel
         .findOne({ _id: id })
         .populate({
           path: 'transactionItems',
@@ -57,7 +55,7 @@ export class TransactionArchiveService {
           },
         })
         .exec();
-
+      console.log({ transaction });
       if (!transaction) {
         throw new Error('Transaction not found');
       }
@@ -85,7 +83,9 @@ export class TransactionArchiveService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionArchiveDto,
   ): Promise<ITransactionArchive | any> {
-    const transaction = await this.transactionModel.findOne({ _id: id }).exec();
+    const transaction = await this.transactionArchiveModel
+      .findOne({ _id: id })
+      .exec();
     console.log({ updateTransactionDto });
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
@@ -101,13 +101,9 @@ export class TransactionArchiveService {
   }
 
   async remove(id: ObjectId): Promise<string | void> {
-    const result = await this.transactionModel.deleteOne({ _id: id }).exec();
-    // Cascade delete.
-    const resultItem = await this.transactionItemModel
-      .deleteMany({ transaction: id })
+    const result = await this.transactionArchiveModel
+      .deleteOne({ _id: id })
       .exec();
-
-    return `Deleted ${result.deletedCount} record in transaction.
-    Deleted ${resultItem.deletedCount} record in items.`;
+    return `Deleted ${result.deletedCount} record in transaction`;
   }
 }

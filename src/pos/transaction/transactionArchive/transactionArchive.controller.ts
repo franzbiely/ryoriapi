@@ -17,10 +17,10 @@ import { S3Service } from 'src/utils/S3Service';
 import { AppGateway } from 'src/app.gateway';
 import { ObjectId } from 'mongoose';
 
-@Controller('pos/transaction')
+@Controller('pos/transactionarchive')
 export class TransactionArchiveController {
   constructor(
-    private transactionService: TransactionArchiveService,
+    private transactionArchiveService: TransactionArchiveService,
     private readonly s3Service: S3Service,
     private readonly appGateway: AppGateway,
   ) {}
@@ -28,12 +28,14 @@ export class TransactionArchiveController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async fillAll(@Query('branch_Id') branch_Id: ObjectId) {
-    return this.transactionService.findAll(branch_Id);
+    return this.transactionArchiveService.findAll(branch_Id);
   }
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionArchiveDto) {
-    const result = await this.transactionService.create(createTransactionDto);
+    const result = await this.transactionArchiveService.create(
+      createTransactionDto,
+    );
     return result;
   }
 
@@ -42,12 +44,12 @@ export class TransactionArchiveController {
     @Param('id') id: ObjectId,
     @Body() updateTransactionDto: UpdateTransactionArchiveDto,
   ) {
-    return this.transactionService.update(id, updateTransactionDto);
+    return this.transactionArchiveService.update(id, updateTransactionDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: ObjectId) {
-    return this.transactionService.remove(id);
+    return this.transactionArchiveService.remove(id);
   }
 }

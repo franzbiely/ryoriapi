@@ -15,10 +15,11 @@ import { TransactionSchema } from '../transaction/transaction.model';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'Transaction', schema: TransactionSchema },
+      { name: 'TransactionArchive', schema: TransactionArchiveSchema },
       { name: 'Branch', schema: BranchSchema },
       { name: 'TransactionItem', schema: TransactionItemSchema },
       { name: 'MenuItem', schema: MenuItemSchema },
+      { name: 'Transaction', schema: TransactionSchema },
     ]),
   ],
   controllers: [TransactionArchiveController],

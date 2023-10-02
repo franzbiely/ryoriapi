@@ -248,25 +248,25 @@ export class TransactionService {
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
-    // Check if the status is changing to 'done'
+
     if (transaction.status === 'done') {
       // Create a new transaction in the archive entity
       const archivedTransaction = new this.transactionArchive({
         _id: transaction.id,
         status: 'done',
+        table: transaction.table,
         notes: transaction.notes,
         charges: transaction.charges,
         discount: transaction.discount,
-        // Copy other fields as needed
+        amount: transaction.amount,
+        paymongo_pi_id: transaction.paymongo_pi_id,
+        transactionItems: JSON.stringify(transaction.transactionItems),
       });
-
       // Save the archived transaction
       await archivedTransaction.save();
-
       // Delete the current transaction
       await this.transactionModel.deleteOne({ _id: id }).exec();
-
-      return archivedTransaction; // Return the archived transaction
+      return archivedTransaction;
     }
     console.log({ transaction });
     return await transaction.save();
