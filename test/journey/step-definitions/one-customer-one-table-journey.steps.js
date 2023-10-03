@@ -23,6 +23,13 @@ When('I send GET request to {string} with param {string}={string}', async functi
   response = await request.json()
 })
 
+When('I send GET request to {string}', async function (route) {
+  const url = `${process.env.API_URL}${route}`
+  request = await fetch(url);
+  response = await request.json()
+  console.log({response})
+})
+
 Then('the response status code should be {string}', async function (status) {
   assert.equal(request.status.toString(), status);
 });
