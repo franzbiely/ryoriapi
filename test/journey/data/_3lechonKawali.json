@@ -1,0 +1,27 @@
+{
+    "_id": "65178495ab16f1c535f1ae75",
+    "quantity": 5,
+    "menuItem": {
+       "_id": "65178495ab16f1c535f1ae70",
+       "title": "Lechon Kawali",
+       "photo": "Lechon Kawli.png",
+       "price": 249,
+       "description": "Pork",
+       "cookingTime": "9",
+       "menuCategories": [
+          "6502d85d99d74f680c854e47"
+       ],
+       "user": "6502c95dd2eaaa5826899d22",
+       "createdAt": "2023-09-30T02:14:46.258Z",
+       "updatedAt": "2023-09-30T02:14:46.258Z",
+       "__v": 0
+    },
+    "user": "6502c95dd2eaaa5826899d22",
+    "createdAt": "2023-09-30T02:14:46.001Z",
+    "updatedAt": "2023-09-30T02:14:46.001Z",
+    "__v": 0,
+    "photo": "https://ryori-assets.s3.amazonaws.com/Lechon%20Kawli.png?AWSAccessKeyId=AKIAUYLU3PIVPAYUZ7F6&Expires=1696418063&Signature=2LGLn8ISpPu%2FsAODbbNhn3RvMrM%3D",
+    "title": "Lechon Kawali",
+    "description": "Pork",
+    "price": 249
+ }

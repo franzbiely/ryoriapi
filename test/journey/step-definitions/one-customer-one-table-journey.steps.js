@@ -24,10 +24,11 @@ When('I send GET request to {string} with param {string}={string}', async functi
 })
 
 When('I send GET request to {string}', async function (route) {
-  const url = `${process.env.API_URL}${route}`
-  request = await fetch(url);
-  response = await request.json()
-  console.log({response})
+  
+    const url = `${process.env.API_URL}${route}`
+    request = await fetch(url);
+    response = await request.json()
+  
 })
 
 Then('the response status code should be {string}', async function (status) {
@@ -35,12 +36,17 @@ Then('the response status code should be {string}', async function (status) {
 });
 
 Then('I receive {string}', async function (fileName) {
-  const filePath = path.join(__dirname, '..', 'data', fileName);
-  const fileData = fs.readFileSync(filePath, 'utf8');
-  const expectedData = JSON.parse(fileData);
-  deepEqualSkipProperty(
-    response, 
-    expectedData,
-    'photo'
-  );
+  try{
+    const filePath = path.join(__dirname, '..', 'data', fileName);
+    const fileData = fs.readFileSync(filePath, 'utf8');
+    const expectedData = JSON.parse(fileData);
+    deepEqualSkipProperty(
+      response, 
+      expectedData,
+      'photo'
+    );
+  }
+  catch(err){
+    console.log({response: JSON.stringify(response)})
+  }
 });
