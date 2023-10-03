@@ -48,9 +48,12 @@ import { Utils } from './utils/utils';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.DATABASE_CONNECTION_STRING),
+    MongooseModule.forRoot(
+      process.env.NODE_ENV === 'test' ? 
+        process.env.DATABASE_TEST_CONNECTION_STRING : 
+        process.env.DATABASE_DEVE_CONNECTION_STRING
+    ),
     
-
     // general
     AuthModule,
     ConsumptionModule,
