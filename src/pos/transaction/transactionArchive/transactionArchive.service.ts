@@ -12,7 +12,7 @@ import { Utils } from 'src/utils/utils';
 @Injectable()
 export class TransactionArchiveService {
   constructor(
-    @InjectModel('Transaction')
+    @InjectModel('TransactionArchive')
     private readonly transactionArchiveModel: Model<ITransactionArchive>,
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
@@ -23,30 +23,29 @@ export class TransactionArchiveService {
     private readonly utils: Utils,
   ) {}
 
-  //Get All User
   async findAll(branch_Id: ObjectId): Promise<ITransactionArchive[] | any> {
     const response = await this.branchModel
       .findOne({ _id: branch_Id })
       .populate({
-        path: 'transactionsarchive',
+        path: 'transactionArchive',
       })
       .lean();
-    const newData = response.transactionsArchive.map((data) => {
-      const transactionItem = JSON.parse(data.transactionItems);
-      return {
-        ...data,
-        total: transactionItem.reduce((prev, cur) => {
-          return prev + cur.quantity * cur.menuItem.price;
-        }, 0),
-      };
-    });
+    // const newData = response.transactionArchive.map((data) => {
+    //   const transactionItem = JSON.parse(data.transactionItems);
+    //   return {
+    //     ...data,
+    //     total: transactionItem.reduce((prev, cur) => {
+    //       return prev + cur.quantity * cur.menuItem.price;
+    //     }, 0),
+    //   };
+    // });
 
-    return newData;
+    return response;
   }
 
   async findOne(id: ObjectId): Promise<ITransactionArchive> {
     try {
-      const transaction = await this.transactionArchiveModel
+      const transaction_archive = await this.transactionArchiveModel
         .findOne({ _id: id })
         .populate({
           path: 'transactionItems',
@@ -55,55 +54,55 @@ export class TransactionArchiveService {
           },
         })
         .exec();
-      console.log({ transaction });
-      if (!transaction) {
+
+      if (!transaction_archive) {
         throw new Error('Transaction not found');
       }
 
-      return transaction.toObject();
+      return transaction_archive.toObject();
     } catch (error) {
-      throw new Error('Error while fetching transaction');
+      throw new Error('Error while fetching transaction archive');
     }
   }
 
-  async create(
-    _transaction: CreateTransactionArchiveDto,
-  ): Promise<ITransactionArchive | any> {
-    // TODO : Refactor this to aggregate
-    // Check if bid and tid has already transaction, if yes then just add the transactionItem to the transaction.
-    const branch = await this.branchModel
-      .findOne({ _id: _transaction.branch_Id })
-      .populate('transactions');
-    const existingTransaction = branch.transactions.find(
-      (transaction) => transaction.table === _transaction.table,
-    );
-  }
+  // async create(
+  //   _transaction: CreateTransactionArchiveDto,
+  // ): Promise<ITransactionArchive | any> {
+  //   // TODO : Refactor this to aggregate
+  //   // Check if bid and tid has already transaction, if yes then just add the transactionItem to the transaction.
+  //   const branch = await this.branchModel
+  //     .findOne({ _id: _transaction.branch_Id })
+  //     .populate('transactions');
+  //   const existingTransaction = branch.transactions.find(
+  //     (transaction) => transaction.table === _transaction.table,
+  //   );
+  // }
 
-  async update(
-    id: ObjectId,
-    updateTransactionDto: UpdateTransactionArchiveDto,
-  ): Promise<ITransactionArchive | any> {
-    const transaction = await this.transactionArchiveModel
-      .findOne({ _id: id })
-      .exec();
-    console.log({ updateTransactionDto });
-    transaction.status = updateTransactionDto.status || transaction.status;
-    transaction.notes = updateTransactionDto.notes || transaction.notes;
-    transaction.charges = updateTransactionDto.charges || transaction.charges;
-    transaction.discount =
-      updateTransactionDto.discount || transaction.discount;
+  // async update(
+  //   id: ObjectId,
+  //   updateTransactionDto: UpdateTransactionArchiveDto,
+  // ): Promise<ITransactionArchive | any> {
+  //   const transaction = await this.transactionArchiveModel
+  //     .findOne({ _id: id })
+  //     .exec();
+  //   console.log({ updateTransactionDto });
+  //   transaction.status = updateTransactionDto.status || transaction.status;
+  //   transaction.notes = updateTransactionDto.notes || transaction.notes;
+  //   transaction.charges = updateTransactionDto.charges || transaction.charges;
+  //   transaction.discount =
+  //     updateTransactionDto.discount || transaction.discount;
 
-    if (updateTransactionDto.paymongo_pi_id) {
-      transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
-    }
-    console.log({ transaction });
-    return await transaction.save();
-  }
+  //   if (updateTransactionDto.paymongo_pi_id) {
+  //     transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
+  //   }
+  //   console.log({ transaction });
+  //   return await transaction.save();
+  // }
 
   async remove(id: ObjectId): Promise<string | void> {
     const result = await this.transactionArchiveModel
       .deleteOne({ _id: id })
       .exec();
-    return `Deleted ${result.deletedCount} record in transaction`;
+    return `Deleted ${result.deletedCount} record in transaction archive`;
   }
 }

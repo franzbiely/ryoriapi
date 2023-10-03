@@ -19,11 +19,7 @@ import { ObjectId } from 'mongoose';
 
 @Controller('pos/transactionarchive')
 export class TransactionArchiveController {
-  constructor(
-    private transactionArchiveService: TransactionArchiveService,
-    private readonly s3Service: S3Service,
-    private readonly appGateway: AppGateway,
-  ) {}
+  constructor(private transactionArchiveService: TransactionArchiveService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -31,21 +27,38 @@ export class TransactionArchiveController {
     return this.transactionArchiveService.findAll(branch_Id);
   }
 
-  @Post()
-  async create(@Body() createTransactionDto: CreateTransactionArchiveDto) {
-    const result = await this.transactionArchiveService.create(
-      createTransactionDto,
-    );
-    return result;
+  @Get(':id')
+  async findOne(@Param('id') id: ObjectId) {
+    const response = await this.transactionArchiveService.findOne(id);
+    return response;
+    //   const transactionItems = await Promise.all(
+    //     response.transactionItems.map(async (item) => {
+    //       return {
+    //         ...item,
+    //       };
+    //     }),
+    //   );
+    //   return {
+    //     ...response,
+    //     transactionItems,
+    //   };
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: ObjectId,
-    @Body() updateTransactionDto: UpdateTransactionArchiveDto,
-  ) {
-    return this.transactionArchiveService.update(id, updateTransactionDto);
-  }
+  // @Post()
+  // async create(@Body() createTransactionDto: CreateTransactionArchiveDto) {
+  //   const result = await this.transactionArchiveService.create(
+  //     createTransactionDto,
+  //   );
+  //   return result;
+  // }
+
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: ObjectId,
+  //   @Body() updateTransactionDto: UpdateTransactionArchiveDto,
+  // ) {
+  //   return this.transactionArchiveService.update(id, updateTransactionDto);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
