@@ -24,7 +24,7 @@ export class TransactionService {
     private readonly transactionItemModel: Model<ITransactionItem>,
     private readonly utils: Utils,
     @InjectModel('TransactionArchive')
-    private readonly transactionArchive: Model<ITransactionArchive>,
+    private readonly _transactionArchive: Model<ITransactionArchive>,
   ) {}
 
   //Get All User
@@ -232,6 +232,16 @@ export class TransactionService {
     }
   }
 
+  async updateTransArchive({ _transaction, transaction, branch }) {
+    if (_transaction.branch_Id) {
+      branch.transactions = await this.utils.pushWhenNew(
+        branch.transactions,
+        transaction,
+      );
+      branch.save();
+    }
+  }
+
   async update(
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
@@ -251,7 +261,7 @@ export class TransactionService {
 
     if (transaction.status === 'done') {
       // Create a new transaction in the archive entity
-      const archivedTransaction = new this.transactionArchive({
+      const archivedTransaction = new this._transactionArchive({
         _id: transaction.id,
         status: 'done',
         table: transaction.table,
@@ -260,12 +270,23 @@ export class TransactionService {
         discount: transaction.discount,
         amount: transaction.amount,
         paymongo_pi_id: transaction.paymongo_pi_id,
-        transactionItems: JSON.stringify(transaction.transactionItems),
+        transactionArchive: transaction.transactionArchive,
       });
       // Save the archived transaction
       await archivedTransaction.save();
       // Delete the current transaction
       await this.transactionModel.deleteOne({ _id: id }).exec();
+      // Add in branch to transactionArchive
+      const branch = await this.transactionModel.findOne({
+        _id: updateTransactionDto.branch_Id,
+      });
+      console.log({ branch });
+      branch.transactionArchive = await this.utils.pushWhenNew(
+        branch.transactionArchive,
+        archivedTransaction,
+      );
+
+      branch.save();
       return archivedTransaction;
     }
     console.log({ transaction });
