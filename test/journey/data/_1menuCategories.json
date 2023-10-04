@@ -1,0 +1,29 @@
+[
+    {
+       "_id": "6502d85d99d74f680c854e47",
+       "title": "Pork",
+       "photo": "https://ryori-assets.s3.amazonaws.com/1694756994673.jpg?AWSAccessKeyId=AKIAUYLU3PIVPAYUZ7F6&Expires=1696413641&Signature=eZfGDcFXxeom1U%2F%2FFCZp6xwA%2BbM%3D",
+       "menuItem": [],
+       "createdAt": "2023-09-14T09:54:37.005Z",
+       "store": "6502cb1a99d74f680c854e09",
+       "__v": 0
+    },
+    {
+       "_id": "6504145699d74f680c855442",
+       "title": "Chicken",
+       "photo": "https://ryori-assets.s3.amazonaws.com/1694766163860.jpg?AWSAccessKeyId=AKIAUYLU3PIVPAYUZ7F6&Expires=1696413641&Signature=gJreErzUUssUwBBZiv9ts004ISE%3D",
+       "menuItem": [],
+       "createdAt": "2023-09-15T08:22:46.471Z",
+       "store": "6502cb1a99d74f680c854e09",
+       "__v": 0
+    },
+    {
+       "_id": "6504147b99d74f680c855451",
+       "title": "Drinks",
+       "photo": "https://ryori-assets.s3.amazonaws.com/1694766201260.jpg?AWSAccessKeyId=AKIAUYLU3PIVPAYUZ7F6&Expires=1696413641&Signature=ZwnavPWw6XF7fPhf%2BcAB51zagmo%3D",
+       "menuItem": [],
+       "createdAt": "2023-09-15T08:23:23.438Z",
+       "store": "6502cb1a99d74f680c854e09",
+       "__v": 0
+    }
+ ]
