@@ -10,6 +10,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { ITransactionItem } from '../transactionItem/transactionItem.model';
 import { Utils } from 'src/utils/utils';
+import { ITransactionArchive } from '../transactionArchive/transactionArchive.model';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -21,21 +22,25 @@ export class TransactionService {
     private readonly menuItemModel: Model<IMenuItem>,
     @InjectModel('TransactionItem')
     private readonly transactionItemModel: Model<ITransactionItem>,
-    private readonly utils: Utils
+    private readonly utils: Utils,
+    @InjectModel('TransactionArchive')
+    private readonly _transactionArchive: Model<ITransactionArchive>,
   ) {}
 
   //Get All User
-  async findAll(branch_Id: ObjectId): Promise<ITransaction[]|any> {
-    const response = await this.branchModel.findOne({_id: branch_Id})
+  async findAll(branch_Id: ObjectId): Promise<ITransaction[] | any> {
+    const response = await this.branchModel
+      .findOne({ _id: branch_Id })
       .populate({
         path: 'transactions',
         populate: {
           path: 'transactionItems',
           populate: {
-            path: 'menuItem'
-          }
-        }
-      }).lean();
+            path: 'menuItem',
+          },
+        },
+      })
+      .lean();
     const newData = response.transactions.map((data) => ({
       ...data,
       total: data.transactionItems.reduce((prev, cur) => {
@@ -47,18 +52,20 @@ export class TransactionService {
 
   async findOne(id: ObjectId): Promise<ITransaction> {
     try {
-      const transaction = await this.transactionModel.findOne({_id:id})
-        .populate({ 
-          path: 'transactionItems', 
+      const transaction = await this.transactionModel
+        .findOne({ _id: id })
+        .populate({
+          path: 'transactionItems',
           populate: {
-            path: 'menuItem' 
-          }
-        }).exec();
-  
+            path: 'menuItem',
+          },
+        })
+        .exec();
+
       if (!transaction) {
         throw new Error('Transaction not found');
       }
-  
+
       return transaction.toObject();
     } catch (error) {
       throw new Error('Error while fetching transaction');
@@ -93,7 +100,6 @@ export class TransactionService {
       return {
         ...transaction,
         status: data.status,
-        
       };
     } else {
       return {
@@ -102,61 +108,60 @@ export class TransactionService {
     }
   }
 
-  async getStatusByBidAndTid(
-    sid: ObjectId,
-    bid: string,
-    tid: ObjectId,
-  ) {
-    const branch = await this.branchModel.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(bid),
+  async getStatusByBidAndTid(sid: ObjectId, bid: string, tid: ObjectId) {
+    const branch = await this.branchModel.aggregate(
+      [
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(bid),
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'transactions',
-          localField: 'transactions',
-          foreignField: '_id',
-          as: 'transaction',
+        {
+          $lookup: {
+            from: 'transactions',
+            localField: 'transactions',
+            foreignField: '_id',
+            as: 'transaction',
+          },
         },
-      },
-      {
-        $unwind: '$transaction', 
-      },
-      {
-        $match: {
-          'transaction.table': tid,
+        {
+          $unwind: '$transaction',
         },
-      },
+        {
+          $match: {
+            'transaction.table': tid,
+          },
+        },
+        {
+          $lookup: {
+            from: 'transactionitems',
+            localField: 'transaction.transactionItems',
+            foreignField: '_id',
+            as: 'transaction.transactionItems',
+          },
+        },
+      ],
       {
-        $lookup : {
-            from: "transactionitems",
-            localField: "transaction.transactionItems",
-            foreignField: "_id",
-            as : "transaction.transactionItems"
-        }
+        allowDiskUse: false,
       },
-    ], {
-      allowDiskUse: false
-    })
-    if(branch.length > 0) {
+    );
+    if (branch.length > 0) {
       const transaction = branch[0].transaction;
-      
-      const _transaction = await this.transactionModel.findOne({_id: transaction._id})
+
+      const _transaction = await this.transactionModel
+        .findOne({ _id: transaction._id })
         .populate({
           path: 'transactionItems',
           populate: {
-            path: 'menuItem'
-          }
-        }).lean()
-      ;
-
+            path: 'menuItem',
+          },
+        })
+        .lean();
       if (_transaction) {
         return {
           ..._transaction,
-          ...this.getTransactionStatus(_transaction)
-        }
+          ...this.getTransactionStatus(_transaction),
+        };
       }
     }
 
@@ -164,57 +169,76 @@ export class TransactionService {
   }
 
   async getStatusById(id: ObjectId): Promise<{ status: string }> {
-    const transaction = await this.transactionModel.findOne({_id:id}).exec()
+    const transaction = await this.transactionModel.findOne({ _id: id }).exec();
     return this.getTransactionStatus(transaction);
   }
 
-  async updateTransItems({_transaction, transaction, branch}) {
-      if (!Array.isArray(_transaction.item)) {
-        _transaction.item = [_transaction.item]
-      }
-      await Promise.all(
-        _transaction.item.map(async (item) => {
-          const _item = JSON.parse(item);
-          const menuItem = await this.menuItemModel.findOne({ _id: _item._id }).exec();
-          
-          const transactionItem = new this.transactionItemModel({
-            quantity : _item.qty,
-            status : 'new',
-            menuItem : menuItem,
-            transaction : transaction._id,
-          });
-          
-          await transactionItem.save();
-          transaction.transactionItems.push(transactionItem)
-        }),
-      );
-      const currentTransaction = await transaction.save();
-      if (_transaction.branch_Id) {
-        branch.transactions = await this.utils.pushWhenNew(branch.transactions, transaction);
-        branch.save()
-      }
-      return currentTransaction;
-  }
-  async create(_transaction: CreateTransactionDto): Promise<ITransaction | any> {
+  async updateTransItems({ _transaction, transaction, branch }) {
+    if (!Array.isArray(_transaction.item)) {
+      _transaction.item = [_transaction.item];
+    }
+    await Promise.all(
+      _transaction.item.map(async (item) => {
+        const _item = JSON.parse(item);
+        const menuItem = await this.menuItemModel
+          .findOne({ _id: _item._id })
+          .exec();
 
+        const transactionItem = new this.transactionItemModel({
+          quantity: _item.qty,
+          status: 'new',
+          menuItem: menuItem,
+          transaction: transaction._id,
+        });
+
+        await transactionItem.save();
+        transaction.transactionItems.push(transactionItem);
+      }),
+    );
+    const currentTransaction = await transaction.save();
+    if (_transaction.branch_Id) {
+      branch.transactions = await this.utils.pushWhenNew(
+        branch.transactions,
+        transaction,
+      );
+      branch.save();
+    }
+    return currentTransaction;
+  }
+  async create(
+    _transaction: CreateTransactionDto,
+  ): Promise<ITransaction | any> {
     // TODO : Refactor this to aggregate
     // Check if bid and tid has already transaction, if yes then just add the transactionItem to the transaction.
     const branch = await this.branchModel
-      .findOne({_id: _transaction.branch_Id})
-      .populate('transactions')
-    const existingTransaction = branch.transactions.find(transaction => transaction.table === _transaction.table)
-    
-    if(existingTransaction) {
-      const transaction = await this.transactionModel.findOne({_id: existingTransaction['_id']});
-      return this.updateTransItems({transaction, _transaction, branch})
-    }
-    else {
+      .findOne({ _id: _transaction.branch_Id })
+      .populate('transactions');
+    const existingTransaction = branch.transactions.find(
+      (transaction) => transaction.table === _transaction.table,
+    );
+
+    if (existingTransaction) {
+      const transaction = await this.transactionModel.findOne({
+        _id: existingTransaction['_id'],
+      });
+      return this.updateTransItems({ transaction, _transaction, branch });
+    } else {
       const transaction = new this.transactionModel({
         status: _transaction.status,
         table: _transaction.table,
         notes: _transaction.notes,
       });
-      return this.updateTransItems({_transaction, transaction, branch})
+      return this.updateTransItems({ _transaction, transaction, branch });
+    }
+  }
+
+  async updateTransArchive({ _transaction, transaction, branch }) {
+    if (_transaction.branch_Id) {
+      branch.transactions = await this.utils.pushWhenNew(
+        branch.transactions,
+        transaction,
+      );
+      branch.save();
     }
   }
 
@@ -222,24 +246,59 @@ export class TransactionService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    const transaction = await this.transactionModel.findOne({_id:id}).exec();
-    console.log({updateTransactionDto})
+    const transaction = await this.transactionModel.findOne({ _id: id }).exec();
+    console.log({ updateTransactionDto });
+
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
     transaction.charges = updateTransactionDto.charges || transaction.charges;
-    transaction.discount = updateTransactionDto.discount || transaction.discount;
+    transaction.discount =
+      updateTransactionDto.discount || transaction.discount;
 
     if (updateTransactionDto.paymongo_pi_id) {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
-    console.log({transaction})
+
+    if (transaction.status === 'done') {
+      // Create a new transaction in the archive entity
+      const archivedTransaction = new this._transactionArchive({
+        _id: transaction.id,
+        status: 'done',
+        table: transaction.table,
+        notes: transaction.notes,
+        charges: transaction.charges,
+        discount: transaction.discount,
+        amount: transaction.amount,
+        paymongo_pi_id: transaction.paymongo_pi_id,
+        transactionArchive: transaction.transactionArchive,
+      });
+      // Save the archived transaction
+      await archivedTransaction.save();
+      // Delete the current transaction
+      await this.transactionModel.deleteOne({ _id: id }).exec();
+      // Add in branch to transactionArchive
+      const branch = await this.transactionModel.findOne({
+        _id: updateTransactionDto.branch_Id,
+      });
+      console.log({ branch });
+      branch.transactionArchive = await this.utils.pushWhenNew(
+        branch.transactionArchive,
+        archivedTransaction,
+      );
+
+      branch.save();
+      return archivedTransaction;
+    }
+    console.log({ transaction });
     return await transaction.save();
   }
 
   async remove(id: ObjectId): Promise<string | void> {
-    const result = await this.transactionModel.deleteOne({ _id : id }).exec();
+    const result = await this.transactionModel.deleteOne({ _id: id }).exec();
     // Cascade delete.
-    const resultItem = await this.transactionItemModel.deleteMany({transaction: id}).exec();
+    const resultItem = await this.transactionItemModel
+      .deleteMany({ transaction: id })
+      .exec();
 
     return `Deleted ${result.deletedCount} record in transaction.
     Deleted ${resultItem.deletedCount} record in items.`;
@@ -252,7 +311,9 @@ export class TransactionService {
         transaction.transactionItems.reduce(
           (prev, cur) => prev + cur.menuItem.price * cur.quantity,
           0,
-        ) - (transaction.discount || 0) + (transaction.charges || 0);
+        ) -
+        (transaction.discount || 0) +
+        (transaction.charges || 0);
       const response = await axios.post(
         'https://api.paymongo.com/v1/payment_intents',
         JSON.stringify({
@@ -344,13 +405,14 @@ export class TransactionService {
 
   // @TODO : Add validation, amount should > 2000
   async create_payment(payTransactionDto: PayTransactionDto) {
-    const transaction = await this.transactionModel.findOne({_id: payTransactionDto.id})
-    .populate({
-      path: 'transactionItems',
-      populate: {
-        path: 'menuItem'
-      }
-    })
+    const transaction = await this.transactionModel
+      .findOne({ _id: payTransactionDto.id })
+      .populate({
+        path: 'transactionItems',
+        populate: {
+          path: 'menuItem',
+        },
+      });
     const payment_intent_data = await this.create_payment_intent(transaction);
     transaction.status = payment_intent_data.attributes.status;
     transaction.paymongo_pi_id = payment_intent_data.id;
@@ -372,7 +434,6 @@ export class TransactionService {
   }
 
   async getTransactionToday(branch_Id: string): Promise<ITransaction[] | any> {
-
     const response = await this.branchModel.aggregate([
       {
         $match: {
@@ -384,7 +445,7 @@ export class TransactionService {
           from: 'transactions',
           localField: 'transactions',
           foreignField: '_id',
-          as: 'transaction'
+          as: 'transaction',
         },
       },
       {
@@ -395,38 +456,50 @@ export class TransactionService {
           $expr: {
             $and: [
               {
-                $gte: ['$transaction.createdAt', new Date(new Date().setHours(0, 0, 0, 0))],
+                $gte: [
+                  '$transaction.createdAt',
+                  new Date(new Date().setHours(0, 0, 0, 0)),
+                ],
               },
               {
-                $lt: ['$transaction.createdAt', new Date(new Date().setHours(23, 59, 59, 999))],
+                $lt: [
+                  '$transaction.createdAt',
+                  new Date(new Date().setHours(23, 59, 59, 999)),
+                ],
               },
             ],
           },
         },
-      }
-    ])
+      },
+    ]);
 
-    if(response.length > 0) {
-      return await Promise.all(response.map(async item => {
-        const _transaction = await this.transactionModel.findOne({_id: item.transaction._id})
-          .populate({
-            path: 'transactionItems',
-            populate: {
-              path: 'menuItem'
-            }
-          }).lean()
-        return {
-          ..._transaction
-        }
-      }))
-    }
-    else {
-      throw new NotFoundException(`Transactions from branch id ${branch_Id} today not found`);
+    if (response.length > 0) {
+      return await Promise.all(
+        response.map(async (item) => {
+          const _transaction = await this.transactionModel
+            .findOne({ _id: item.transaction._id })
+            .populate({
+              path: 'transactionItems',
+              populate: {
+                path: 'menuItem',
+              },
+            })
+            .lean();
+          return {
+            ..._transaction,
+          };
+        }),
+      );
+    } else {
+      throw new NotFoundException(
+        `Transactions from branch id ${branch_Id} today not found`,
+      );
     }
   }
 
-  async getTransactionNotToday(branch_Id: string): Promise<ITransaction[]| any> {
-
+  async getTransactionNotToday(
+    branch_Id: string,
+  ): Promise<ITransaction[] | any> {
     const response = await this.branchModel.aggregate([
       {
         $match: {
@@ -438,7 +511,7 @@ export class TransactionService {
           from: 'transactions',
           localField: 'transactions',
           foreignField: '_id',
-          as: 'transaction'
+          as: 'transaction',
         },
       },
       {
@@ -449,30 +522,38 @@ export class TransactionService {
           $expr: {
             $and: [
               {
-                $lte: ['$transaction.createdAt', new Date(new Date().setHours(0, 0, 0, 0))],
+                $lte: [
+                  '$transaction.createdAt',
+                  new Date(new Date().setHours(0, 0, 0, 0)),
+                ],
               },
             ],
           },
         },
-      }
-    ])
+      },
+    ]);
 
-    if(response.length > 0) {
-      return await Promise.all(response.map(async item => {
-        const _transaction = await this.transactionModel.findOne({_id: item.transaction._id})
-          .populate({
-            path: 'transactionItems',
-            populate: {
-              path: 'menuItem'
-            }
-          }).lean()
-        return {
-          ..._transaction
-        }
-      }))
-    }
-    else {
-      throw new NotFoundException(`Transactions from branch id ${branch_Id} today not found`);
+    if (response.length > 0) {
+      return await Promise.all(
+        response.map(async (item) => {
+          const _transaction = await this.transactionModel
+            .findOne({ _id: item.transaction._id })
+            .populate({
+              path: 'transactionItems',
+              populate: {
+                path: 'menuItem',
+              },
+            })
+            .lean();
+          return {
+            ..._transaction,
+          };
+        }),
+      );
+    } else {
+      throw new NotFoundException(
+        `Transactions from branch id ${branch_Id} today not found`,
+      );
     }
   }
 }

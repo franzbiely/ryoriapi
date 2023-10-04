@@ -2,7 +2,7 @@ import { Schema, model, Types, ObjectId } from 'mongoose';
 import { IBranch } from 'src/general/branch/branch.model';
 import { ITransactionItem } from '../transactionItem/transactionItem.model';
 
-export interface ITransaction extends Document {
+export interface ITransactionArchive extends Document {
   status: string;
   table: string;
   notes: string;
@@ -10,11 +10,10 @@ export interface ITransaction extends Document {
   paymongo_pi_id: string;
   charges: number;
   discount: number;
-  transactionItems: ITransactionItem[];
-  transactionArchive: string[];
+  transactionItems: string;
 }
 
-export const TransactionSchema = new Schema<ITransaction>(
+export const TransactionArchiveSchema = new Schema<ITransactionArchive>(
   {
     status: String,
     table: String,
@@ -22,13 +21,13 @@ export const TransactionSchema = new Schema<ITransaction>(
     amount: Number,
     charges: Number,
     discount: Number,
-    transactionArchive: [String],
-    paymongo_pi_id: { type: String, default: '' },
-    transactionItems: [
-      { type: Schema.Types.ObjectId, ref: 'TransactionItem', required: true },
-    ],
+    paymongo_pi_id: String,
+    transactionItems: String,
   },
   { timestamps: true },
 );
 
-export const TransactionModel = model('Transaction', TransactionSchema);
+export const TransactionArchiveModel = model(
+  'TransactionArchive',
+  TransactionArchiveSchema,
+);

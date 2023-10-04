@@ -29,5 +29,8 @@ export class UpdateBranchDto extends PartialType(CreateBranchDto) {
   transaction_Id: string;
 
   @IsOptional()
+  transactionArchive_Id: string;
+
+  @IsOptional()
   user_Id: string;
 }

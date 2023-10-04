@@ -7,6 +7,7 @@ import { ITransaction } from 'src/pos/transaction/transaction/transaction.model'
 import { ITransactionItem } from 'src/pos/transaction/transactionItem/transactionItem.model';
 import { IStore } from '../store/store.model';
 import { IUsers } from '../user/user.model';
+import { ITransactionArchive } from 'src/pos/transaction/transactionArchive/transactionArchive.model';
 
 export interface IBranch extends Document {
   branchName: string;
@@ -18,19 +19,24 @@ export interface IBranch extends Document {
   rawGrocerys?: IRawGrocery[];
   rawCategorys?: IRawCategory[];
   transactions?: ITransaction[];
+  transactionArchive?: string[];
   users?: IUsers[];
 }
 
-export const BranchSchema = new Schema<IBranch>({
-  branchName: String,
-  email: String,
-  contactNumber: String,
-  address: String,
-  users: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
-  transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
-  rawGrocerys: [{ type: Schema.Types.ObjectId, ref: 'RawGrocery' }],
-  branchItems: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
-  rawCategorys: [{ type: Schema.Types.ObjectId, ref: 'RawCategory' }],
-}, {timestamps: true});
+export const BranchSchema = new Schema<IBranch>(
+  {
+    branchName: String,
+    email: String,
+    contactNumber: String,
+    address: String,
+    users: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
+    transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
+    transactionArchive: [String],
+    rawGrocerys: [{ type: Schema.Types.ObjectId, ref: 'RawGrocery' }],
+    branchItems: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
+    rawCategorys: [{ type: Schema.Types.ObjectId, ref: 'RawCategory' }],
+  },
+  { timestamps: true },
+);
 
 export const BranchModel = model('Branch', BranchSchema);

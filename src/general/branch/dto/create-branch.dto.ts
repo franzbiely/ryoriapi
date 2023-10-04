@@ -27,6 +27,9 @@ export class CreateBranchDto {
   transaction_Id: string;
 
   @IsOptional()
+  transactionArchive_Id: string;
+
+  @IsOptional()
   user_Id: string;
 
   // Not in model
