@@ -30,17 +30,16 @@ export class TransactionArchiveService {
         path: 'transactionArchive',
       })
       .lean();
-    // const newData = response.transactionArchive.map((data) => {
-    //   const transactionItem = JSON.parse(data.transactionItems);
-    //   return {
-    //     ...data,
-    //     total: transactionItem.reduce((prev, cur) => {
-    //       return prev + cur.quantity * cur.menuItem.price;
-    //     }, 0),
-    //   };
-    // });
-
-    return response;
+      const newData = response.transactionArchive.map((data) => {
+        const transactionItems = JSON.parse(data.transactionItems);
+        return ({
+          ...data,
+          total: transactionItems.reduce((prev, cur) => {
+            return prev + cur.quantity * cur.menuItem.price;
+          }, 0),
+        })
+      });
+      return newData;
   }
 
   async findOne(id: ObjectId): Promise<ITransactionArchive> {
