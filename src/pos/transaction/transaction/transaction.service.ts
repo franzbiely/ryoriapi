@@ -24,7 +24,7 @@ export class TransactionService {
     private readonly transactionItemModel: Model<ITransactionItem>,
     private readonly utils: Utils,
     @InjectModel('TransactionArchive')
-    private readonly _transactionArchive: Model<ITransactionArchive>,
+    private readonly transactionArchiveModel: Model<ITransactionArchive>,
   ) {}
 
   //Get All User
@@ -246,9 +246,16 @@ export class TransactionService {
     id: ObjectId,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<ITransaction | any> {
-    const transaction = await this.transactionModel.findOne({ _id: id }).exec();
-    console.log({ updateTransactionDto });
-
+    const transaction = await this.transactionModel
+      .findOne({ _id: id })
+      .populate({
+        path: 'transactionItems',
+        populate: {
+          path:'menuItem',
+        },
+      })
+      .exec();
+    
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
     transaction.charges = updateTransactionDto.charges || transaction.charges;
@@ -261,39 +268,54 @@ export class TransactionService {
 
     if (transaction.status === 'done') {
       // Create a new transaction in the archive entity
-      const archivedTransaction = new this._transactionArchive({
-        _id: transaction.id,
-        status: 'done',
+      const archivedTransaction = new this.transactionArchiveModel({
+        status: transaction.status,
         table: transaction.table,
         notes: transaction.notes,
+        paymongo_pi_id: transaction.paymongo_pi_id,
         charges: transaction.charges,
         discount: transaction.discount,
-        amount: transaction.amount,
-        paymongo_pi_id: transaction.paymongo_pi_id,
-        transactionArchive: transaction.transactionArchive,
+        transactionItems: JSON.stringify(transaction.transactionItems),
+        amount: transaction.transactionItems.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0)
       });
-      // Save the archived transaction
-      await archivedTransaction.save();
-      // Delete the current transaction
-      await this.transactionModel.deleteOne({ _id: id }).exec();
+
       // Add in branch to transactionArchive
-      const branch = await this.transactionModel.findOne({
-        _id: updateTransactionDto.branch_Id,
-      });
-      console.log({ branch });
+      const branch = await this.branchModel.findOne({
+        transactions: {
+          $in: {
+            _id: id,
+          },
+        }
+      }).populate('transactions');
+      branch.transactions = branch.transactions.filter(item => item['_id'].toString() !== id)
       branch.transactionArchive = await this.utils.pushWhenNew(
         branch.transactionArchive,
         archivedTransaction,
       );
-
       branch.save();
-      return archivedTransaction;
+
+      // Delete the current transaction and it's items
+      await this.remove(id)
+
+      // Save the archived transaction
+      return await archivedTransaction.save();
     }
-    console.log({ transaction });
+    
     return await transaction.save();
   }
 
+  // TODO: Need to retest this... Should remove transactionItems when a transaction is removed.
   async remove(id: ObjectId): Promise<string | void> {
+    const transaction = await this.transactionModel.findOne({ _id: id}).lean()
+    const removedTransactionItemsStatus = await Promise.all(
+      transaction.transactionItems.map(async (item) => {
+        const status = await this.transactionModel.deleteOne({ _id: id }).exec();
+        if(status) return true;
+        else return false;
+      })
+    )
     const result = await this.transactionModel.deleteOne({ _id: id }).exec();
     // Cascade delete.
     const resultItem = await this.transactionItemModel
@@ -301,7 +323,8 @@ export class TransactionService {
       .exec();
 
     return `Deleted ${result.deletedCount} record in transaction.
-    Deleted ${resultItem.deletedCount} record in items.`;
+    Deleted ${resultItem.deletedCount} record in items.
+    Deleted ${removedTransactionItemsStatus.length} records in transactionItems`;
   }
 
   async create_payment_intent(transaction): Promise<any> {
