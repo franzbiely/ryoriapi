@@ -4,7 +4,7 @@ import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { IBranch } from 'src/general/branch/branch.model';
 import { IMenuItem } from './../product/menuItem/menuItem.model';
-import { Model, ObjectId } from 'mongoose';
+import mongoose, { Model, ObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IMenuCategory } from '../product/menuCategory/menuCategory.model';
 import { Utils } from 'src/utils/utils';
@@ -28,42 +28,58 @@ export class BranchItemService {
 
   // TODO: branch_Id deprecated
   async findAll(
-    branch_Id: ObjectId,
-    category_Id: ObjectId = null,
+    branch_Id: string,
+    category_Id: string = null,
   ): Promise<any[]> {
-    const branch = await this.branchModel
-      .findOne({ _id: branch_Id })
-      .populate({
-        path: 'branchItems',
-        populate: {
-          path: 'menuItem',
-          populate: {
-            path: 'menuCategories',
-          },
+    const branchItems:IBranchItem[] = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
         },
-      })
-      .lean();
-    return branch.branchItems;
-    // const menuItems = await this.menuItemModel.find({
-    //   menuCategories: {
-    //     $elemMatch: {
-    //       $eq: category_Id
-    //     }
-    //   }
-    // })
-    // const branchItems = await this.branchItemModel.find({
-    //     menuItem: {
-    //         $in: menuItems
-    //     }
-    //   })
-    //   .populate({
-    //       path: 'menuItem',
-    //       populate: {
-    //         path: 'menuCategories'
-    //     }
-    //   })
-    //   .lean()
-    //   return branchItems
+      },
+      {
+        $lookup: {
+          from: "branchitems",
+          localField: "branchItems",
+          foreignField: "_id",
+          as: "branchItem",
+        },
+      },
+      {
+        $unwind: "$branchItem",
+      },
+      {
+        $lookup: {
+          from: "menuitems",
+          localField: "branchItem.menuItem",
+          foreignField: "_id",
+          as: "branchItem.menuItem",
+        },
+      },
+      {
+        $unwind: "$branchItem.menuItem",
+      },
+      {
+        $group:
+          {
+            _id: "$_id",
+            branchItems: {
+              $push: "$branchItem",
+            },
+          },
+      },
+      {
+        $unwind: "$branchItems",
+      },
+      {
+        $project: {
+          menuItem: "$branchItems.menuItem",
+          quantity: "$branchItems.quantity",
+          user: "$branchItems.user"
+        }
+      }
+    ])
+    return branchItems
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
