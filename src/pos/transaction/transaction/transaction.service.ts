@@ -251,11 +251,11 @@ export class TransactionService {
       .populate({
         path: 'transactionItems',
         populate: {
-          path:'menuItem',
+          path: 'menuItem',
         },
       })
       .exec();
-    
+    transaction.table = updateTransactionDto.table || transaction.table;
     transaction.status = updateTransactionDto.status || transaction.status;
     transaction.notes = updateTransactionDto.notes || transaction.notes;
     transaction.charges = updateTransactionDto.charges || transaction.charges;
@@ -278,18 +278,22 @@ export class TransactionService {
         transactionItems: JSON.stringify(transaction.transactionItems),
         amount: transaction.transactionItems.reduce((prev, cur) => {
           return prev + cur.quantity * cur.menuItem.price;
-        }, 0)
+        }, 0),
       });
 
       // Add in branch to transactionArchive
-      const branch = await this.branchModel.findOne({
-        transactions: {
-          $in: {
-            _id: id,
+      const branch = await this.branchModel
+        .findOne({
+          transactions: {
+            $in: {
+              _id: id,
+            },
           },
-        }
-      }).populate('transactions');
-      branch.transactions = branch.transactions.filter(item => item['_id'].toString() !== id)
+        })
+        .populate('transactions');
+      branch.transactions = branch.transactions.filter(
+        (item) => item['_id'].toString() !== id,
+      );
       branch.transactionArchive = await this.utils.pushWhenNew(
         branch.transactionArchive,
         archivedTransaction,
@@ -297,25 +301,27 @@ export class TransactionService {
       branch.save();
 
       // Delete the current transaction and it's items
-      await this.remove(id)
+      await this.remove(id);
 
       // Save the archived transaction
       return await archivedTransaction.save();
     }
-    
+
     return await transaction.save();
   }
 
   // TODO: Need to retest this... Should remove transactionItems when a transaction is removed.
   async remove(id: ObjectId): Promise<string | void> {
-    const transaction = await this.transactionModel.findOne({ _id: id}).lean()
+    const transaction = await this.transactionModel.findOne({ _id: id }).lean();
     const removedTransactionItemsStatus = await Promise.all(
       transaction.transactionItems.map(async (item) => {
-        const status = await this.transactionModel.deleteOne({ _id: id }).exec();
-        if(status) return true;
+        const status = await this.transactionModel
+          .deleteOne({ _id: id })
+          .exec();
+        if (status) return true;
         else return false;
-      })
-    )
+      }),
+    );
     const result = await this.transactionModel.deleteOne({ _id: id }).exec();
     // Cascade delete.
     const resultItem = await this.transactionItemModel
