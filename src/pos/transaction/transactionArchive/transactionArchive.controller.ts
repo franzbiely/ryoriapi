@@ -27,6 +27,18 @@ export class TransactionArchiveController {
     return this.transactionArchiveService.findAll(branch_Id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('today')
+  async getTasksCreatedToday(@Query('branch_Id') branch_Id: string) {
+    return this.transactionArchiveService.getTransactionToday(branch_Id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('nottoday')
+  async getTasksNotDueToday(@Query('branch_Id') branch_Id: string) {
+    return this.transactionArchiveService.getTransactionNotToday(branch_Id);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
     const response = await this.transactionArchiveService.findOne(id);

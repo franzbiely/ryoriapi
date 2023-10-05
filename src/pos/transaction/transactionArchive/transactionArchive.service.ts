@@ -30,17 +30,16 @@ export class TransactionArchiveService {
         path: 'transactionArchive',
       })
       .lean();
-    // const newData = response.transactionArchive.map((data) => {
-    //   const transactionItem = JSON.parse(data.transactionItems);
-    //   return {
-    //     ...data,
-    //     total: transactionItem.reduce((prev, cur) => {
-    //       return prev + cur.quantity * cur.menuItem.price;
-    //     }, 0),
-    //   };
-    // });
-
-    return response;
+    const newData = response.transactionArchive.map((data) => {
+      const transactionItems = JSON.parse(data.transactionItems);
+      return {
+        ...data,
+        total: transactionItems.reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
+      };
+    });
+    return newData;
   }
 
   async findOne(id: ObjectId): Promise<ITransactionArchive> {
@@ -62,6 +61,132 @@ export class TransactionArchiveService {
       return transaction_archive.toObject();
     } catch (error) {
       throw new Error('Error while fetching transaction archive');
+    }
+  }
+
+  async getTransactionToday(
+    branch_Id: string,
+  ): Promise<ITransactionArchive[] | any> {
+    const response = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'transactionarchives',
+          localField: 'transactionArchive',
+          foreignField: '_id',
+          as: 'transactionArchive',
+        },
+      },
+      {
+        $unwind: '$transactionArchive', // Unwind the 'nested' array
+      },
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $gte: [
+                  '$transactionArchive.createdAt',
+                  new Date(new Date().setHours(0, 0, 0, 0)),
+                ],
+              },
+              {
+                $lt: [
+                  '$transactionArchive.createdAt',
+                  new Date(new Date().setHours(23, 59, 59, 999)),
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+    console.log({ response });
+    if (response.length > 0) {
+      return await Promise.all(
+        response.map(async (item) => {
+          const _transactionArchive = await this.transactionArchiveModel
+            .findOne({ _id: item.transactionArchive._id })
+            .populate({
+              path: 'transactionItems',
+              populate: {
+                path: 'menuItem',
+              },
+            })
+            .lean();
+          return {
+            ..._transactionArchive,
+          };
+        }),
+      );
+    } else {
+      throw new NotFoundException(
+        `Transactions Archive from branch id ${branch_Id} today not found`,
+      );
+    }
+  }
+  async getTransactionNotToday(
+    branch_Id: string,
+  ): Promise<ITransactionArchive[] | any> {
+    const response = await this.branchModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'transactionarchives',
+          localField: 'transactionArchive',
+          foreignField: '_id',
+          as: 'transactionArchive',
+        },
+      },
+      {
+        $unwind: '$transactionArchive', // Unwind the 'nested' array
+      },
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $lte: [
+                  '$transactionArchive.createdAt',
+                  new Date(new Date().setHours(0, 0, 0, 0)),
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+
+    if (response.length > 0) {
+      return await Promise.all(
+        response.map(async (item) => {
+          const _transaction = await this.transactionArchiveModel
+            .findOne({ _id: item.transactionArchive._id })
+            .populate({
+              path: 'transactionItems',
+              populate: {
+                path: 'menuItem',
+              },
+            })
+            .lean();
+
+          return {
+            ..._transaction,
+          };
+        }),
+      );
+    } else {
+      throw new NotFoundException(
+        `Transactions from branch id ${branch_Id} archive not found`,
+      );
     }
   }
 

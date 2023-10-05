@@ -16,6 +16,7 @@ import { CreateBranchItemDto } from './dto/create-branchItem.dto';
 import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { S3Service } from 'src/utils/S3Service';
 import { ObjectId } from 'mongoose';
+import { IBranchItem } from './branchItem.model';
 
 @Controller('branchItem')
 export class QuantityController {
@@ -23,8 +24,8 @@ export class QuantityController {
 
   // @UseGuards(JwtAuthGuard), need to be accessible in front end
   @Get()
-  async fillAll(@Query('branch_Id') branch_Id: ObjectId, @Query('category_Id') category_Id: ObjectId,) {
-    const response = await this.branchItemService.findAll(branch_Id, category_Id);
+  async fillAll(@Query('branch_Id') branch_Id: string, @Query('category_Id') category_Id: string,) {
+    const response:IBranchItem[] = await this.branchItemService.findAll(branch_Id, category_Id);
     // @Todo: Refactor and remove other non used properties..
     return await Promise.all(
       response.map(async (item) => {
