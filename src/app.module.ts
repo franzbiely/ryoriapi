@@ -49,9 +49,7 @@ import { TransactionArchiveModule } from './pos/transaction/transactionArchive/t
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(
-      process.env.DATABASE_CONNECTION_STRING
-    ),
+    MongooseModule.forRoot(process.env.DATABASE_CONNECTION_STRING),
 
     // general
     AuthModule,
