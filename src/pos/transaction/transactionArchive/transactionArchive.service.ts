@@ -105,21 +105,21 @@ export class TransactionArchiveService {
         },
       },
     ]);
-    console.log({ response });
     if (response.length > 0) {
       return await Promise.all(
         response.map(async (item) => {
           const _transactionArchive = await this.transactionArchiveModel
             .findOne({ _id: item.transactionArchive._id })
-            .populate({
-              path: 'transactionItems',
-              populate: {
-                path: 'menuItem',
-              },
-            })
+            // .populate({
+            //   path: 'transactionItems',
+            //   populate: {
+            //     path: 'menuItem',
+            //   },
+            // })
             .lean();
           return {
             ..._transactionArchive,
+            transactionItems: JSON.parse(_transactionArchive.transactionItems),
           };
         }),
       );
