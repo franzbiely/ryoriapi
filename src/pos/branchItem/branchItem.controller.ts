@@ -27,11 +27,13 @@ export class QuantityController {
   async fillAll(@Query('branch_Id') branch_Id: string, @Query('category_Id') category_Id: string,) {
     const response:IBranchItem[] = await this.branchItemService.findAll(branch_Id, category_Id);
     // @Todo: Refactor and remove other non used properties..
+    return response;
     return await Promise.all(
       response.map(async (item) => {
         return {
           ...item,
           ...item.menuItem,
+          _id: item['_id'],
           photo: await this.s3Service.getFile(item.menuItem.photo) || '',
           
         }
