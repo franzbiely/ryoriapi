@@ -20,7 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:bdd-all": "npx @cucumber/cucumber features",
-    "test:bdd": "npx @cucumber/cucumber --"
+    "test:bdd": "npx @cucumber/cucumber --",
+    "deploy": "./deploy.sh"
   },
   "dependencies": {
     "@nestjs/class-validator": "^0.13.4",

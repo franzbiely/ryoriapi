@@ -1,4 +1,4 @@
-import { WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SocketService } from './utils/socket/socket.service';
@@ -27,6 +27,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
   @SubscribeMessage('order.new')
   handleMessage(@MessageBody() data: any): void {
+    console.log(`Recieved socket message from `)
     this.socketService.socket.socketsJoin('sc-channel-' + data.branch_Id);
     this.socketService.socket.in('sc-channel-' + data.branch_Id).emit('message', {
       title: data.title,

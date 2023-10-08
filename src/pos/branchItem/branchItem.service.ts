@@ -62,7 +62,7 @@ export class BranchItemService {
       {
         $group:
           {
-            _id: "$_id",
+            _id: "$branchItem._id",
             branchItems: {
               $push: "$branchItem",
             },
@@ -77,6 +77,19 @@ export class BranchItemService {
           quantity: "$branchItems.quantity",
           user: "$branchItems.user"
         }
+      },
+      {
+        $lookup: {
+          from: "menucategories",
+          localField: "menuItem.menuCategories",
+          foreignField: "_id",
+          as: "menuItem.menuCategories",
+        },
+      }, 
+      {
+        $sort: {
+          "_id": 1
+        }  
       }
     ])
     return branchItems
@@ -140,9 +153,9 @@ export class BranchItemService {
     updateQuantityDto: UpdateBranchItemDto,
   ): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({ _id: id }).exec();
+    console.log({updateQuantityDto})
     const { quantity, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = updateQuantityDto.quantity || branchItem.quantity;
-
     if (menuItem_Id) {
       const menuItem = await this.menuItemModel.findOne({ _id: id }).exec();
       branchItem.menuItem = menuItem;
