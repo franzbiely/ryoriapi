@@ -188,6 +188,7 @@ export class TransactionService {
           quantity: _item.qty,
           status: 'new',
           menuItem: menuItem,
+          name: _item.name,
           transaction: transaction._id,
         });
 
