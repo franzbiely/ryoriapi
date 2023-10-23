@@ -62,7 +62,7 @@ export class BranchItemService {
       {
         $group:
           {
-            _id: "$branchItem._id",
+            _id: "$branchItem.menuItem._id",
             branchItems: {
               $push: "$branchItem",
             },
