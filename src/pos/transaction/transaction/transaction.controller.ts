@@ -15,14 +15,14 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import { S3Service } from 'src/utils/S3Service';
-import { AppGateway } from 'src/app.gateway';
+import { SocketGateway } from 'src/utils/socket/socket.gateway';
 import { ObjectId } from 'mongoose';
 @Controller('pos/transaction')
 export class TransactionController {
   constructor(
     private transactionService: TransactionService,
     private readonly s3Service: S3Service,
-    private readonly appGateway: AppGateway
+    private readonly socketGateway: SocketGateway
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -93,9 +93,10 @@ export class TransactionController {
   async create(@Body() createTransactionDto: CreateTransactionDto) {
 
     const result = await this.transactionService.create(createTransactionDto);
-    this.appGateway.handleMessage({
+    this.socketGateway.sendToBranch({
       title: `New Order: Table ${result.table}` ,
-      message: 'Please confirm the order.'
+      message: 'Please confirm the order.',
+      branch_Id: createTransactionDto.branch_Id
     })
     return result;
   }
