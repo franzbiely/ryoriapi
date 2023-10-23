@@ -93,11 +93,7 @@ export class TransactionController {
   async create(@Body() createTransactionDto: CreateTransactionDto) {
 
     const result = await this.transactionService.create(createTransactionDto);
-    this.socketGateway.sendToBranch({
-      title: `New Order: Table ${result.table}` ,
-      message: 'Please confirm the order.',
-      branch_Id: createTransactionDto.branch_Id
-    })
+    
     return result;
   }
 
