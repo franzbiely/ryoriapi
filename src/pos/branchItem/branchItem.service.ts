@@ -75,7 +75,15 @@ export class BranchItemService {
         $project: {
           menuItem: "$branchItems.menuItem",
           quantity: "$branchItems.quantity",
-          user: "$branchItems.user"
+          user: "$branchItems.user",
+          title: "$branchItems.menuItem.title",
+          photo: "$branchItems.menuItem.photo",
+          price: "$branchItems.menuItem.price",
+          description: "$branchItems.menuItem.description",
+          cookingTime: "$branchItems.menuItem.cookingTime",
+          menuCategories: "$branchItems.menuItem.menuCategories",
+          createdAt: "$branchItems.menuItem.createdAt",
+          updatedAt: "$branchItems.menuItem.updatedAt",
         }
       },
       {
