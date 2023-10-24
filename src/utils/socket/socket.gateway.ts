@@ -66,8 +66,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('message-to-customer')
-  messageToCustomer() {
-    this.socketService.socket.emit('message-to-customer', { update : true });
-    this.socketService.socket.emit('message-to-customer-response', `{"success": true}`);
+  messageToCustomer(@MessageBody() data: any) {
+    this.logger.log(
+      `Branch : ${this.client.id} sends message to client ${data.customer_socket}`,
+    );
+    this.socketService.socket
+      .to(data.customer_socket)
+      .emit('message-to-customer', { update: true });
+    this.socketService.socket
+      .to(this.client.id)
+      .emit('message-to-customer-response', `{"success": true}`);
   }
 }

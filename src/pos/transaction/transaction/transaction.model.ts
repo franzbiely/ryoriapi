@@ -10,7 +10,6 @@ export interface ITransaction extends Document {
   paymongo_pi_id: string;
   charges: number;
   discount: number;
-  customer_socket: string;
   transactionItems: ITransactionItem[];
 }
 
@@ -22,7 +21,6 @@ export const TransactionSchema = new Schema<ITransaction>(
     amount: Number,
     charges: Number,
     discount: Number,
-    customer_socket: String,
     paymongo_pi_id: { type: String, default: '' },
     transactionItems: [
       { type: Schema.Types.ObjectId, ref: 'TransactionItem', required: true },
