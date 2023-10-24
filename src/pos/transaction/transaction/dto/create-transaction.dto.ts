@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsDate, IsArray, IsObject } from '@nestjs/class-validator';
+import { IsString, IsInt, IsDate, IsArray, IsObject, IsOptional } from '@nestjs/class-validator';
 export class CreateTransactionDto {
   @IsString()
   status: string;
@@ -24,6 +24,9 @@ export class CreateTransactionDto {
   
   @IsString()
   item: string | string[];
+
+  @IsOptional()
+  customer_socket: string;
 
   // Not in Model but necessary in HTTP
   @IsString()

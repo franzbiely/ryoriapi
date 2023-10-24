@@ -189,6 +189,7 @@ export class TransactionService {
           status: 'new',
           menuItem: menuItem,
           transaction: transaction._id,
+          customer_socket: _transaction.customer_socket
         });
 
         await transactionItem.save();
