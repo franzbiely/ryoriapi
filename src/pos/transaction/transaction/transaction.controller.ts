@@ -15,14 +15,12 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { PayTransactionDto } from './dto/pay-transaction.dto';
 import { S3Service } from 'src/utils/S3Service';
-import { SocketGateway } from 'src/utils/socket/socket.gateway';
 import { ObjectId } from 'mongoose';
 @Controller('pos/transaction')
 export class TransactionController {
   constructor(
     private transactionService: TransactionService,
     private readonly s3Service: S3Service,
-    private readonly socketGateway: SocketGateway
   ) {}
 
   @UseGuards(JwtAuthGuard)
