@@ -33,6 +33,9 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   @IsDate()
   createdAt: Date;
 
+  @IsOptional()
+  customer_socket: string;
+
   // Not in Model but necessary in HTTP
   @IsString()
   branch_Id: string;

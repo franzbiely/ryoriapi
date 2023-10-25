@@ -6,8 +6,8 @@ import { BranchSchema } from 'src/general/branch/branch.model';
 import { TransactionItemSchema } from '../transactionItem/transactionItem.model';
 import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
 import { S3Service } from 'src/utils/S3Service';
-import { SocketService } from 'src/utils/socket/socket.service';
-import { AppGateway } from 'src/app.gateway';
+// import { SocketService } from 'src/utils/socket/socket.service';
+import { SocketGateway } from 'src/utils/socket/socket.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
 import { TransactionArchiveSchema } from '../transactionArchive/transactionArchive.model';
@@ -23,6 +23,6 @@ import { TransactionArchiveSchema } from '../transactionArchive/transactionArchi
     ]),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, S3Service, SocketService, AppGateway, Utils],
+  providers: [TransactionService, S3Service, SocketGateway, Utils],
 })
 export class TransactionModule {}

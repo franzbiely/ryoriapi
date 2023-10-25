@@ -14,7 +14,6 @@ import { CreateTransactionArchiveDto } from './dto/create-transactionArchive.dto
 import { UpdateTransactionArchiveDto } from './dto/update-transactionArchive.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { S3Service } from 'src/utils/S3Service';
-import { AppGateway } from 'src/app.gateway';
 import { ObjectId } from 'mongoose';
 
 @Controller('pos/transactionarchive')

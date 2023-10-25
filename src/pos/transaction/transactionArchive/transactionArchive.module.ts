@@ -6,8 +6,7 @@ import { BranchSchema } from 'src/general/branch/branch.model';
 import { TransactionItemSchema } from '../transactionItem/transactionItem.model';
 import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
 import { S3Service } from 'src/utils/S3Service';
-import { SocketService } from 'src/utils/socket/socket.service';
-import { AppGateway } from 'src/app.gateway';
+
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
 import { TransactionSchema } from '../transaction/transaction.model';
@@ -26,8 +25,6 @@ import { TransactionSchema } from '../transaction/transaction.model';
   providers: [
     TransactionArchiveService,
     S3Service,
-    SocketService,
-    AppGateway,
     Utils,
   ],
 })

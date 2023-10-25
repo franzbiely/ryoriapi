@@ -88,11 +88,9 @@ export class TransactionItemService {
       .findOne({ _id: id })
       .exec();
     const { status, quantity } = updateTransactionItem;
-    transactionItem.status =
-      updateTransactionItem.status || transactionItem.status;
-    transactionItem.quantity =
-      updateTransactionItem.quantity || transactionItem.quantity;
-    const result = await transactionItem.save();
+    transactionItem.status = updateTransactionItem.status || transactionItem.status;
+    transactionItem.quantity = updateTransactionItem.quantity || transactionItem.quantity;
+    await transactionItem.save();
 
     // Recheck later
     const _transaction = await this.transactionModel
@@ -111,7 +109,7 @@ export class TransactionItemService {
       await _transaction.save();
     }
 
-    return result;
+    return transactionItem;
   }
 
   async remove(id: ObjectId): Promise<string | void> {

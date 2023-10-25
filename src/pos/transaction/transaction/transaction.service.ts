@@ -190,6 +190,7 @@ export class TransactionService {
           menuItem: menuItem,
           customer_name: _item.customer_name,
           transaction: transaction._id,
+          customer_socket: _item.customer_socket,
         });
 
         await transactionItem.save();
