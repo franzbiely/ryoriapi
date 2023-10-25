@@ -9,6 +9,9 @@ export class CreateTransactionItemDto {
   quantity: number;
 
   @IsString()
+  customer_name: string;
+
+  @IsString()
   menuItem_Id: string;
 
   @IsDate()

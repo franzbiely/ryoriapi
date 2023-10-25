@@ -186,8 +186,9 @@ export class TransactionService {
 
         const transactionItem = new this.transactionItemModel({
           quantity: _item.qty,
-          status: 'new',
+          status: 'draft',
           menuItem: menuItem,
+          customer_name: _item.customer_name,
           transaction: transaction._id,
         });
 
@@ -266,7 +267,7 @@ export class TransactionService {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
 
-    if (transaction.status === 'done') {
+    if (transaction.status === 'complete') {
       // Create a new transaction in the archive entity
       const archivedTransaction = new this.transactionArchiveModel({
         status: transaction.status,
