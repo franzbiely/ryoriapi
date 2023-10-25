@@ -6,7 +6,7 @@ import { ITransaction } from '../transaction/transaction.model';
 export interface ITransactionItem extends Document {
   status: string;
   quantity: number;
-  name: string;
+  customer_name: string;
   menuItem: IMenuItem;
 }
 
@@ -14,7 +14,7 @@ export const TransactionItemSchema = new Schema<ITransactionItem>(
   {
     status: String,
     quantity: Number,
-    name: String,
+    customer_name: String,
     menuItem: { type: Schema.Types.ObjectId, ref: 'MenuItem', required: true },
   },
   { timestamps: true },

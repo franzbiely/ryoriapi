@@ -9,7 +9,7 @@ export class CreateTransactionItemDto {
   quantity: number;
 
   @IsString()
-  name: string;
+  customer_name: string;
 
   @IsString()
   menuItem_Id: string;

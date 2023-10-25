@@ -13,7 +13,7 @@ export class UpdateTransactionItemDto extends PartialType(
   quantity: number;
 
   @IsString()
-  name: string;
+  customer_name: string;
 
   @IsOptional()
   menuItem_Id: string;

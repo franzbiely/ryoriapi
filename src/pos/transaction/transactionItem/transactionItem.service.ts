@@ -43,7 +43,7 @@ export class TransactionItemService {
     const transactionItem = new this.transactionItemModel({
       status: _transaction.status,
       quantity: _transaction.quantity,
-      name: _transaction.name,
+      customer_name: _transaction.customer_name,
     });
 
     if (_transaction.menuItem_Id) {
