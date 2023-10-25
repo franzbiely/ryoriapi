@@ -60,6 +60,15 @@ export class BranchItemService {
         $unwind: "$branchItem.menuItem",
       },
       {
+        $unwind:
+          "$branchItem.menuItem.menuCategories",
+      },
+      {
+        $match: {
+          "branchItem.menuItem.menuCategories": new mongoose.Types.ObjectId(category_Id),
+        },
+      },
+      {
         $group:
           {
             _id: "$branchItem.menuItem._id",
