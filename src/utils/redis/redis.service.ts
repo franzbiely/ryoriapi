@@ -23,4 +23,15 @@ export class RedisService {
   async get(key: string): Promise<string> {
     return this.redisClient.get(key);
   }
+
+  async cacheWhenAble(key, callback):Promise<any> {
+    const redisKey = this.isConnected() ? key : '';
+    const cachedData = this.isConnected() ? await this.get(redisKey) : null;
+    const response = JSON.parse(cachedData) || await callback();
+
+    if(this.isConnected() && !cachedData) {
+      await this.set(redisKey, JSON.stringify(response), 57600); //expire in 16 hours
+    }
+    return response
+  }
 }

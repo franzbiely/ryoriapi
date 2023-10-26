@@ -30,40 +30,39 @@ export class QuantityController {
   // @UseGuards(JwtAuthGuard), need to be accessible in front end
   @Get()
   async fillAll(@Query('branch_Id') branch_Id: string, @Query('category_Id') category_Id: string,) {
-    const redisKey = this.redisService.isConnected() ? `branchItems(bid:${branch_Id},cid:${category_Id})` : '';
-    const cachedData = this.redisService.isConnected() ? await this.redisService.get(redisKey) : null;
-    const response:IBranchItem[] = JSON.parse(cachedData) || await this.branchItemService.findAll(branch_Id, category_Id);
+    return await this.redisService.cacheWhenAble(`/branchItems?branch_Id:${branch_Id}&category_Id:${category_Id})`, async () => {
+      const response:IBranchItem[] = await this.branchItemService.findAll(branch_Id, category_Id);
 
-    if(this.redisService.isConnected() && !cachedData) {
-      await this.redisService.set(redisKey, JSON.stringify(response), 57600); //expire in 16 hours
-    }
-    // @Todo: Refactor and remove other non used properties..
-    return await Promise.all(
-      response.map(async (item) => {
-        return {
-          ...item,
-          ...item.menuItem,
-          _id: item['_id'],
-          photo: await this.s3Service.getFile(item.menuItem.photo) || '',
-        }
-      })
-    );
+      // @Todo: Refactor and remove other non used properties..
+      return await Promise.all(
+        response.map(async (item) => {
+          return {
+            ...item,
+            ...item.menuItem,
+            _id: item['_id'],
+            photo: await this.s3Service.getFile(item.menuItem.photo) || '',
+          }
+        })
+      );
+    })
   }
 
   @Get(':id')
   async findOne(@Param('id') id: ObjectId) {
-    const response = await this.branchItemService.findOne(id);
-    if(response) {
-      return {
-        ...response,
-        photo: await this.s3Service.getFile(response.menuItem.photo) || '',
-        title: response.menuItem.title,
-        description: response.menuItem.description,
-        price: response.menuItem.price,
-        
+    return await this.redisService.cacheWhenAble(`/branchItem/${id}`, async () => {
+      const response = await this.branchItemService.findOne(id);
+
+      if(response) {
+        return {
+            ...response,
+            photo: await this.s3Service.getFile(response.menuItem.photo) || '',
+            title: response.menuItem.title,
+            description: response.menuItem.description,
+            price: response.menuItem.price, 
+          }
       }
-    }
-    return []
+      return []
+    })
   }
 
   @UseGuards(JwtAuthGuard)
