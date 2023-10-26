@@ -21,7 +21,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:bdd-all": "npx @cucumber/cucumber features",
     "test:bdd": "npx @cucumber/cucumber --",
-    "deploy": "./deploy.sh"
+    "deploy": "./deploy.sh",
+    "redis:start": "brew services start redis",
+    "redis:stop": "brew services stop redis"
   },
   "dependencies": {
     "@nestjs/class-validator": "^0.13.4",
@@ -48,6 +50,7 @@
     "cucumber": "^6.0.7",
     "cucumber-pretty": "^6.0.1",
     "cucumber-tsflow": "^4.1.1",
+    "ioredis": "^5.3.2",
     "moment": "^2.29.4",
     "mongoose": "^7.4.4",
     "mysql2": "^3.1.2",

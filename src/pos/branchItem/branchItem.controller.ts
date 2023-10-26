@@ -17,15 +17,26 @@ import { UpdateBranchItemDto } from './dto/update-branchItem.dto';
 import { S3Service } from 'src/utils/S3Service';
 import { ObjectId } from 'mongoose';
 import { IBranchItem } from './branchItem.model';
+import { RedisService } from 'src/utils/redis/redis.service';
 
 @Controller('branchItem')
 export class QuantityController {
-  constructor(private branchItemService: BranchItemService, private readonly s3Service: S3Service) {}
+  constructor(
+    private branchItemService: BranchItemService, 
+    private readonly s3Service: S3Service,
+    private readonly redisService: RedisService
+  ) {}
 
   // @UseGuards(JwtAuthGuard), need to be accessible in front end
   @Get()
   async fillAll(@Query('branch_Id') branch_Id: string, @Query('category_Id') category_Id: string,) {
-    const response:IBranchItem[] = await this.branchItemService.findAll(branch_Id, category_Id);
+    const redisKey = this.redisService.isConnected() ? `branchItems(bid:${branch_Id},cid:${category_Id})` : '';
+    const cachedData = this.redisService.isConnected() ? await this.redisService.get(redisKey) : null;
+    const response:IBranchItem[] = JSON.parse(cachedData) || await this.branchItemService.findAll(branch_Id, category_Id);
+
+    if(this.redisService.isConnected() && !cachedData) {
+      await this.redisService.set(redisKey, JSON.stringify(response), 57600); //expire in 16 hours
+    }
     // @Todo: Refactor and remove other non used properties..
     return await Promise.all(
       response.map(async (item) => {

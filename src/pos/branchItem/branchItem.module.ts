@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MenuCategorySchema } from '../product/menuCategory/menuCategory.model';
 import { Utils } from 'src/utils/utils';
 import { UsersSchema } from 'src/general/user/user.model';
+import { RedisService } from 'src/utils/redis/redis.service';
 
 @Module({
   imports: [MongooseModule.forFeature([
@@ -19,6 +20,6 @@ import { UsersSchema } from 'src/general/user/user.model';
     { name: 'MenuCategory', schema: MenuCategorySchema }
     ])],
   controllers: [QuantityController],
-  providers: [BranchItemService, S3Service, Utils],
+  providers: [BranchItemService, S3Service, Utils, RedisService],
 })
 export class BranchItemModule {}

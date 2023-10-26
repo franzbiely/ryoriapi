@@ -44,6 +44,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Encryptor } from './utils/encryptor';
 import { Utils } from './utils/utils';
 import { TransactionArchiveModule } from './pos/transaction/transactionArchive/transactionArchive.module';
+import { RedisModule } from './utils/redis/redis.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -77,6 +78,9 @@ import { TransactionArchiveModule } from './pos/transaction/transactionArchive/t
     BranchItemModule,
     SocketModule,
     TransactionArchiveModule,
+
+    //
+    RedisModule
   ],
   controllers: [AppController],
   providers: [AppService, Encryptor, Utils],

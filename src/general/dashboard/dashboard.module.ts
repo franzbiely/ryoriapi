@@ -12,6 +12,7 @@ import { DashboardController } from "./dashboard.controller";
 import { Utils } from "src/utils/utils";
 import { UsersSchema } from "../user/user.model";
 import { StoreSchema } from "../store/store.model";
+import { RedisService } from "src/utils/redis/redis.service";
 
 @Module({
     imports:[MongooseModule.forFeature([
@@ -26,7 +27,7 @@ import { StoreSchema } from "../store/store.model";
         { name: 'Branch', schema: BranchSchema }
     ])],
     controllers: [DashboardController],
-    providers: [BranchItemService, Utils],
+    providers: [BranchItemService, Utils, RedisService],
 })
 
 export class DashboardModule{}
