@@ -27,91 +27,94 @@ export class BranchItemService {
   ) {}
 
   // TODO: branch_Id deprecated
-  async findAll(
-    branch_Id: string,
-    category_Id: string = null,
-  ): Promise<any[]> {
-    const pipeline = []
-    pipeline.push({
-      $match: {
-        _id: new mongoose.Types.ObjectId(branch_Id),
+  async findAll(branch_Id: string, category_Id: string = null): Promise<any[]> {
+    const pipeline = [];
+    pipeline.push(
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(branch_Id),
+        },
       },
-    },
-    {
-      $lookup: {
-        from: "branchitems",
-        localField: "branchItems",
-        foreignField: "_id",
-        as: "branchItem",
+      {
+        $lookup: {
+          from: 'branchitems',
+          localField: 'branchItems',
+          foreignField: '_id',
+          as: 'branchItem',
+        },
       },
-    },
-    {
-      $unwind: "$branchItem",
-    },
-    {
-      $lookup: {
-        from: "menuitems",
-        localField: "branchItem.menuItem",
-        foreignField: "_id",
-        as: "branchItem.menuItem",
+      {
+        $unwind: '$branchItem',
       },
-    },
-    {
-      $unwind: "$branchItem.menuItem",
-    },
-    {
-      $unwind:
-        "$branchItem.menuItem.menuCategories",
-    })
-    if(category_Id) {
+      {
+        $lookup: {
+          from: 'menuitems',
+          localField: 'branchItem.menuItem',
+          foreignField: '_id',
+          as: 'branchItem.menuItem',
+        },
+      },
+      {
+        $unwind: '$branchItem.menuItem',
+      },
+      {
+        $unwind: '$branchItem.menuItem.menuCategories',
+      },
+    );
+    if (category_Id) {
       pipeline.push({
         $match: {
-          "branchItem.menuItem.menuCategories": new mongoose.Types.ObjectId(category_Id),
-        }
-      })
+          'branchItem.menuItem.menuCategories': new mongoose.Types.ObjectId(
+            category_Id,
+          ),
+        },
+      });
     }
-    pipeline.push({
-      $group:
-        {
-          _id: "$branchItem.menuItem._id",
+    pipeline.push(
+      {
+        $group: {
+          _id: '$branchItem._id',
           branchItems: {
-            $push: "$branchItem",
+            $push: '$branchItem',
           },
         },
-    },
-    {
-      $unwind: "$branchItems",
-    },
-    {
-      $project: {
-        menuItem: "$branchItems.menuItem",
-        quantity: "$branchItems.quantity",
-        user: "$branchItems.user",
-        title: "$branchItems.menuItem.title",
-        photo: "$branchItems.menuItem.photo",
-        price: "$branchItems.menuItem.price",
-        description: "$branchItems.menuItem.description",
-        cookingTime: "$branchItems.menuItem.cookingTime",
-        menuCategories: "$branchItems.menuItem.menuCategories",
-        createdAt: "$branchItems.menuItem.createdAt",
-        updatedAt: "$branchItems.menuItem.updatedAt",
-      }
-    },
-    {
-      $lookup: {
-        from: "menucategories",
-        localField: "menuItem.menuCategories",
-        foreignField: "_id",
-        as: "menuItem.menuCategories",
       },
-    }, 
-    {
-      $sort: {
-        "_id": 1
-      }  
-    })
-    const branchItems:IBranchItem[] = await this.branchModel.aggregate(pipeline)
-    return branchItems
+      {
+        $unwind: '$branchItems',
+      },
+      {
+        $project: {
+          menuItem: '$branchItems.menuItem',
+          quantity: '$branchItems.quantity',
+          user: '$branchItems.user',
+          title: '$branchItems.menuItem.title',
+          photo: '$branchItems.menuItem.photo',
+          price: '$branchItems.menuItem.price',
+          description: '$branchItems.menuItem.description',
+          cookingTime: '$branchItems.menuItem.cookingTime',
+          menuCategories: '$branchItems.menuItem.menuCategories',
+          createdAt: '$branchItems.menuItem.createdAt',
+          updatedAt: '$branchItems.menuItem.updatedAt',
+        },
+      },
+      {
+        $lookup: {
+          from: 'menucategories',
+          localField: 'menuItem.menuCategories',
+          foreignField: '_id',
+          as: 'menuItem.menuCategories',
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    );
+    const branchItems: IBranchItem[] = await this.branchModel.aggregate(
+      pipeline,
+    );
+    return branchItems;
   }
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
@@ -172,7 +175,6 @@ export class BranchItemService {
     updateQuantityDto: UpdateBranchItemDto,
   ): Promise<IBranchItem> {
     const branchItem = await this.branchItemModel.findOne({ _id: id }).exec();
-    console.log({updateQuantityDto})
     const { quantity, menuItem_Id } = updateQuantityDto;
     branchItem.quantity = updateQuantityDto.quantity || branchItem.quantity;
     if (menuItem_Id) {
