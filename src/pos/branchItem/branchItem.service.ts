@@ -31,84 +31,86 @@ export class BranchItemService {
     branch_Id: string,
     category_Id: string = null,
   ): Promise<any[]> {
-    const branchItems:IBranchItem[] = await this.branchModel.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(branch_Id),
-        },
+    const pipeline = []
+    pipeline.push({
+      $match: {
+        _id: new mongoose.Types.ObjectId(branch_Id),
       },
-      {
-        $lookup: {
-          from: "branchitems",
-          localField: "branchItems",
-          foreignField: "_id",
-          as: "branchItem",
-        },
+    },
+    {
+      $lookup: {
+        from: "branchitems",
+        localField: "branchItems",
+        foreignField: "_id",
+        as: "branchItem",
       },
-      {
-        $unwind: "$branchItem",
+    },
+    {
+      $unwind: "$branchItem",
+    },
+    {
+      $lookup: {
+        from: "menuitems",
+        localField: "branchItem.menuItem",
+        foreignField: "_id",
+        as: "branchItem.menuItem",
       },
-      {
-        $lookup: {
-          from: "menuitems",
-          localField: "branchItem.menuItem",
-          foreignField: "_id",
-          as: "branchItem.menuItem",
-        },
-      },
-      {
-        $unwind: "$branchItem.menuItem",
-      },
-      {
-        $unwind:
-          "$branchItem.menuItem.menuCategories",
-      },
-      {
+    },
+    {
+      $unwind: "$branchItem.menuItem",
+    },
+    {
+      $unwind:
+        "$branchItem.menuItem.menuCategories",
+    })
+    if(category_Id) {
+      pipeline.push({
         $match: {
           "branchItem.menuItem.menuCategories": new mongoose.Types.ObjectId(category_Id),
-        },
-      },
-      {
-        $group:
-          {
-            _id: "$branchItem.menuItem._id",
-            branchItems: {
-              $push: "$branchItem",
-            },
-          },
-      },
-      {
-        $unwind: "$branchItems",
-      },
-      {
-        $project: {
-          menuItem: "$branchItems.menuItem",
-          quantity: "$branchItems.quantity",
-          user: "$branchItems.user",
-          title: "$branchItems.menuItem.title",
-          photo: "$branchItems.menuItem.photo",
-          price: "$branchItems.menuItem.price",
-          description: "$branchItems.menuItem.description",
-          cookingTime: "$branchItems.menuItem.cookingTime",
-          menuCategories: "$branchItems.menuItem.menuCategories",
-          createdAt: "$branchItems.menuItem.createdAt",
-          updatedAt: "$branchItems.menuItem.updatedAt",
         }
-      },
-      {
-        $lookup: {
-          from: "menucategories",
-          localField: "menuItem.menuCategories",
-          foreignField: "_id",
-          as: "menuItem.menuCategories",
+      })
+    }
+    pipeline.push({
+      $group:
+        {
+          _id: "$branchItem.menuItem._id",
+          branchItems: {
+            $push: "$branchItem",
+          },
         },
-      }, 
-      {
-        $sort: {
-          "_id": 1
-        }  
+    },
+    {
+      $unwind: "$branchItems",
+    },
+    {
+      $project: {
+        menuItem: "$branchItems.menuItem",
+        quantity: "$branchItems.quantity",
+        user: "$branchItems.user",
+        title: "$branchItems.menuItem.title",
+        photo: "$branchItems.menuItem.photo",
+        price: "$branchItems.menuItem.price",
+        description: "$branchItems.menuItem.description",
+        cookingTime: "$branchItems.menuItem.cookingTime",
+        menuCategories: "$branchItems.menuItem.menuCategories",
+        createdAt: "$branchItems.menuItem.createdAt",
+        updatedAt: "$branchItems.menuItem.updatedAt",
       }
-    ])
+    },
+    {
+      $lookup: {
+        from: "menucategories",
+        localField: "menuItem.menuCategories",
+        foreignField: "_id",
+        as: "menuItem.menuCategories",
+      },
+    }, 
+    {
+      $sort: {
+        "_id": 1
+      }  
+    })
+    const branchItems:IBranchItem[] = await this.branchModel.aggregate(pipeline)
     return branchItems
   }
 
