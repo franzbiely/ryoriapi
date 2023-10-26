@@ -119,7 +119,7 @@ export class BranchItemService {
 
   async findOne(id: ObjectId): Promise<IBranchItem> {
     return this.branchItemModel
-      .findOne({ menuItem: id })
+      .findOne({ _id: id })
       .populate('menuItem')
       .lean();
   }
