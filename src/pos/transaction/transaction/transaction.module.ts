@@ -11,6 +11,7 @@ import { SocketGateway } from 'src/utils/socket/socket.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
 import { TransactionArchiveSchema } from '../transactionArchive/transactionArchive.model';
+import { BranchItemSchema } from 'src/pos/branchItem/branchItem.model';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TransactionArchiveSchema } from '../transactionArchive/transactionArchi
       { name: 'Transaction', schema: TransactionSchema },
       { name: 'Branch', schema: BranchSchema },
       { name: 'TransactionItem', schema: TransactionItemSchema },
+      { name: 'BranchItem', schema: BranchItemSchema },
       { name: 'MenuItem', schema: MenuItemSchema },
       { name: 'TransactionArchive', schema: TransactionArchiveSchema },
     ]),

@@ -11,6 +11,7 @@ import { IMenuItem } from 'src/pos/product/menuItem/menuItem.model';
 import { ITransactionItem } from '../transactionItem/transactionItem.model';
 import { Utils } from 'src/utils/utils';
 import { ITransactionArchive } from '../transactionArchive/transactionArchive.model';
+import { IBranchItem } from 'src/pos/branchItem/branchItem.model';
 @Injectable()
 export class TransactionService {
   constructor(
@@ -20,6 +21,8 @@ export class TransactionService {
     private readonly branchModel: Model<IBranch>,
     @InjectModel('MenuItem')
     private readonly menuItemModel: Model<IMenuItem>,
+    @InjectModel('BranchItem')
+    private readonly branchItemModel: Model<IBranchItem>,
     @InjectModel('TransactionItem')
     private readonly transactionItemModel: Model<ITransactionItem>,
     private readonly utils: Utils,
@@ -282,6 +285,19 @@ export class TransactionService {
           return prev + cur.quantity * cur.menuItem.price;
         }, 0),
       });
+
+      // Deduct quantity in branchItem per transactionItems
+      await Promise.all(
+        transaction.transactionItems.map(async (transactionItem) => {
+          const branchItem = await this.branchItemModel
+            .findOne({
+              _id: transactionItem['_id'],
+            })
+            .exec();
+          branchItem.quantity = branchItem.quantity - transactionItem.quantity;
+          branchItem.save();
+        }),
+      );
 
       // Add in branch to transactionArchive
       const branch = await this.branchModel
