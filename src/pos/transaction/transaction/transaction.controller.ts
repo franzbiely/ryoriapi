@@ -52,15 +52,22 @@ export class TransactionController {
     @Query('bid') bid: string,
     @Query('tid') tid: ObjectId,
   ) {
-    const response = await this.transactionService.getStatusByBidAndTid(sid, bid, tid);
-    const transactionItems = await Promise.all(
-      response.transactionItems.map(async (item) => {
-        return {
-          ...item,
-          photo: (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
-        };
-      }),
+    const response = await this.transactionService.getStatusByBidAndTid(
+      sid,
+      bid,
+      tid,
     );
+    const transactionItems =
+      response.transactionItems &&
+      (await Promise.all(
+        response.transactionItems.map(async (item) => {
+          return {
+            ...item,
+            photo:
+              (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
+          };
+        }),
+      ));
     return {
       ...response,
       transactionItems,
@@ -77,7 +84,8 @@ export class TransactionController {
       response.transactionItems.map(async (item) => {
         return {
           ...item,
-          photo: (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
+          photo:
+            (await this.s3Service.getFile(item['menuItem']['photo'])) || '',
         };
       }),
     );
@@ -89,9 +97,8 @@ export class TransactionController {
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {
-
     const result = await this.transactionService.create(createTransactionDto);
-    
+
     return result;
   }
 
