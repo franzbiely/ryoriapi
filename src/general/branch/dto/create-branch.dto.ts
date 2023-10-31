@@ -32,6 +32,11 @@ export class CreateBranchDto {
   @IsOptional()
   user_Id: string;
 
+  @IsOptional()
+  used: number;
+
+  @IsOptional()
+  limit: number;
   // Not in model
 
   @IsOptional()

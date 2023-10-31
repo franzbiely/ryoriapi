@@ -33,4 +33,10 @@ export class UpdateBranchDto extends PartialType(CreateBranchDto) {
 
   @IsOptional()
   user_Id: string;
+
+  @IsOptional()
+  used: number;
+
+  @IsOptional()
+  limit: number;
 }

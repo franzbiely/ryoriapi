@@ -14,6 +14,8 @@ export interface IBranch extends Document {
   email: string;
   contactNumber: string;
   address: string;
+  used: number;
+  limit: number;
 
   branchItems?: IBranchItem[];
   rawGrocerys?: IRawGrocery[];
@@ -29,9 +31,13 @@ export const BranchSchema = new Schema<IBranch>(
     email: String,
     contactNumber: String,
     address: String,
+    used: Number,
+    limit: Number,
     users: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
     transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
-    transactionArchive: [{ type: Schema.Types.ObjectId, ref: 'TransactionArchive' }],
+    transactionArchive: [
+      { type: Schema.Types.ObjectId, ref: 'TransactionArchive' },
+    ],
     rawGrocerys: [{ type: Schema.Types.ObjectId, ref: 'RawGrocery' }],
     branchItems: [{ type: Schema.Types.ObjectId, ref: 'BranchItem' }],
     rawCategorys: [{ type: Schema.Types.ObjectId, ref: 'RawCategory' }],

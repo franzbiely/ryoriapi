@@ -7,16 +7,18 @@ import { UsersSchema } from '../user/user.model';
 import { MenuItemSchema } from 'src/pos/product/menuItem/menuItem.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
+import { TransactionSchema } from 'src/pos/transaction/transaction/transaction.model';
 
 @Module({
-  imports: [MongooseModule.forFeature(
-    [
-      {name: 'Branch', schema: BranchSchema},
-      {name: 'Store', schema: StoreSchema},
-      {name: 'Users', schema: UsersSchema},
-      {name: 'MenuItem', schema: MenuItemSchema},
-    ]
-  )],
+  imports: [
+    MongooseModule.forFeature([
+      { name: 'Branch', schema: BranchSchema },
+      { name: 'Store', schema: StoreSchema },
+      { name: 'Users', schema: UsersSchema },
+      { name: 'MenuItem', schema: MenuItemSchema },
+      { name: 'Transaction', schema: TransactionSchema },
+    ]),
+  ],
   controllers: [BranchController],
   providers: [BranchService, Utils],
 })
