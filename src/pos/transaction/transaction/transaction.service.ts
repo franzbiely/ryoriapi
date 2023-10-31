@@ -46,9 +46,11 @@ export class TransactionService {
       .lean();
     const newData = response.transactions.map((data) => ({
       ...data,
-      total: data.transactionItems.reduce((prev, cur) => {
-        return prev + cur.quantity * cur.menuItem.price;
-      }, 0),
+      total: data.transactionItems
+        .filter((transactionItem) => transactionItem.status !== 'cancelled')
+        .reduce((prev, cur) => {
+          return prev + cur.quantity * cur.menuItem.price;
+        }, 0),
     }));
     return newData;
   }
@@ -291,7 +293,7 @@ export class TransactionService {
         transaction.transactionItems.map(async (transactionItem) => {
           const branchItem = await this.branchItemModel
             .findOne({
-              _id: transactionItem['_id'],
+              menuItem: transactionItem.menuItem,
             })
             .exec();
           branchItem.quantity = branchItem.quantity - transactionItem.quantity;

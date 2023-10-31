@@ -124,9 +124,7 @@ export class TransactionArchiveService {
         }),
       );
     } else {
-      throw new NotFoundException(
-        `Transactions Archive from branch id ${branch_Id} today not found`,
-      );
+      return [];
     }
   }
   async getTransactionNotToday(
