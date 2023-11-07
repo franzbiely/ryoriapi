@@ -80,15 +80,14 @@ export class DashboardController {
       }, 0);
       return prev + (amount + (cur.charges || 0) - (cur.discount || 0));
     }, 0);
-
-    const transactionNew = transactions.filter(
-      (b) => b.status === 'new',
+    const transactionDraft = transactions.filter(
+      (b) => b.status === 'draft',
     ).length;
     const transactionPreparing = transactions.filter(
-      (b) => b.status === 'preparing',
+      (b) => b.status === 'cooking',
     ).length;
     const transactionDone = transactionArchives.filter(
-      (b) => b.status === 'done',
+      (b) => b.status === 'complete',
     ).length;
 
     const transactionsMonthlyServed =
@@ -154,28 +153,28 @@ export class DashboardController {
       totalRevenues,
       orderSummary: {
         monthly: {
-          new: transactionNew,
-          preparing: transactionPreparing,
+          draft: transactionDraft,
+          cooking: transactionPreparing,
           served: transactionsMonthlyServed,
           awaiting_payment: transactionsMonthlyAwaitingPayment,
           cancelled: transactionsMonthlyCancelled,
-          done: transactionDone,
+          complete: transactionDone,
         },
         weekly: {
-          new: transactionNew,
-          preparing: transactionPreparing,
+          draft: transactionDraft,
+          cooking: transactionPreparing,
           served: transactionsWeeklyServed,
           awaiting_payment: transactionsWeeklyAwaitingPayment,
           cancelled: transactionsWeeklyCancelled,
-          done: transactionDone,
+          complete: transactionDone,
         },
         today: {
-          new: transactionNew,
-          preparing: transactionPreparing,
+          draft: transactionDraft,
+          cooking: transactionPreparing,
           served: transactionsTodayServed,
           awaiting_payment: transactionsTodayAwaitingPayment,
           cancelled: transactionsTodayCancelled,
-          done: transactionDone,
+          complete: transactionDone,
         },
       },
     };
