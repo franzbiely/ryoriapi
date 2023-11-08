@@ -31,7 +31,7 @@ export class DashboardController {
   ) {
     const startMonthly = moment().startOf(momentType).toDate();
     const endMonthly = moment().endOf(momentType).toDate();
-    return (
+    const result =
       transactions &&
       transactions.length > 0 &&
       transactions.filter((item) => {
@@ -40,8 +40,8 @@ export class DashboardController {
           createdAtDate.isBetween(startMonthly, endMonthly, null, '[]') &&
           item.status === status
         ); // '[]' includes both start and end dates
-      })
-    );
+      });
+    return result.length;
   }
 
   @Get()
@@ -80,15 +80,19 @@ export class DashboardController {
       }, 0);
       return prev + (amount + (cur.charges || 0) - (cur.discount || 0));
     }, 0);
-    const transactionDraft = transactions.filter(
-      (b) => b.status === 'draft',
-    ).length;
-    const transactionPreparing = transactions.filter(
-      (b) => b.status === 'cooking',
-    ).length;
-    const transactionDone = transactionArchives.filter(
-      (b) => b.status === 'complete',
-    ).length;
+
+    const transactionMonthlyDraft = await this.getTransactionByStatusAndMoment(
+      'draft',
+      'month',
+      transactions,
+    );
+
+    const transactionMonthlyCooking =
+      await this.getTransactionByStatusAndMoment(
+        'cooking',
+        'month',
+        transactions,
+      );
 
     const transactionsMonthlyServed =
       await this.getTransactionByStatusAndMoment(
@@ -103,12 +107,31 @@ export class DashboardController {
         'month',
         transactions,
       );
+
+    const transactionMonthlyComplete =
+      await this.getTransactionByStatusAndMoment(
+        'complete',
+        'month',
+        transactions,
+      );
     const transactionsMonthlyCancelled =
       await this.getTransactionByStatusAndMoment(
         'cancelled',
         'month',
         transactions,
       );
+
+    const transactionWeeklyDraft = await this.getTransactionByStatusAndMoment(
+      'draft',
+      'week',
+      transactions,
+    );
+
+    const transactionWeeklyCooking = await this.getTransactionByStatusAndMoment(
+      'cooking',
+      'week',
+      transactions,
+    );
 
     const transactionsWeeklyServed = await this.getTransactionByStatusAndMoment(
       'served',
@@ -121,6 +144,12 @@ export class DashboardController {
         'week',
         transactions,
       );
+    const transactionWeeklyComplete =
+      await this.getTransactionByStatusAndMoment(
+        'complete',
+        'week',
+        transactions,
+      );
     const transactionsWeeklyCancelled =
       await this.getTransactionByStatusAndMoment(
         'cancelled',
@@ -128,6 +157,16 @@ export class DashboardController {
         transactions,
       );
 
+    const transactionTodayDraft = await this.getTransactionByStatusAndMoment(
+      'draft',
+      'month',
+      transactions,
+    );
+    const transactionTodayCooking = await this.getTransactionByStatusAndMoment(
+      'draft',
+      'day',
+      transactions,
+    );
     const transactionsTodayServed = await this.getTransactionByStatusAndMoment(
       'served',
       'day',
@@ -139,6 +178,12 @@ export class DashboardController {
         'day',
         transactions,
       );
+
+    const transactionTodayComplete = await this.getTransactionByStatusAndMoment(
+      'complete',
+      'day',
+      transactions,
+    );
     const transactionsTodayCancelled =
       await this.getTransactionByStatusAndMoment(
         'cancelled',
@@ -153,28 +198,28 @@ export class DashboardController {
       totalRevenues,
       orderSummary: {
         monthly: {
-          draft: transactionDraft,
-          cooking: transactionPreparing,
+          draft: transactionMonthlyDraft,
+          cooking: transactionMonthlyCooking,
           served: transactionsMonthlyServed,
           awaiting_payment: transactionsMonthlyAwaitingPayment,
           cancelled: transactionsMonthlyCancelled,
-          complete: transactionDone,
+          complete: transactionMonthlyComplete,
         },
         weekly: {
-          draft: transactionDraft,
-          cooking: transactionPreparing,
+          draft: transactionWeeklyDraft,
+          cooking: transactionWeeklyCooking,
           served: transactionsWeeklyServed,
           awaiting_payment: transactionsWeeklyAwaitingPayment,
           cancelled: transactionsWeeklyCancelled,
-          complete: transactionDone,
+          complete: transactionWeeklyComplete,
         },
         today: {
-          draft: transactionDraft,
-          cooking: transactionPreparing,
+          draft: transactionTodayDraft,
+          cooking: transactionTodayCooking,
           served: transactionsTodayServed,
           awaiting_payment: transactionsTodayAwaitingPayment,
           cancelled: transactionsTodayCancelled,
-          complete: transactionDone,
+          complete: transactionTodayComplete,
         },
       },
     };
