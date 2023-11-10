@@ -31,8 +31,8 @@ export const BranchSchema = new Schema<IBranch>(
     email: String,
     contactNumber: String,
     address: String,
-    used: Number,
-    limit: Number,
+    used: { type: Number, default: 0 },
+    limit: { type: Number, default: 100 },
     users: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
     transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
     transactionArchive: [

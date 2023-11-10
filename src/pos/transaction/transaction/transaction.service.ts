@@ -318,6 +318,7 @@ export class TransactionService {
         branch.transactionArchive,
         archivedTransaction,
       );
+      branch.used = branch.used + 1;
       branch.save();
 
       // Delete the current transaction and it's items

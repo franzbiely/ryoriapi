@@ -192,6 +192,10 @@ export class DashboardController {
       );
 
     return {
+      consumption: {
+        limit: branch.limit,
+        used: branch.used,
+      },
       totalMenus: menuItems.length,
       totalOrders: transactions.length + transactionArchives.length,
       totalCustomers: transactions.length + transactionArchives.length,

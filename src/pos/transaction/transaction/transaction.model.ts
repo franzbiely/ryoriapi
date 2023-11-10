@@ -11,6 +11,7 @@ export interface ITransaction extends Document {
   charges: number;
   discount: number;
   transactionItems: ITransactionItem[];
+  branch: IBranch;
 }
 
 export const TransactionSchema = new Schema<ITransaction>(
@@ -25,6 +26,7 @@ export const TransactionSchema = new Schema<ITransaction>(
     transactionItems: [
       { type: Schema.Types.ObjectId, ref: 'TransactionItem', required: true },
     ],
+    branch: [{ type: Schema.Types.ObjectId, ref: 'Branch', required: true }],
   },
   { timestamps: true },
 );
