@@ -8,6 +8,7 @@ import { IBranch } from 'src/general/branch/branch.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Utils } from 'src/utils/utils';
+import { TransactionService } from '../transaction/transaction.service';
 
 @Injectable()
 export class TransactionItemService {
@@ -21,6 +22,7 @@ export class TransactionItemService {
     @InjectModel('Branch')
     private readonly branchModel: Model<IBranch>,
     private readonly utils: Utils,
+    private readonly transactionService: TransactionService,
   ) {}
 
   findAll(branch_Id: ObjectId): Promise<ITransactionItem[]> {
@@ -88,8 +90,10 @@ export class TransactionItemService {
       .findOne({ _id: id })
       .exec();
     const { status, quantity } = updateTransactionItem;
-    transactionItem.status = updateTransactionItem.status || transactionItem.status;
-    transactionItem.quantity = updateTransactionItem.quantity || transactionItem.quantity;
+    transactionItem.status =
+      updateTransactionItem.status || transactionItem.status;
+    transactionItem.quantity =
+      updateTransactionItem.quantity || transactionItem.quantity;
     await transactionItem.save();
 
     // Recheck later
@@ -105,8 +109,11 @@ export class TransactionItemService {
       .exec();
     const data = this.checkSameStatus(_transaction.transactionItems);
     if (data) {
-      _transaction.status = data;
-      await _transaction.save();
+      // _transaction.status = data;
+      // await _transaction.save();
+      this.transactionService.update(_transaction.id, {
+        status: data,
+      });
     }
 
     return transactionItem;

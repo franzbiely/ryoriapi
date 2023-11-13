@@ -8,6 +8,8 @@ import { BranchSchema } from 'src/general/branch/branch.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Utils } from 'src/utils/utils';
 import { TransactionArchiveSchema } from '../transactionArchive/transactionArchive.model';
+import { TransactionService } from '../transaction/transaction.service';
+import { BranchItemSchema } from 'src/pos/branchItem/branchItem.model';
 
 @Module({
   imports: [
@@ -17,9 +19,10 @@ import { TransactionArchiveSchema } from '../transactionArchive/transactionArchi
       { name: 'TransactionArchive', schema: TransactionArchiveSchema },
       { name: 'MenuItem', schema: MenuItemSchema },
       { name: 'Branch', schema: BranchSchema },
+      { name: 'BranchItem', schema: BranchItemSchema },
     ]),
   ],
   controllers: [TransactionItemController],
-  providers: [TransactionItemService, Utils],
+  providers: [TransactionItemService, TransactionService, Utils],
 })
 export class TransactionItemModule {}

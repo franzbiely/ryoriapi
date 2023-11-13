@@ -273,7 +273,10 @@ export class TransactionService {
       transaction.paymongo_pi_id = updateTransactionDto.paymongo_pi_id;
     }
 
-    if (transaction.status === 'complete') {
+    if (
+      transaction.status === 'complete' ||
+      transaction.status === 'cancelled'
+    ) {
       // Create a new transaction in the archive entity
       const archivedTransaction = new this.transactionArchiveModel({
         status: transaction.status,

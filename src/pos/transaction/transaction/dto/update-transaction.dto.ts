@@ -9,34 +9,34 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   status: string;
 
   @IsOptional()
-  table: string;
+  table?: string;
 
   @IsOptional()
-  notes: string;
+  notes?: string;
 
   @IsOptional()
-  amount: number;
+  amount?: number;
 
   @IsOptional()
-  charges: number;
+  charges?: number;
 
   @IsOptional()
-  discount: number;
+  discount?: number;
 
   @IsOptional()
-  paymongo_pi_id: string;
+  paymongo_pi_id?: string;
 
   @IsArray()
   @IsOptional({ each: true })
-  transactionItem_Id: string[];
+  transactionItem_Id?: string[];
 
   @IsDate()
-  createdAt: Date;
+  createdAt?: Date;
 
   @IsOptional()
-  customer_socket: string;
+  customer_socket?: string;
 
   // Not in Model but necessary in HTTP
   @IsString()
-  branch_Id: string;
+  branch_Id?: string;
 }
