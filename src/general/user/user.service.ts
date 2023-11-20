@@ -38,9 +38,12 @@ export class UserService {
   }
 
   async findAll(store_Id: ObjectId, branch_Id: ObjectId): Promise<IUsers[]> {
-    if(branch_Id) {
-      const branch = await this.branchModel.findOne({_id: branch_Id}).populate('users').exec()
-      return branch.users
+    if (branch_Id) {
+      const branch = await this.branchModel
+        .findOne({ _id: branch_Id })
+        .populate('users')
+        .exec();
+      return branch.users;
     }
     return this.usersModel.find({ store: store_Id }).populate('store').exec();
   }
@@ -122,8 +125,25 @@ export class UserService {
     return user;
   }
 
+  // async remove(id: ObjectId): Promise<string> {
+  //   const result = await this.usersModel.deleteOne({ _id: id }).exec();
+  //   return `Deleted ${result.deletedCount} record`;
+  // }
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.usersModel.deleteOne({ _id: id }).exec();
-    return `Deleted ${result.deletedCount} record`;
+    try {
+      const branchModel = await this.branchModel.findOne({ users: id });
+      if (!branchModel) {
+        throw new Error('BranchModel not found.');
+      }
+
+      const result = await this.usersModel.deleteOne({ _id: id }).exec();
+      await this.branchModel
+        .updateOne({ _id: branchModel._id }, { $pull: { users: id } })
+        .exec();
+      return `Deleted ${result.deletedCount} record`;
+    } catch (error) {
+      console.error(error);
+      return 'Error deleting record';
+    }
   }
 }

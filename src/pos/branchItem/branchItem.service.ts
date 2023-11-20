@@ -186,8 +186,27 @@ export class BranchItemService {
     return branchItem;
   }
 
+  // async remove(id: ObjectId): Promise<string> {
+  //   const result = await this.branchItemModel.deleteOne({ _id: id }).exec();
+  //   await this.branchModel.updateOne({ branchItems: id }).exec();
+  //   return `Deleted ${result.deletedCount} record`;
+  // }
+
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.branchItemModel.deleteOne({ _id: id }).exec();
-    return `Deleted ${result.deletedCount} record`;
+    try {
+      const branchModel = await this.branchModel.findOne({ branchItems: id });
+
+      if (!branchModel) {
+        throw new Error('BranchModel not found.');
+      }
+      const result = await this.branchItemModel.deleteOne({ _id: id }).exec();
+      await this.branchModel
+        .updateOne({ _id: branchModel._id }, { $pull: { branchItems: id } })
+        .exec();
+      return `Deleted ${result.deletedCount} record`;
+    } catch (error) {
+      console.error(error);
+      return 'Error deleting record';
+    }
   }
 }
