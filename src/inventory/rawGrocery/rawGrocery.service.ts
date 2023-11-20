@@ -122,8 +122,25 @@ export class RawGroceryService {
     return rawGrocery;
   }
 
+  // async remove(id: ObjectId): Promise<string> {
+  //   const result = await this.rawGroceryModel.deleteOne({ _id: id }).exec();
+  //   return `Deleted ${result.deletedCount} record`;
+  // }
   async remove(id: ObjectId): Promise<string> {
-    const result = await this.rawGroceryModel.deleteOne({ _id: id }).exec();
-    return `Deleted ${result.deletedCount} record`;
+    try {
+      const branchModel = await this.branchModel.findOne({ rawGrocerys: id });
+      if (!branchModel) {
+        throw new Error('BranchModel not found.');
+      }
+
+      const result = await this.rawGroceryModel.deleteOne({ _id: id }).exec();
+      await this.branchModel
+        .updateOne({ _id: branchModel._id }, { $pull: { rawGrocerys: id } })
+        .exec();
+      return `Deleted ${result.deletedCount} record`;
+    } catch (error) {
+      console.error(error);
+      return 'Error deleting record';
+    }
   }
 }
